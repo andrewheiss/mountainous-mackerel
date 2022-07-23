@@ -40,5 +40,7 @@ list(
   ## Process and clean data ----
   tar_target(iccpr_who_clean, clean_iccpr_who(iccpr_who_raw_file)),
   tar_target(oxford_clean, clean_oxford(oxford_raw_file)),
-  tar_target(vdem_clean, clean_vdem(vdem_raw_file))
+  tar_target(vdem_clean, clean_vdem(vdem_raw_file)),
+  
+  tar_target(skeleton, create_daily_skeleton(iccpr_who_clean, oxford_clean, vdem_clean))
 )

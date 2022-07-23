@@ -1,5 +1,5 @@
 library(readxl)
-library(lubridate)
+suppressPackageStartupMessages(library(lubridate))
 library(countrycode)
 
 clean_iccpr_who <- function(path) {
@@ -98,4 +98,23 @@ clean_vdem <- function(path) {
     )
   
   return(vdem_clean)
+}
+
+create_daily_skeleton <- function(iccpr_who, oxford, vdem) {
+  all_countries <- list(unique(iccpr_who$iso3), 
+                        unique(oxford$iso3), 
+                        unique(vdem$iso3))
+  
+  countries_in_all_data <- reduce(all_countries, intersect)
+  
+  first_day <- min(oxford$day)
+  last_day <- max(oxford$day)
+  
+  daily_skeleton <- expand_grid(
+    iso3 = countries_in_all_data,
+    day = seq(first_day, last_day, by = "1 day")
+  ) %>% 
+    mutate(year = year(day))
+  
+  return(daily_skeleton)
 }
