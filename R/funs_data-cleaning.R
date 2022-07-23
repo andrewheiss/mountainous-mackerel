@@ -1,5 +1,33 @@
 library(readxl)
 library(lubridate)
+library(countrycode)
+
+clean_iccpr_who <- function(df) {
+  x <- read_excel(df) %>% 
+    janitor::clean_names() %>% 
+    # Make this a date instead of PosixCT
+    mutate(date_reported = as.Date(date_reported)) %>% 
+    # All NAs here are actually 0s
+    replace_na(list(iccpr_derogation_filed = 0,
+                    derogation_start = 0,
+                    derogation_ineffect = 0,
+                    derogation_end = 0)) %>% 
+    # Country names and codes fun times
+    mutate(
+      country_name = countrycode(
+        country_code, origin = "iso2c", destination = "country.name",
+        custom_match = c("XK" = "Kosovo", "TR" = "Türkiye")),
+      iso3 = countrycode(
+        country_code, origin = "iso2c", destination = "iso3c",
+        custom_match = c("XK" = "XKK")
+      )
+    ) %>% 
+    # Final column order
+    select(-c(country_code, country, cow_code, who_region)) %>% 
+    select(country_name, iso3, day = date_reported, everything())
+  
+  return(x)
+}
 
 clean_oxford <- function(df) {
   x <- tibble(

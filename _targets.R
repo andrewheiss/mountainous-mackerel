@@ -26,7 +26,7 @@ lapply(list.files("R", full.names = TRUE, recursive = TRUE), source)
 # Pipeline ----------------------------------------------------------------
 list(
   ## Raw data files ----
-  tar_target(iccpr_who_raw,
+  tar_target(iccpr_who_raw_file,
              here_rel("data", "raw_data", "ICCPR Derogation and WHO case data 1 3 2020 to 6 30 2021.xlsx"),
              format = "file"),
   tar_target(oxford_raw_file,
@@ -34,5 +34,6 @@ list(
              format = "file"),
   
   ## Process and clean data ----
+  tar_target(iccpr_who_clean, clean_iccpr_who(iccpr_who_raw_file)),
   tar_target(oxford_clean, clean_oxford(oxford_raw_file))
 )
