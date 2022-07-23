@@ -1,0 +1,31 @@
+# R stuff
+.Rproj.user
+.Rhistory
+.RData
+
+# Data stuff
+# (ignore for now)
+data/raw_data/
+data/derived_data/
+
+# Targets stuff
+_targets
+
+# Site output
+**/_site/*
+**/site_libs/*
+
+# knitr and caching stuff
+**/*_files/*
+**/*_cache/*
+
+# Output
+# (ignore for now)
+analysis/output/
+
+# Miscellaneous
+*.~lock.*
+.DS_Store
+.dropbox
+Icon?
+admin/*
