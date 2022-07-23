@@ -32,8 +32,13 @@ list(
   tar_target(oxford_raw_file,
              here_rel("data", "raw_data", "Oxford Covid Response Data 1 3 2020 to 6 20 2021.xlsx"),
              format = "file"),
+  tar_target(vdem_raw_file,
+             here_rel("data", "raw_data", "Country_Year_V-Dem_Full+others_R_v12",
+                      "V-Dem-CY-Full+Others-v12.rds"),
+             format = "file"),
   
   ## Process and clean data ----
   tar_target(iccpr_who_clean, clean_iccpr_who(iccpr_who_raw_file)),
-  tar_target(oxford_clean, clean_oxford(oxford_raw_file))
+  tar_target(oxford_clean, clean_oxford(oxford_raw_file)),
+  tar_target(vdem_clean, clean_vdem(vdem_raw_file))
 )

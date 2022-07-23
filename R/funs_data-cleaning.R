@@ -63,3 +63,39 @@ clean_oxford <- function(path) {
   
   return(x)
 }
+
+clean_vdem <- function(path) {
+  vdem_raw <- read_rds(path) %>% as_tibble()
+  
+  vdem_clean <- vdem_raw %>% 
+    filter(year >= 2020) %>% 
+    mutate(country_name = countrycode(
+      country_text_id, origin = "iso3c", destination = "country.name",
+      custom_match = c("XKX" = "Kosovo", "ZZB" = "Zanzibar", 
+                       "PSG" = "Palestine (Gaza)", "SML" = "Somaliland", 
+                       "TUR" = "Türkiye")
+    )) %>% 
+    select(country_name, iso3 = country_text_id, year,
+           
+           # Civil society stuff
+           v2csreprss,  # CSO repression
+           v2xcs_ccsi,  # Core civil society index (entry/exit, repression, participatory env)
+           
+           # Human rights and politics
+           # Political corruption index (less to more, 0-1) (public sector +
+           # executive + legislative + judicial corruption)
+           v2x_corr,
+           v2x_rule,  # Rule of law index
+           
+           # Rights indexes
+           v2x_civlib,  # Civil liberties index
+           v2x_clphy,  # Physical violence index
+           v2x_clpriv,  # Private civil liberties index
+           v2x_clpol,  # Political civil liberties index
+           
+           # Democracy
+           v2x_polyarchy, v2x_regime_amb
+    )
+  
+  return(vdem_clean)
+}
