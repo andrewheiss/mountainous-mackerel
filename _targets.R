@@ -29,10 +29,10 @@ list(
   tar_target(iccpr_who_raw,
              here_rel("data", "raw_data", "ICCPR Derogation and WHO case data 1 3 2020 to 6 30 2021.xlsx"),
              format = "file"),
-  tar_target(oxford_raw,
+  tar_target(oxford_raw_file,
              here_rel("data", "raw_data", "Oxford Covid Response Data 1 3 2020 to 6 20 2021.xlsx"),
              format = "file"),
   
   ## Process and clean data ----
-  tar_target(oxford_clean, clean_oxford(oxford_raw))
+  tar_target(oxford_clean, clean_oxford(oxford_raw_file))
 )

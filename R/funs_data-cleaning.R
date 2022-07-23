@@ -2,7 +2,7 @@ library(readxl)
 library(lubridate)
 
 clean_oxford <- function(df) {
-  oxford_clean <- tibble(
+  x <- tibble(
     # Get a list of all the sheets in the Excel file
     index_name = excel_sheets(df)
   ) %>% 
@@ -22,7 +22,16 @@ clean_oxford <- function(df) {
     unnest(clean) %>% 
     # Make data wide so that there's a column for each index and row for each
     # country-day
-    pivot_wider(names_from = "index_name", values_from = "value")
+    pivot_wider(names_from = "index_name", values_from = "value") %>% 
+    # Country names and codes fun times
+    mutate(iso3 = recode(country_code, "RKS" = "XKK")) %>% 
+    mutate(country_name = countrycode(
+      iso3, origin = "iso3c", destination = "country.name",
+      custom_match = c("XKK" = "Kosovo", "TUR" = "Türkiye")
+    )) %>% 
+    # Final column order
+    select(-country_code) %>% 
+    select(country_name, iso3, day, everything())
   
-  return(oxford_clean)
+  return(x)
 }
