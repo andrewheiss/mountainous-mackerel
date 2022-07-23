@@ -19,7 +19,7 @@ clean_iccpr_who <- function(path) {
         custom_match = c("XK" = "Kosovo", "TR" = "Türkiye")),
       iso3 = countrycode(
         country_code, origin = "iso2c", destination = "iso3c",
-        custom_match = c("XK" = "XKK")
+        custom_match = c("XK" = "XKX")
       )
     ) %>% 
     # Final column order
@@ -52,10 +52,10 @@ clean_oxford <- function(path) {
     # country-day
     pivot_wider(names_from = "index_name", values_from = "value") %>% 
     # Country names and codes fun times
-    mutate(iso3 = recode(country_code, "RKS" = "XKK")) %>% 
+    mutate(iso3 = recode(country_code, "RKS" = "XKX")) %>% 
     mutate(country_name = countrycode(
       iso3, origin = "iso3c", destination = "country.name",
-      custom_match = c("XKK" = "Kosovo", "TUR" = "Türkiye")
+      custom_match = c("XKX" = "Kosovo", "TUR" = "Türkiye")
     )) %>% 
     # Final column order
     select(-country_code) %>% 
