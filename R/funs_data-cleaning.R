@@ -118,7 +118,12 @@ create_daily_skeleton <- function(iccpr_who, oxford, vdem) {
     iso3 = countries_in_all_data,
     day = seq(first_day, last_day, by = "1 day")
   ) %>% 
-    mutate(year = year(day))
+    mutate(year = year(day)) %>% 
+    mutate(country_name = countrycode(
+      iso3, origin = "iso3c", destination = "country.name",
+      custom_match = c("XKX" = "Kosovo", "TUR" = "Türkiye")
+    )) %>% 
+    select(country_name, iso3, day, year)
   
   return(daily_skeleton)
 }
