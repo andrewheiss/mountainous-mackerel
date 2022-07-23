@@ -9,6 +9,8 @@ set.seed(8588)  # From random.org
 tar_option_set(
   packages = c("tidyverse"),
   format = "qs",
+  workspace_on_error = TRUE,
+  workspaces = c()
 )
 
 # here::here() returns an absolute path, which then gets stored in tar_meta and
@@ -23,4 +25,14 @@ lapply(list.files("R", full.names = TRUE, recursive = TRUE), source)
 
 # Pipeline ----------------------------------------------------------------
 list(
+  ## Raw data files ----
+  tar_target(iccpr_who_raw,
+             here_rel("data", "raw_data", "ICCPR Derogation and WHO case data 1 3 2020 to 6 30 2021.xlsx"),
+             format = "file"),
+  tar_target(oxford_raw,
+             here_rel("data", "raw_data", "Oxford Covid Response Data 1 3 2020 to 6 20 2021.xlsx"),
+             format = "file"),
+  
+  ## Process and clean data ----
+  tar_target(oxford_clean, clean_oxford(oxford_raw))
 )
