@@ -42,5 +42,7 @@ list(
   tar_target(oxford_clean, clean_oxford(oxford_raw_file)),
   tar_target(vdem_clean, clean_vdem(vdem_raw_file)),
   
-  tar_target(skeleton, create_daily_skeleton(iccpr_who_clean, oxford_clean, vdem_clean))
+  tar_target(skeleton, create_daily_skeleton(iccpr_who_clean, oxford_clean, vdem_clean)),
+  
+  tar_target(daily_panel, make_final_data(skeleton, iccpr_who_clean, oxford_clean, vdem_clean))
 )

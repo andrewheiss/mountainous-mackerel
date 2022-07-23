@@ -127,3 +127,12 @@ create_daily_skeleton <- function(iccpr_who, oxford, vdem) {
   
   return(daily_skeleton)
 }
+
+make_final_data <- function(skeleton, iccpr_who, oxford, vdem) {
+  daily_final <- skeleton %>% 
+    left_join(select(iccpr_who, -country_name), by = c("iso3", "day")) %>% 
+    left_join(select(oxford, -country_name), by = c("iso3", "day")) %>% 
+    left_join(select(vdem, -country_name), by = c("iso3", "year"))
+  
+  return(daily_final)
+}
