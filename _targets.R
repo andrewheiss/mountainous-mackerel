@@ -44,5 +44,13 @@ list(
   
   tar_target(skeleton, create_daily_skeleton(iccpr_who_clean, oxford_clean, vdem_clean)),
   
-  tar_target(daily_panel, make_final_data(skeleton, iccpr_who_clean, oxford_clean, vdem_clean))
+  tar_target(daily_panel, make_final_data(skeleton, iccpr_who_clean, oxford_clean, vdem_clean)),
+  
+  ## Save data ----
+  tar_target(data_stata, 
+             haven::write_dta(daily_panel, here_rel("data", "derived_data", "daily_panel.dta"))),
+  tar_target(data_csv, 
+             write_csv(daily_panel, here_rel("data", "derived_data", "daily_panel.csv"))),
+  tar_target(data_rds, 
+             saveRDS(daily_panel, here_rel("data", "derived_data", "daily_panel.rds")))
 )
