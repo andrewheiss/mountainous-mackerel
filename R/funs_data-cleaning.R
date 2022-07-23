@@ -2,8 +2,8 @@ library(readxl)
 library(lubridate)
 library(countrycode)
 
-clean_iccpr_who <- function(df) {
-  x <- read_excel(df) %>% 
+clean_iccpr_who <- function(path) {
+  x <- read_excel(path) %>% 
     janitor::clean_names() %>% 
     # Make this a date instead of PosixCT
     mutate(date_reported = as.Date(date_reported)) %>% 
@@ -29,13 +29,13 @@ clean_iccpr_who <- function(df) {
   return(x)
 }
 
-clean_oxford <- function(df) {
+clean_oxford <- function(path) {
   x <- tibble(
     # Get a list of all the sheets in the Excel file
-    index_name = excel_sheets(df)
+    index_name = excel_sheets(path)
   ) %>% 
     # Read each sheet
-    mutate(data = map(index_name, ~read_excel(df, sheet = .x))) %>% 
+    mutate(data = map(index_name, ~read_excel(path, sheet = .x))) %>% 
     # Standardize the index name based on the sheet name
     mutate(index_name = janitor::make_clean_names(index_name)) %>% 
     # Make each data frame cell in the list column long and a little cleaner
