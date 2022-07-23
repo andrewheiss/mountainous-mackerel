@@ -57,6 +57,10 @@ clean_oxford <- function(path) {
       iso3, origin = "iso3c", destination = "country.name",
       custom_match = c("XKX" = "Kosovo", "TUR" = "Türkiye")
     )) %>% 
+    # Get rid of countries with all missing data
+    group_by(country_name) %>% 
+    filter(!all(is.na(stringency_index))) %>% 
+    ungroup() %>% 
     # Final column order
     select(-country_code) %>% 
     select(country_name, iso3, day, everything())
