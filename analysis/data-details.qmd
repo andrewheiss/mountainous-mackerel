@@ -215,6 +215,36 @@ daily_panel %>%
   datatable()
 ```
 
-## V-Dem
+
+## Pandem
 
 TODO
+
+
+## V-Dem
+
+Finally, to measure additional country-level characteristics, we use several variables from the Varieties of Democracy project. 
+
+:::{.callout-warning}
+Importantly, since these are all measured annually and our main data is daily, these variables act more like country-level fixed effects in our models, capturing the overall level of civil society, human rights, and other characteristics on a given day.
+:::
+
+Here's an overview of these variables:
+
+- **CSO repression** (`v2csreprss`)
+- **Core civil society index** (`v2xcs_ccsi`): Combination of entry/exit requirements, repression, and participatory environment
+- **Political corruption index** (`v2x_corr`): Combination of public sector, executive, legislative, and judicial corruption (less to more, 0–1)
+- **Rule of law** (`v2x_rule`)
+- **Civil liberties** (`v2x_civlib`)
+- **Physical violence** (`v2x_clphy`)
+- **Private civil liberties** (`v2x_clpriv`)
+- **Political civil liberties index** (`v2x_clpol`)
+- **Electoral democracy index** (`v2x_polyarchy`)
+- **Regimes of the world scores** (`v2x_regime_amb`)
+
+```{r glimpse-videm}
+#| code-fold: false
+daily_panel %>% 
+  select(country_name, iso3, day, starts_with("v2")) %>%
+  glimpse()
+```
