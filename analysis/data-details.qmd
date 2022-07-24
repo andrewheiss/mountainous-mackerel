@@ -218,7 +218,9 @@ daily_panel %>%
 
 ## Pandem
 
-TODO
+:::{.callout-warning}
+Importantly, since these are all measured quarterly and our main data is daily, these variables act more like country-level fixed effects in our models, capturing the overall level of the severity of pandemic response on a given day.
+:::
 
 
 ## V-Dem
