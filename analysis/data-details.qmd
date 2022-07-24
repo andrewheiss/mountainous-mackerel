@@ -173,7 +173,7 @@ daily_panel %>%
 
 To measure the severity of government responses to COVID-19, we use data from the [Oxford COVID-19 Government Response Tracker](https://www.bsg.ox.ac.uk/research/research-projects/covid-19-government-response-tracker). We use the project's overall stringency index, as well as several measures of economic policies and containment and closure policies:
 
-- **Stringency index** (`stringency_index`): TODO
+- **Stringency index** (`stringency_index`): Composite measure of multiple indicators (C1–C* and H1), ranging from 0 to 100. [See the complete methodology](https://github.com/OxCGRT/covid-policy-tracker/blob/master/documentation/index_methodology.md) for more details.
 - **Cancel public events** (`c3_cancel_public_events`): Indicator of whether the country cancelled public events.
   - **0**: no measures; **1**: recommend cancelling; **2**: require cancelling; **Blank**: no data
 - **Limits on gatherings** (`c4_restrictions_on_gaterings`): Indicator of whether the country limited public gatherings.
