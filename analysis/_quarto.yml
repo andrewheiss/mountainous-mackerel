@@ -38,7 +38,6 @@ format:
     theme: 
       - litera
       - html/custom.scss
-    css: html/styles.css
     toc: true
     toc-depth: 4
     highlight-style: monokai
