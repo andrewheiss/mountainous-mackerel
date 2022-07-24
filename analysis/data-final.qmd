@@ -1,0 +1,29 @@
+---
+title: "Download final data"
+format:
+  html:
+    code-tools: false
+---
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Program</th>
+      <th scope="col">File</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>CSV file for any program</td>
+      <td><a class="btn btn-primary" target="_blank" href="#">{{< fa table >}} &ensp;<span class="font-monospace">daily_panel.csv</span></a></td>
+    </tr>
+    <tr>
+      <td><span class="font-monospace">.rds</span> file for R<br><span class="small">(load with `df <- readRDS("daily_panel.rds")`)</small></td>
+      <td><a class="btn btn-primary" target="_blank" href="#">{{< fa brands r-project >}} &ensp;<span class="font-monospace">daily_panel.rds</span></a></td>
+    </tr>
+    <tr>
+      <td><span class="font-monospace">.dta</span> file for Stata<br><span class="small">(load with `use "daily_panel.dta"`)</small></td>
+      <td><a class="btn btn-primary" target="_blank" href="#">{{< fa table-cells >}} &ensp;<span class="font-monospace">daily_panel.dta</span></a></td>
+    </tr>
+  </tbody>
+</table>
