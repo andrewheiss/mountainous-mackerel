@@ -3,6 +3,16 @@ suppressPackageStartupMessages(library(lubridate))
 library(countrycode)
 
 clean_iccpr_who <- function(path) {
+  who_regions <- tribble(
+    ~who_region, ~who_region_long,
+    "AFRO", "Regional Office for Africa",
+    "AMRO", "Regional Office for the Americas",
+    "SEARO", "Regional Office for South-East Asia",
+    "EURO", "Regional Office for Europe",
+    "EMRO", "Regional Office for the Eastern Mediterranean",
+    "WPRO", "Regional Office for the Western Pacific"
+  )
+  
   x <- read_excel(path) %>% 
     janitor::clean_names() %>% 
     # Make this a date instead of PosixCT
@@ -22,9 +32,11 @@ clean_iccpr_who <- function(path) {
         custom_match = c("XK" = "XKX")
       )
     ) %>% 
+    left_join(who_regions, by = "who_region") %>% 
     # Final column order
-    select(-c(country_code, country, cow_code, who_region)) %>% 
-    select(country_name, iso3, day = date_reported, everything())
+    select(-c(country_code, country, cow_code)) %>% 
+    select(country_name, iso3, who_region, who_region_long,
+           day = date_reported, everything())
   
   return(x)
 }
