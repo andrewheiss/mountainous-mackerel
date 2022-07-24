@@ -52,5 +52,8 @@ list(
   tar_target(data_csv, 
              write_csv(daily_panel, here_rel("data", "derived_data", "daily_panel.csv"))),
   tar_target(data_rds, 
-             saveRDS(daily_panel, here_rel("data", "derived_data", "daily_panel.rds")))
+             saveRDS(daily_panel, here_rel("data", "derived_data", "daily_panel.rds"))),
+  
+  ## Analysis notebook ----
+  tar_quarto(analysis_notebook, path = "analysis")
 )
