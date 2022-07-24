@@ -100,7 +100,9 @@ Our data is based on reading the texts of ICCPR derogations at the UN Treaty Col
 - **Derogation in effect** (`derogation_ineffect`): This is a dichotomous variable that is `TRUE` if the country is currently derogating and `FALSE` if not.
 - **Derogation end** (`derogation_end`): This is the date noted within the derogation text of when emergency provisions stop and rights observances resume. This is a dichotomous variable that is `TRUE` on the day the country finishes its derogation and `FALSE` otherwise.
 
-(*Note: In many cases states filed derogations after the derogations actually started, so filed dates are often after the derogation start dates. Also note that states often updated the timing of derogations to extend, so there may be multiple filing dates within one derogation period.*)
+:::{.callout-note}
+In many cases states filed derogations after the derogations actually started, so filed dates are often after the derogation start dates. Also note that states often updated the timing of derogations to extend, so there may be multiple filing dates within one derogation period.
+:::
 
 Here's an overview of these variables:
 
