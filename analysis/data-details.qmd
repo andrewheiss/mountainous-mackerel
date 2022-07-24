@@ -1,0 +1,176 @@
+---
+title: "Data details"
+format:
+  html:
+    code-fold: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.align = "center", fig.retina = 3,
+                      fig.width = 6, fig.height = (6 * 0.618),
+                      out.width = "80%", collapse = TRUE,
+                      dev = "png", dev.args = list(type = "cairo-png"))
+
+options(digits = 3, width = 120,
+        dplyr.summarise.inform = FALSE,
+        knitr.kable.NA = "")
+```
+
+```{r load-libraries, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(targets)
+library(DT)
+library(kableExtra)
+library(lubridate)
+
+matrix_from_vector <- function(x, ncol) {
+  n_balanced <- ceiling(length(x) / ncol) * ncol
+  matrix(c(x, rep(NA, n_balanced - length(x))), ncol = ncol)
+}
+
+# Generated via random.org
+set.seed(2385)
+
+# Load data 
+withr::with_dir(here::here(), {
+  # Final data
+  tar_load(daily_panel)
+})
+```
+
+```{r extract-details}
+info <- list(
+  n_days = length(unique(daily_panel$day)),
+  n_countries = length(unique(daily_panel$iso3)),
+  n_rows = scales::label_comma()(nrow(daily_panel)),
+  dates = map(list(
+    start_date = min(daily_panel$day),
+    end_date = max(daily_panel$day)
+  ), ~list(date = ., 
+           nice = format(., "%B %e, %Y"),
+           year = year(.)))
+)
+```
+
+## Overview
+
+We combine data from the [International Covenant on Civil and Political Rights](https://www.ohchr.org/en/instruments-mechanisms/instruments/international-covenant-civil-and-political-rights) (ICCPR), the [World Health Organization](https://covid19.who.int/data) (WHO), [Oxford's COVID-19 Government Response Tracker](https://www.bsg.ox.ac.uk/research/research-projects/covid-19-government-response-tracker), and the [Varieties of Democracy](https://www.v-dem.net/) (V-Dem) project to track government responses, COVID case counts, and derogation status at a daily level. 
+
+### Countries and dates included
+
+We include data from `r info$n_countries` countries for `r info$n_days` days from `r info$dates$start_date$nice` to `r info$dates$end_date$nice`, resulting in a panel with `r info$n_rows` country-day observations.
+
+```{r show-country-table}
+countries <- daily_panel %>% 
+  distinct(who_region, who_region_long, country_name) %>% 
+  arrange(who_region) %>% 
+  mutate(who = paste0(who_region_long, " (", who_region, ")")) %>% 
+  group_by(who) %>% 
+  nest() %>% 
+  mutate(nice_matrix = map(data, ~matrix_from_vector(.$country_name, ncol = 6))) %>% 
+  mutate(matrix_rows = map_int(nice_matrix, ~nrow(.)))
+
+row_groups <- countries$matrix_rows %>% 
+  set_names(countries$who)
+
+reduce(countries$nice_matrix, rbind) %>% 
+  kbl(table.attr = "class=\'table-sm\'") %>% 
+  kable_styling(bootstrap_options = c("basic"), 
+                full_width = FALSE) %>% 
+  pack_rows(index = row_groups, indent = FALSE, 
+            label_row_css = 'background-color: rgb(2, 184, 117); color: #ffffff; text-align: center;')
+```
+
+### General overview of full data
+
+Here's an overview of the complete panel data:
+
+```{r glimpse-everything}
+#| code-fold: false
+glimpse(daily_panel)
+```
+
+
+## ICCPR derogations
+
+Our data is based on reading the texts of ICCPR derogations at the UN Treaty Collection site at <https://treaties.un.org/>. We create these variables:
+
+- **ICCPR derogation filed** (`iccpr_derogation_filed`): Date that derogation notice was filed/received by the UN. This is a dichotomous variable that is `TRUE` on the day the country files the notice and `FALSE` otherwise.
+- **Derogation start** (`derogation_start`): This is the date noted within the derogation text of when the emergency provisions and suspension of rights starts. This is a dichotomous variable that is `TRUE` on the day the country starts its derogation and `FALSE` otherwise.
+- **Derogation in effect** (`derogation_ineffect`): This is a dichotomous variable that is `TRUE` if the country is currently derogating and `FALSE` if not.
+- **Derogation end** (`derogation_end`): This is the date noted within the derogation text of when emergency provisions stop and rights observances resume. This is a dichotomous variable that is `TRUE` on the day the country finishes its derogation and `FALSE` otherwise.
+
+(*Note: In many cases states filed derogations after the derogations actually started, so filed dates are often after the derogation start dates. Also note that states often updated the timing of derogations to extend, so there may be multiple filing dates within one derogation period.*)
+
+Here's an overview of these variables:
+
+```{r glimpse-iccpr}
+#| code-fold: false
+daily_panel %>%
+  select(country_name, iso3, day, iccpr_derogation_filed,
+         derogation_start, derogation_ineffect, derogation_end) %>% 
+  glimpse()
+```
+
+And here's an extract of the data from June 11, 2020, the day that Argentina filed a derogation notice:
+
+```{r show-iccpr}
+daily_panel %>%
+  filter(day == ymd("2020-06-11")) %>%
+  select(country_name, iso3, day, iccpr_derogation_filed,
+         derogation_start, derogation_ineffect, derogation_end) %>% 
+  datatable()
+```
+
+
+## WHO
+
+We collect daily case counts from the [WHO's COVID-19 Dashboard](https://covid19.who.int/data). We use these variables: 
+
+- **WHO region** (`who_region` and `who_region_long`): One of six WHO regional offices:
+  - Regional Office for Africa (AFRO)
+  - Regional Office for the Americas (AMRO)
+  - Regional Office for the Eastern Mediterranean (EMRO)
+  - Regional Office for Europe (EURO)
+  - Regional Office for South-East Asia (SEARO)
+  - Regional Office for the Western Pacific (WPRO)
+- **New cases** (`new_cases`): New confirmed cases of COVID-19. Calculated by subtracting previous cumulative case count from current cumulative cases count.
+- **Cumulative cases** (`cumulative_cases`): Cumulative confirmed cases of COVID-19 reported to the WHO to date.
+- **New deaths** (`new_deaths`): New confirmed COVID-19 deaths. Calculated by subtracting previous cumulative deaths from current cumulative deaths.
+- **Cumulative deaths** (`cumulative_deaths`): Cumulative confirmed COVID-19 deaths reported to the WHO to date.
+
+We omit all "other" observations not assigned to any country (like cruise ships), and remove all non-states that don't appear in the UN's ICCPR list or in V-Dem, including:
+
+```{r show-nonstate-table}
+nonstates <- c("Falkland Islands", "Fore Islands", "Guernsey", "Guam", 
+               "Isle of Man ", "Jersey", "Saint Pierre and Miquelon", 
+               "Pitcairn Islands", "Puerto Rico", "Reunion Island", "Tokelau", 
+               "Holy See", "Wallis and Futuna", "Bonaire", "Sint Eustatius", 
+               "Saba", "Mayotte", "Gibraltar ", "Greenland", "Guadeloupe")
+
+matrix_from_vector(nonstates, ncol = 5) %>% 
+  kbl() %>% 
+  kable_styling(bootstrap_options = c("basic"), 
+                full_width = FALSE) %>% 
+  pack_rows("Omitted non-states", 1, 4, indent = FALSE, 
+            label_row_css = 'background-color: rgb(184, 71, 67); color: #ffffff; text-align: center;')
+```
+
+Here's an overview of these variables:
+
+```{r glimpse-who}
+#| code-fold: false
+daily_panel %>%
+  select(country_name, iso3, day, who_region, who_region_long,
+         new_cases, cumulative_cases, new_deaths, cumulative_deaths) %>% 
+  glimpse()
+```
+
+
+## Oxford
+
+TODO
+
+## V-Dem
+
+TODO
