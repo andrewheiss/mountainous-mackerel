@@ -1,0 +1,54 @@
+---
+title: "Targets workflow"
+format:
+  html:
+    code-fold: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.align = "center", fig.retina = 3,
+                      fig.width = 6, fig.height = (6 * 0.618),
+                      out.width = "80%", collapse = TRUE,
+                      dev = "png", dev.args = list(type = "cairo-png"))
+
+options(digits = 3, width = 120,
+        dplyr.summarise.inform = FALSE,
+        knitr.kable.NA = "")
+```
+
+# targets pipeline
+
+We use [the magical **`targets`** package](https://docs.ropensci.org/targets/) to run our analysis and keep track of all dependencies automatically.
+
+To build our entire project, run `targets::tar_make()` at the R console.
+
+Here's our complete pipeline:
+
+```{r show-targets-pipeline, echo=FALSE}
+withr::with_dir(here::here(), {
+  targets::tar_glimpse()
+})
+```
+
+
+# Actual code
+
+All the data processing is handled with dataset-specific functions that live in `R/funs_data-cleaning.R`, which **`targets`** then runs as needed. For the sake of transparency, here's that code:
+
+```{r generate-code-chunks, echo=FALSE}
+# MAGIC: https://gist.github.com/StevenMMortimer/e54ec050d97d79996189
+generate_chunk <- function(filename) {
+  paste0(c(paste0("#### `R/", filename, "`"),
+           paste0('```{r, code=xfun::read_utf8(here::here("R", "', filename, '")), eval=FALSE}'), 
+           "#| code-fold: true", 
+           "```", "", ""), 
+         sep = "\n")
+}
+
+out <- NULL
+for (thing in list.files(here::here("R"))) {
+  out <- c(out, generate_chunk(thing))
+}
+```
+
+`r paste(knitr::knit(text = out), collapse = "\n")`
