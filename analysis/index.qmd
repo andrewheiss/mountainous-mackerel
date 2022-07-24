@@ -1,0 +1,5 @@
+---
+title: "Analysis notebook"
+---
+
+This is a Quarto website. Neato.
