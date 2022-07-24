@@ -19,14 +19,15 @@ website:
     style: docked
     background: dark
     contents:
-      - section: Data and workflow
+      - section: Data & workflow
         contents:
           - data-final.qmd
           - data-details.qmd
           - targets.qmd
-      - section: Hypotheses
+      - section: Questions & methods
         contents:
           - hypotheses.qmd
+          - methods.qmd
       - section: Analysis
         contents:
           - analysis_h1.qmd

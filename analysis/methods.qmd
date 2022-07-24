@@ -1,0 +1,5 @@
+---
+title: "Methods"
+---
+
+How we test all these hypotheses.
