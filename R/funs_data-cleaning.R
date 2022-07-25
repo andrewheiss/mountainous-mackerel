@@ -80,6 +80,37 @@ clean_oxford <- function(path) {
   return(x)
 }
 
+clean_pandem <- function(path) {
+  pandem_raw <- read_excel(path)
+  
+  pandem_levels <- c("None" = "0", "Minor" = "1", "Moderate" = "2", "Major" = "3")
+  
+  pandem_clean <- pandem_raw %>% 
+    mutate(quarter_numeric = parse_number(quarter) / 10) %>% 
+    mutate(year_quarter = year + quarter_numeric) %>% 
+    mutate(iso3 = countrycode(country_name, 
+                              origin = "country.name", 
+                              destination = "iso3c"),
+           country_name = countrycode(iso3, origin = "iso3c", 
+                                      destination = "country.name",
+                                      custom_match = c("TUR" = "Türkiye"))) %>% 
+    select(country_name, iso3, year, year_quarter, 
+           pandem, panback, 
+           pandem_discrim = type1, 
+           pandem_ndrights = type2,
+           pandem_abusive = type3,
+           pandem_nolimit = type4,
+           pandem_media = type7) %>% 
+    # Make these 0-3 columns factors
+    mutate(across(starts_with("pandem_"), ~factor(., levels = pandem_levels, ordered = TRUE))) %>% 
+    # Add labels
+    mutate(across(starts_with("pandem_"), ~fct_recode(., !!!pandem_levels))) %>% 
+    # Drop unused levels
+    mutate(across(starts_with("pandem_"), ~fct_drop(.)))
+  
+  return(pandem_clean)
+}
+
 clean_vdem <- function(path) {
   vdem_raw <- read_rds(path) %>% as_tibble()
   
@@ -110,40 +141,46 @@ clean_vdem <- function(path) {
            v2x_clpol,  # Political civil liberties index
            
            # Democracy
-           v2x_polyarchy, v2x_regime_amb
+           v2x_polyarchy, v2x_libdem, v2x_regime_amb
     )
   
   return(vdem_clean)
 }
 
-create_daily_skeleton <- function(iccpr_who, oxford, vdem) {
+create_daily_skeleton <- function(iccpr_who, oxford, pandem, vdem) {
   all_countries <- list(unique(iccpr_who$iso3), 
                         unique(oxford$iso3), 
+                        unique(pandem$iso3),
                         unique(vdem$iso3))
   
   countries_in_all_data <- reduce(all_countries, intersect)
   
-  first_day <- min(oxford$day)
+  # first_day <- min(oxford$day)
+  first_day <- ymd("2020-03-11")
   last_day <- max(oxford$day)
   
   daily_skeleton <- expand_grid(
     iso3 = countries_in_all_data,
     day = seq(first_day, last_day, by = "1 day")
   ) %>% 
-    mutate(year = year(day)) %>% 
+    mutate(year = year(day),
+           year_quarter = quarter(day, type = "year.quarter")) %>% 
+    # Pandem starts Q2 2020 on March 11 instead of April 1
+    mutate(year_quarter = ifelse(year_quarter == 2020.1, 2020.2, year_quarter)) %>% 
     mutate(country_name = countrycode(
       iso3, origin = "iso3c", destination = "country.name",
       custom_match = c("XKX" = "Kosovo", "TUR" = "Türkiye")
     )) %>% 
-    select(country_name, iso3, day, year)
+    select(country_name, iso3, day, year, year_quarter)
   
   return(daily_skeleton)
 }
 
-make_final_data <- function(skeleton, iccpr_who, oxford, vdem) {
+make_final_data <- function(skeleton, iccpr_who, oxford, pandem, vdem) {
   daily_final <- skeleton %>% 
     left_join(select(iccpr_who, -country_name), by = c("iso3", "day")) %>% 
     left_join(select(oxford, -country_name), by = c("iso3", "day")) %>% 
+    left_join(select(pandem, -c(country_name, year)), by = c("iso3", "year_quarter")) %>% 
     left_join(select(vdem, -country_name), by = c("iso3", "year"))
   
   return(daily_final)

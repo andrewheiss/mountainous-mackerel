@@ -54,7 +54,7 @@ info <- list(
 
 ## Overview
 
-We combine data from the [International Covenant on Civil and Political Rights](https://www.ohchr.org/en/instruments-mechanisms/instruments/international-covenant-civil-and-political-rights) (ICCPR), the [World Health Organization](https://covid19.who.int/data) (WHO), [Oxford's COVID-19 Government Response Tracker](https://www.bsg.ox.ac.uk/research/research-projects/covid-19-government-response-tracker), and the [Varieties of Democracy](https://www.v-dem.net/) (V-Dem) project to track government responses, COVID case counts, and derogation status at a daily level. 
+We combine data from the [International Covenant on Civil and Political Rights](https://www.ohchr.org/en/instruments-mechanisms/instruments/international-covenant-civil-and-political-rights) (ICCPR), the [World Health Organization](https://covid19.who.int/data) (WHO), [Oxford's COVID-19 Government Response Tracker](https://www.bsg.ox.ac.uk/research/research-projects/covid-19-government-response-tracker), the [Pandemic Backsliding Project](https://github.com/vdeminstitute/pandem) (PanDem), and the [Varieties of Democracy](https://www.v-dem.net/) (V-Dem) project to track government responses, COVID case counts, and derogation status at a daily level. 
 
 ### Countries and dates included
 
@@ -173,21 +173,29 @@ daily_panel %>%
 
 To measure the severity of government responses to COVID-19, we use data from the [Oxford COVID-19 Government Response Tracker](https://www.bsg.ox.ac.uk/research/research-projects/covid-19-government-response-tracker). We use the project's overall stringency index, as well as several measures of economic policies and containment and closure policies:
 
-- **Stringency index** (`stringency_index`): Composite measure of multiple indicators (C1–C* and H1), ranging from 0 to 100. [See the complete methodology](https://github.com/OxCGRT/covid-policy-tracker/blob/master/documentation/index_methodology.md) for more details.
+- **Stringency index** (`stringency_index`): Composite measure of multiple indicators (C1–C8 and H1), ranging from 0 to 100. [See the complete methodology](https://github.com/OxCGRT/covid-policy-tracker/blob/master/documentation/index_methodology.md) for more details.
+
 - **Cancel public events** (`c3_cancel_public_events`): Indicator of whether the country cancelled public events.
   - **0**: no measures; **1**: recommend cancelling; **2**: require cancelling; **Blank**: no data
+
 - **Limits on gatherings** (`c4_restrictions_on_gaterings`): Indicator of whether the country limited public gatherings.
   - **0**: no restrictions; **1**: restrictions on very large gatherings (the limit is above 1000 people); **2**: restrictions on gatherings between 101-1000 people; **3**: restrictions on gatherings between 11-100 people; **4**: restrictions on gatherings of 10 people or less; **Blank**: no data
+
 - **Close public transport** (`c5_close_public_transport`): Indicator of whether the country closed public transport.
   - **0**: no measures; **1**: recommend closing (or significantly reduce volume/route/means of transport available); **2**: require closing (or prohibit most citizens from using it); **Blank**: no data
+
 - **Stay at home requirements** (`c6_stay_at_home_requirements`): Indicator of whether the country imposed shelter-in-place requirements.
   - **0**: no measures; **1**: recommend not leaving house; **2**: require not leaving house with exceptions for daily exercise, grocery shopping, and 'essential' trips; **3**: require not leaving house with minimal exceptions (eg allowed to leave once a week, or only one person can leave at a time, etc); **Blank**: no data
+
 - **Restrictions on internal movement** (`c7_movement_restrictions_intern`): Indicator of whether the country imposed restrictions on internal movement between cities or regions.
   - **0**: no measures; **1**: recommend not to travel between regions/cities; **2**: internal movement restrictions in place; **Blank**: no data
-- **International travel controls** (`c8_international_travel_control`): Indicator of whether the country imposed restrictions on international travel (for foreign travellers, not citizens)
+
+- **International travel controls** (`c8_international_travel_control`): Indicator of whether the country imposed restrictions on international travel (for foreign travellers, not citizens).
   - **0**: no restrictions; **1**: screening arrivals; **2**: quarantine arrivals from some or all regions; **3**: ban arrivals from some regions; **4**: ban on all regions or total border closure; **Blank**: no data
+
 - **Income support** (`e1_income_support`): Indicator of whether the country provided direct cash payments for those unable to work.
   - **0**: no income support; **1**: government is replacing less than 50% of lost salary (or if a flat sum, it is less than 50% median salary); **2**: government is replacing 50% or more of lost salary (or if a flat sum, it is greater than 50% median salary); **Blank**: no data
+
 - **Debt relief** (`e2_debt_relief`): Indicator of whether the country froze financial obligations for households (e.g. loan freezes, eviction bans, etc.)
   - **0**: no debt/contract relief; **1**: narrow relief, specific to one kind of contract; **2**: broad debt/contract relief; **Blank**: no data
 
@@ -216,16 +224,51 @@ daily_panel %>%
 ```
 
 
-## Pandem
+## Pandemic Backsliding Project (PanDem)
+
+We also measure the severity of government responses with data from the [Pandemic Backsliding Project](https://github.com/vdeminstitute/pandem) (PanDem).
 
 :::{.callout-warning}
 Importantly, since these are all measured quarterly and our main data is daily, these variables act more like country-level fixed effects in our models, capturing the overall level of the severity of pandemic response on a given day.
 :::
 
+We use the following variables:
 
-## V-Dem
+- **Year + quarter** (`year_quarter`): Numeric representation of the year and quarter, with quarter ranging from 0.1 to 0.4 (so 2020.4 is Q4 of 2020). PanDem treats March 11–March 31, 2020 as Q2 instead of Q1, so we recode our data accordingly (i.e. March 13, 2020 is 2020.2)
 
-Finally, to measure additional country-level characteristics, we use several variables from the Varieties of Democracy project. 
+- **Pandemic Violations of Democratic Standards Index** (`pandem`): Index measuring the extent to which governments violated democratic standards in their COVID-19 emergency response. Ranges from 0–1 and incorporates details about 7 different types of violations (`type1`, `type2`, `type3`, `type4`, `type5`, `type6`, and `type7` from PanDem).
+
+- **Pandemic Backsliding Index** (`panback`): Index measuring the extent to which democracy has receded because of violations of government standards during COVID-19. Ranges from 0–1 and incorporates both `pandem` and V-Dem's liberal democracy index (`v2x_libdem`) in 2019.
+
+- **Discriminatory measures** (`pandem_discrim`; originally `type1`): Ordinal measure of whether emergency measure violated the principle of non-discrimination from the ICCPR.
+  - **None**: no discrimination; **Minor**: de facto minor discrimination; **Moderate**: de jure minor discrimination; **Major**: major either de factor or de jure discrimination
+
+- **Derogations from non-derogable rights** (`pandem_ndrights`; originally `type2`): Ordinal measure of whether countries derogated from non-derogable ICCPR rights.
+  - **None**: no on all items of ICCPR provisions; **Major**: yes on any item of ICCPR provisions
+
+- **Abusive enforcement** (`pandem_abusive`; originally `type3`): Ordinal measure of whether state security violated physical integrity rights while enforcing emergency measures
+  - **None**: no to very few reports; **Minor**: sometimes; **Moderate**: often; **Major**: widespread
+
+- **No time limit** (`pandem_nolimit`; originally `type4`): Ordinal measure of whether emergency measures failed to state a time limit
+  - **None**: there is a declared end date for all measures; **Minor**: there is no end date for some or all measures, but measured ended within the quarter; **Moderate**: there is no end date for some or all measures and the measures have not ended during the quarter
+
+- **Restrictions on media freedom** (`pandem_media`; originally `type7`): Ordinal measure of whether limits were placed on media freedom as part of pandemic emergency measures
+  - **None**: no de jure or de facto restrictions; **Minor**: some de jure or de facto restrictions; **Moderate**: widespread limitations on access to information but few de jure or de facto restrictions on how media can report about the pandemic; **Major**: severe restrictions, limits, and/or harassment *(the PanDem codebook has a lot more detail about how all these are coded; this index is the most complex of the 7 types)*
+  
+And here's an overview of these variables:
+
+```{r glimpse-pandem}
+#| code-fold: false
+daily_panel %>% 
+  select(country_name, iso3, day, year_quarter, 
+         pandem, panback, starts_with("pandem_")) %>% 
+  glimpse()
+```
+
+
+## Varieties of Democracy project (V-Dem)
+
+Finally, to measure additional country-level characteristics, we use several variables from the Varieties of Democracy (V-Dem) project. 
 
 :::{.callout-warning}
 Importantly, since these are all measured annually and our main data is daily, these variables act more like country-level fixed effects in our models, capturing the overall level of civil society, human rights, and other characteristics on a given day.

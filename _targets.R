@@ -32,6 +32,9 @@ list(
   tar_target(oxford_raw_file,
              here_rel("data", "raw_data", "Oxford Covid Response Data 1 3 2020 to 6 20 2021.xlsx"),
              format = "file"),
+  tar_target(pandem_raw_file,
+             here_rel("data", "raw_data", "pandem", "datasets", "pandem_TS_v6.xlsx"),
+             format = "file"),
   tar_target(vdem_raw_file,
              here_rel("data", "raw_data", "Country_Year_V-Dem_Full+others_R_v12",
                       "V-Dem-CY-Full+Others-v12.rds"),
@@ -40,11 +43,16 @@ list(
   ## Process and clean data ----
   tar_target(iccpr_who_clean, clean_iccpr_who(iccpr_who_raw_file)),
   tar_target(oxford_clean, clean_oxford(oxford_raw_file)),
+  tar_target(pandem_clean, clean_pandem(pandem_raw_file)),
   tar_target(vdem_clean, clean_vdem(vdem_raw_file)),
   
-  tar_target(skeleton, create_daily_skeleton(iccpr_who_clean, oxford_clean, vdem_clean)),
+  tar_target(skeleton, 
+             create_daily_skeleton(iccpr_who_clean, oxford_clean, 
+                                   pandem_clean, vdem_clean)),
   
-  tar_target(daily_panel, make_final_data(skeleton, iccpr_who_clean, oxford_clean, vdem_clean)),
+  tar_target(daily_panel, 
+             make_final_data(skeleton, iccpr_who_clean, oxford_clean, 
+                             pandem_clean, vdem_clean)),
   
   ## Save data ----
   tar_target(data_stata, 
