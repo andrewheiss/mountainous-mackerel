@@ -75,5 +75,10 @@ list(
              format = "file"),
   
   ## Analysis notebook ----
-  tar_quarto(analysis_notebook, path = "analysis")
+  tar_quarto(analysis_notebook, path = "analysis"),
+  tar_target(deploy_script, here_rel("deploy.sh"), format = "file"),
+  tar_target(deploy_notebook, {
+    analysis_notebook  # Force a dependency
+    processx::run(paste0("./", deploy_script))  # Run the deploy script
+  })
 )
