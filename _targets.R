@@ -56,11 +56,23 @@ list(
   
   ## Save data ----
   tar_target(data_stata, 
-             haven::write_dta(daily_panel, here_rel("data", "derived_data", "daily_panel.dta"))),
+             save_dta(daily_panel, here_rel("data", "derived_data", "daily_panel.dta")),
+             format = "file"),
+  tar_target(data_stata_website, 
+             save_dta(daily_panel, here_rel("analysis", "data", "daily_panel.dta")),
+             format = "file"),
   tar_target(data_csv, 
-             write_csv(daily_panel, here_rel("data", "derived_data", "daily_panel.csv"))),
+             save_csv(daily_panel, here_rel("data", "derived_data", "daily_panel.csv")),
+             format = "file"),
+  tar_target(data_csv_website, 
+             save_csv(daily_panel, here_rel("analysis", "data", "daily_panel.csv")),
+             format = "file"),
   tar_target(data_rds, 
-             saveRDS(daily_panel, here_rel("data", "derived_data", "daily_panel.rds"))),
+             save_r(daily_panel, here_rel("data", "derived_data", "daily_panel.rds")),
+             format = "file"),
+  tar_target(data_rds_website, 
+             save_r(daily_panel, here_rel("analysis", "data", "daily_panel.rds")),
+             format = "file"),
   
   ## Analysis notebook ----
   tar_quarto(analysis_notebook, path = "analysis")
