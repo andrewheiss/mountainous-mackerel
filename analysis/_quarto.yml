@@ -30,17 +30,21 @@ website:
           - methods.qmd
       - section: Analysis
         contents:
+          - analysis_prelim-tables.qmd
+          - analysis_prelim.qmd
           - analysis_h1.qmd
           - analysis_h2.qmd
           - analysis_h3.qmd
 
 format:
   html:
+    shift-heading-level-by: 1
     theme: 
       - litera
       - html/custom.scss
     toc: true
     toc-depth: 4
+    retina: 3
     highlight-style: monokai
     code-fold: true
     code-tools: true

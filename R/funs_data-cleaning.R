@@ -1,5 +1,6 @@
 library(readxl)
 suppressPackageStartupMessages(library(lubridate))
+suppressPackageStartupMessages(library(clock))
 library(countrycode)
 
 clean_iccpr_who <- function(path) {
@@ -72,6 +73,31 @@ clean_oxford <- function(path) {
     # Get rid of countries with all missing data
     group_by(country_name) %>% 
     filter(!all(is.na(stringency_index))) %>% 
+    ungroup() %>% 
+    # Shorten these long column names
+    rename(
+      c3_cancel_events = c3_cancel_public_events, 
+      c4_gatherings = c4_restrictions_on_gaterings,
+      c5_public_transport = c5_close_public_transport, 
+      c6_stay_at_home = c6_stay_at_home_requirements,
+      c7_internal_movement = c7_movement_restrictions_intern, 
+      c8_intl_travel = c8_international_travel_control
+    ) %>% 
+    # Make binary versions of these columns
+    mutate(across(c(c3_cancel_events, c4_gatherings,
+                    c5_public_transport, c6_stay_at_home,
+                    c7_internal_movement, c8_intl_travel,
+                    e1_income_support, e2_debt_relief),
+                  list(bin = ~ ifelse(. > 0, 1, 0)))) %>% 
+    # Create indicators for whether policies were added, removed, or never changed
+    group_by(country_name) %>% 
+    mutate(across(c(c3_cancel_events, c4_gatherings,
+                    c5_public_transport, c6_stay_at_home,
+                    c7_internal_movement, c8_intl_travel,
+                    e1_income_support, e2_debt_relief),
+                  list(added = ~any(c(NA, diff(.)) >= 1, na.rm = TRUE),
+                       removed = ~any(c(NA, diff(.)) <= -1, na.rm = TRUE),
+                       never = ~all(c(NA, diff(.)) == 0, na.rm = TRUE)))) %>% 
     ungroup() %>% 
     # Final column order
     select(-country_code) %>% 
@@ -164,14 +190,20 @@ create_daily_skeleton <- function(iccpr_who, oxford, pandem, vdem) {
     day = seq(first_day, last_day, by = "1 day")
   ) %>% 
     mutate(year = year(day),
-           year_quarter = quarter(day, type = "year.quarter")) %>% 
+           year_quarter = quarter(day, type = "year.quarter"),
+           day_num = as.numeric(day) - as.numeric(ymd("2020-03-10")),
+           year_week = calendar_narrow(as_iso_year_week_day(day), "week"),
+           year_week_day = as_year_month_day(calendar_narrow(set_day(year_week, 1), "day"))) %>% 
+    # Force the year_week column to be text since it's a weird {clock} class
+    mutate(year_week = as.character(year_week),
+           year_week_day = as.character(year_week_day)) %>% 
     # Pandem starts Q2 2020 on March 11 instead of April 1
     mutate(year_quarter = ifelse(year_quarter == 2020.1, 2020.2, year_quarter)) %>% 
     mutate(country_name = countrycode(
       iso3, origin = "iso3c", destination = "country.name",
       custom_match = c("XKX" = "Kosovo", "TUR" = "Türkiye")
     )) %>% 
-    select(country_name, iso3, day, year, year_quarter)
+    select(country_name, iso3, day, day_num, year, year_quarter, year_week, year_week_day)
   
   return(daily_skeleton)
 }
@@ -184,6 +216,32 @@ make_final_data <- function(skeleton, iccpr_who, oxford, pandem, vdem) {
     left_join(select(vdem, -country_name), by = c("iso3", "year"))
   
   return(daily_final)
+}
+
+make_weekly_data <- function(daily_final) {
+  weekly_final <- daily_final %>% 
+    group_by(year_week, year_week_day, country_name, iso3, who_region, who_region_long) %>% 
+    summarize(across(c(new_cases, new_deaths), ~sum(., na.rm = TRUE)),
+              across(c(iccpr_derogation_filed, derogation_start, 
+                       derogation_ineffect, derogation_end), ~max(., na.rm = TRUE)),
+              across(matches("[ce]\\d_"), ~max(., na.rm = TRUE)),
+              across(c(pandem, panback, starts_with("pandem_"), starts_with("v2")), ~max(., na.rm = TRUE))) %>% 
+    group_by(country_name) %>% 
+    mutate(cumulative_cases = cumsum(new_cases),
+           cumulative_deaths = cumsum(new_deaths)) %>% 
+    mutate(year_week_num = 1:n(), .after = "year_week") %>% 
+    ungroup() %>% 
+    arrange(country_name)
+  
+  return(weekly_final)
+}
+
+make_year_week_lookup <- function(weekly_final) {
+  year_week_lookup <- weekly_final %>% 
+    distinct(year_week, year_week_num, year_week_day) %>% 
+    mutate(year_week_day = ymd(year_week_day))
+  
+  return(year_week_lookup)
 }
 
 # When using a file-based target, {targets} requires that the function that

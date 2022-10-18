@@ -1,8 +1,14 @@
 library(targets)
 library(tarchetypes)
+suppressPackageStartupMessages(library(dplyr))
 
 options(tidyverse.quiet = TRUE,
         dplyr.summarise.inform = FALSE)
+
+# Bayesian stuff
+suppressPackageStartupMessages(library(brms))
+options(mc.cores = 4,
+        brms.backend = "cmdstanr")
 
 set.seed(8588)  # From random.org
 
@@ -54,25 +60,61 @@ list(
              make_final_data(skeleton, iccpr_who_clean, oxford_clean, 
                              pandem_clean, vdem_clean)),
   
+  tar_target(weekly_panel, make_weekly_data(daily_panel)),
+  
+  tar_target(year_week_lookup, make_year_week_lookup(weekly_panel)),
+  
   ## Save data ----
-  tar_target(data_stata, 
+  ### Daily ----
+  tar_target(data_daily_stata, 
              save_dta(daily_panel, here_rel("data", "derived_data", "daily_panel.dta")),
              format = "file"),
-  tar_target(data_stata_website, 
+  tar_target(data_daily_stata_website, 
              save_dta(daily_panel, here_rel("analysis", "data", "daily_panel.dta")),
              format = "file"),
-  tar_target(data_csv, 
+  tar_target(data_daily_csv, 
              save_csv(daily_panel, here_rel("data", "derived_data", "daily_panel.csv")),
              format = "file"),
-  tar_target(data_csv_website, 
+  tar_target(data_daily_csv_website, 
              save_csv(daily_panel, here_rel("analysis", "data", "daily_panel.csv")),
              format = "file"),
-  tar_target(data_rds, 
+  tar_target(data_daily_rds, 
              save_r(daily_panel, here_rel("data", "derived_data", "daily_panel.rds")),
              format = "file"),
-  tar_target(data_rds_website, 
+  tar_target(data_daily_rds_website, 
              save_r(daily_panel, here_rel("analysis", "data", "daily_panel.rds")),
              format = "file"),
+  
+  ### Weekly ----
+  tar_target(data_weekly_stata, 
+             save_dta(weekly_panel, here_rel("data", "derived_data", "weekly_panel.dta")),
+             format = "file"),
+  tar_target(data_weekly_stata_website, 
+             save_dta(weekly_panel, here_rel("analysis", "data", "weekly_panel.dta")),
+             format = "file"),
+  tar_target(data_weekly_csv, 
+             save_csv(weekly_panel, here_rel("data", "derived_data", "weekly_panel.csv")),
+             format = "file"),
+  tar_target(data_weekly_csv_website, 
+             save_csv(weekly_panel, here_rel("analysis", "data", "weekly_panel.csv")),
+             format = "file"),
+  tar_target(data_weekly_rds, 
+             save_r(weekly_panel, here_rel("data", "derived_data", "weekly_panel.rds")),
+             format = "file"),
+  tar_target(data_weekly_rds_website, 
+             save_r(weekly_panel, here_rel("analysis", "data", "weekly_panel.rds")),
+             format = "file"),
+  
+  ## Models ----
+  tar_target(m_prelim_derog, f_prelim_derog(weekly_panel)),
+  tar_target(m_h1, f_h1(weekly_panel)),
+  tar_target(m_h2, f_h2(weekly_panel)),
+  tar_target(m_h3, f_h3(weekly_panel)),
+  
+  tar_target(m_coef_gof, lst(coef_map, gof_map)),
+  
+  ## Graphics ----
+  tar_target(graphic_functions, lst(theme_pandem, set_annotation_fonts, clrs)),
   
   ## Analysis notebook ----
   tar_quarto(analysis_notebook, path = "analysis"),

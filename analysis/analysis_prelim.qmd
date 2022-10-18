@@ -1,8 +1,10 @@
 ---
-title: "3: Civil society, derogations, and economic policies"
+title: "0: Derogations and policies"
 format:
   html:
     code-fold: true
+editor_options: 
+  chunk_output_type: inline
 ---
 
 ```{r setup, include=FALSE}
@@ -47,7 +49,7 @@ withr::with_dir(here::here(), {
   tar_load(year_week_lookup)
   
   # Models
-  tar_load(m_h3)
+  tar_load(m_prelim_derog)
   tar_load(m_coef_gof)
   
   # Plotting functions
@@ -73,12 +75,11 @@ $$
 \operatorname{logit}(\pi_{i, t}) =&\ \alpha_{\text{country} [i]} + \beta_1\ \text{Derogation in effect}_{i}\ + \\
 &\ \beta_2\ \text{New cases}_{i}\ + \beta_3\ \text{Cumulative cases}_{i}\ + \\
 &\ \beta_4\ \text{New deaths}_{i}\ + \beta_5\ \text{Cumulative deaths}_{i}\ + \\
-&\ \beta_6\ \text{Rule of law index}_{i}\ + \beta_7\ \text{Civil liberties index}_{i}\ + \\
-&\ \beta_8\ \text{Core civil society index}_{i}\ + \beta_9\ \text{Week number}_{i} \\
+&\ \beta_6\ \text{Week number}_{i} \\
 \alpha_j \sim&\ \mathcal{N}(\bar{\alpha}, \sigma_\alpha) \text{, for } j \text{ in } 1 \dots J \\
 \\
 \bar{\alpha} \sim&\ \operatorname{Student t}(\nu = 1, \mu = 0, \sigma = 3) \\
-\beta_{1 \dots 9} \sim&\ \operatorname{Student t}(\nu = 1, \mu = 0, \sigma = 3) \\
+\beta_{1 \dots 6} \sim&\ \operatorname{Student t}(\nu = 1, \mu = 0, \sigma = 3) \\
 \sigma_a \sim&\ \operatorname{Cauchy}(x = 0, \gamma = 1) \text{, lower bound} = 0
 \end{aligned}
 $$
@@ -116,25 +117,24 @@ logit_priors <- c(prior(student_t(1, 0, 3), class = Intercept),
                     prior(student_t(1, 0, 3), class = b),
                     prior(cauchy(0, 1), class = sd, lb = 0))
 
-model_h3_prior_only <- brm(
-  bf(e1_income_support_bin ~ derogation_ineffect + 
-       new_cases_z + cumulative_cases_z + new_deaths_z + cumulative_deaths_z + 
-       v2x_rule + v2x_civlib + v2xcs_ccsi + year_week_num + (1 | country_name)), 
-  data = weekly_panel,
+model_prelim_prior_only <- brm(
+  bf(c7_internal_movement_bin ~ derogation_ineffect + new_cases_z + cumulative_cases_z + 
+       new_deaths_z + cumulative_deaths_z + year_week_num + (1 | country_name)), 
+  data = filter(weekly_panel, c7_internal_movement_never == 0),
   family = "bernoulli",
   prior = logit_priors,
   sample_prior = "only",
   chains = 4, seed = BAYES_SEED, iter = 5000, refresh = 0,
   threads = threading(2)  # Two CPUs per chain to speed things up
 )
-model_h3_prior_only
+model_prelim_prior_only
 ```
 
 ```{r}
-datagrid(model = model_h3_prior_only,
+datagrid(model = model_prelim_prior_only,
          year_week_num = 1:69,
          derogation_ineffect = 0:1) %>% 
-  add_epred_draws(model_h3_prior_only, ndraws = 100) %>% 
+  add_epred_draws(model_prelim_prior_only, ndraws = 100) %>% 
   left_join(year_week_lookup, by = "year_week_num") %>% 
   mutate(derogation_ineffect = factor(derogation_ineffect, 
                                       levels = 0:1,
@@ -147,20 +147,20 @@ datagrid(model = model_h3_prior_only,
   scale_y_continuous(labels = label_percent()) +
   labs(x = NULL, y = "Predicted probability", 
        color = "Derogation in effect",
-       title = "Income support (priors only)") +
+       title = "Movement (priors only)") +
   theme_pandem()
 ```
 
 
 # Posterior
 
-```{r tbl-h1, cache=TRUE, warning=FALSE}
-modelsummary(pull(m_h3, model, name = nice),
+```{r tbl-prelim, cache=TRUE}
+modelsummary(pull(m_prelim_derog, model, name = nice),
              estimate = "{estimate}",
              statistic = "conf.int",
              fmt = 2, coef_map = m_coef_gof$coef_map, 
              gof_map = m_coef_gof$gof_map,
-             metrics = c("none"))
+             metrics = c("R2"))
 ```
 
 
@@ -198,32 +198,74 @@ prelim_pp <- function(model) {
 
 ::: {.panel-tabset}
 
-### `r m_h3$nice[[1]]`
+### `r m_prelim_derog$nice[[1]]`
 
 ```{r}
-prelim_trace(m_h3$model[[1]])
+prelim_trace(m_prelim_derog$model[[1]])
 ```
 
 ```{r}
-prelim_trank(m_h3$model[[1]])
+prelim_trank(m_prelim_derog$model[[1]])
 ```
 
 ```{r}
-prelim_pp(m_h3$model[[1]])
+prelim_pp(m_prelim_derog$model[[1]])
 ```
 
-### `r m_h3$nice[[2]]`
+### `r m_prelim_derog$nice[[2]]`
 
 ```{r}
-prelim_trace(m_h3$model[[2]])
-```
-
-```{r}
-prelim_trank(m_h3$model[[2]])
+prelim_trace(m_prelim_derog$model[[2]])
 ```
 
 ```{r}
-prelim_pp(m_h3$model[[2]])
+prelim_trank(m_prelim_derog$model[[2]])
+```
+
+```{r}
+prelim_pp(m_prelim_derog$model[[2]])
+```
+
+### `r m_prelim_derog$nice[[3]]`
+
+```{r}
+prelim_trace(m_prelim_derog$model[[3]])
+```
+
+```{r}
+prelim_trank(m_prelim_derog$model[[3]])
+```
+
+```{r}
+prelim_pp(m_prelim_derog$model[[3]])
+```
+
+### `r m_prelim_derog$nice[[4]]`
+
+```{r}
+prelim_trace(m_prelim_derog$model[[4]])
+```
+
+```{r}
+prelim_trank(m_prelim_derog$model[[4]])
+```
+
+```{r}
+prelim_pp(m_prelim_derog$model[[4]])
+```
+
+### `r m_prelim_derog$nice[[5]]`
+
+```{r}
+prelim_trace(m_prelim_derog$model[[5]])
+```
+
+```{r}
+prelim_trank(m_prelim_derog$model[[5]])
+```
+
+```{r}
+prelim_pp(m_prelim_derog$model[[5]])
 ```
 
 :::
@@ -233,10 +275,10 @@ prelim_pp(m_h3$model[[2]])
 
 ## Predictions
 
-### Derogations and time
+::: {.column-page-right}
 
-```{r fig.width=8, fig.height=4, out.width="100%"}
-h3_models_plots <- m_h3 %>% 
+```{r fig.width=12, fig.height=6, out.width="100%"}
+preliminary_models_plots <- m_prelim_derog %>% 
   mutate(pred_plot = map2(model, nice, ~{
     datagrid(model = .x,
              year_week_num = 1:69,
@@ -259,42 +301,17 @@ h3_models_plots <- m_h3 %>%
       theme_pandem()
   }))
 
-wrap_plots(h3_models_plots$pred_plot)
+wrap_plots(preliminary_models_plots$pred_plot)
 ```
 
-### Derogations and core civil society index
-
-```{r fig.width=8, fig.height=4, out.width="100%"}
-h3_models_plots_cs <- m_h3 %>% 
-  mutate(pred_plot = map2(model, nice, ~{
-    datagrid(model = .x,
-             v2xcs_ccsi = seq(0, 1, by = 0.01),
-             derogation_ineffect = 0:1) %>% 
-      add_epred_draws(.x) %>% 
-      mutate(derogation_ineffect = factor(derogation_ineffect, 
-                                          levels = 0:1,
-                                      labels = c("No", "Yes"),
-                                      ordered = TRUE)) %>% 
-      ggplot(aes(x = v2xcs_ccsi, y = .epred, color = derogation_ineffect)) +
-      stat_lineribbon(aes(fill = derogation_ineffect), alpha = 0.3) +
-      scale_color_manual(values = c(clrs[1], clrs[8])) +
-      scale_fill_manual(values = c(clrs[1], clrs[8])) +
-      scale_y_continuous(labels = label_percent()) +
-      labs(x = "Core civil society index", y = "Predicted probability", 
-           color = "Derogation in effect", fill = "Derogation in effect",
-           title = .y) +
-      theme_pandem()
-  }))
-
-wrap_plots(h3_models_plots_cs$pred_plot)
-```
+:::
 
 ## Marginal effects
 
-### Derogations and time
+::: {.column-page-right}
 
-```{r fig.width=8, fig.height=4, out.width="100%"}
-h3_models_mfx <- m_h3 %>% 
+```{r fig.width=12, fig.height=6, out.width="100%"}
+preliminary_models_mfx <- m_prelim_derog %>% 
   mutate(mfx = map(model, ~{
     .x %>% 
       marginaleffects(newdata = datagrid(year_week_num = 1:69),
@@ -314,29 +331,7 @@ h3_models_mfx <- m_h3 %>%
       theme_pandem()
   }))
 
-wrap_plots(h3_models_mfx$mfx_plot)
+wrap_plots(preliminary_models_mfx$mfx_plot)
 ```
 
-### Derogations and core civil society index
-
-```{r fig.width=8, fig.height=4, out.width="100%"}
-h3_models_mfx_cs <- m_h3 %>% 
-  mutate(mfx = map(model, ~{
-    .x %>% 
-      marginaleffects(newdata = datagrid(v2xcs_ccsi = seq(0, 1, by = 0.01)),
-                      variables = "derogation_ineffect",
-                      type = "response") |> 
-      posteriordraws()
-  })) %>% 
-  mutate(mfx_plot = map2(mfx, nice, ~{
-    .x %>% 
-      ggplot(aes(x = v2xcs_ccsi, y = draw * 100)) +
-      stat_lineribbon(alpha = 0.25, fill = clrs[5], color = clrs[5]) +
-      labs(x = "Core civil society index",
-           y = "Percentage point change\nin probability of policy",
-           title = .y) +
-      theme_pandem()
-  }))
-
-wrap_plots(h3_models_mfx_cs$mfx_plot)
-```
+:::

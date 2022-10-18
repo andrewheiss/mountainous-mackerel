@@ -175,22 +175,22 @@ To measure the severity of government responses to COVID-19, we use data from th
 
 - **Stringency index** (`stringency_index`): Composite measure of multiple indicators (C1–C8 and H1), ranging from 0 to 100. [See the complete methodology](https://github.com/OxCGRT/covid-policy-tracker/blob/master/documentation/index_methodology.md) for more details.
 
-- **Cancel public events** (`c3_cancel_public_events`): Indicator of whether the country cancelled public events.
+- **Cancel public events** (`c3_cancel_events`): Indicator of whether the country cancelled public events.
   - **0**: no measures; **1**: recommend cancelling; **2**: require cancelling; **Blank**: no data
 
-- **Limits on gatherings** (`c4_restrictions_on_gaterings`): Indicator of whether the country limited public gatherings.
+- **Limits on gatherings** (`c4_gatherings`): Indicator of whether the country limited public gatherings.
   - **0**: no restrictions; **1**: restrictions on very large gatherings (the limit is above 1000 people); **2**: restrictions on gatherings between 101-1000 people; **3**: restrictions on gatherings between 11-100 people; **4**: restrictions on gatherings of 10 people or less; **Blank**: no data
 
-- **Close public transport** (`c5_close_public_transport`): Indicator of whether the country closed public transport.
+- **Close public transport** (`c5_public_transport`): Indicator of whether the country closed public transport.
   - **0**: no measures; **1**: recommend closing (or significantly reduce volume/route/means of transport available); **2**: require closing (or prohibit most citizens from using it); **Blank**: no data
 
-- **Stay at home requirements** (`c6_stay_at_home_requirements`): Indicator of whether the country imposed shelter-in-place requirements.
+- **Stay at home requirements** (`c6_stay_at_home`): Indicator of whether the country imposed shelter-in-place requirements.
   - **0**: no measures; **1**: recommend not leaving house; **2**: require not leaving house with exceptions for daily exercise, grocery shopping, and 'essential' trips; **3**: require not leaving house with minimal exceptions (eg allowed to leave once a week, or only one person can leave at a time, etc); **Blank**: no data
 
-- **Restrictions on internal movement** (`c7_movement_restrictions_intern`): Indicator of whether the country imposed restrictions on internal movement between cities or regions.
+- **Restrictions on internal movement** (`c7_internal_movement`): Indicator of whether the country imposed restrictions on internal movement between cities or regions.
   - **0**: no measures; **1**: recommend not to travel between regions/cities; **2**: internal movement restrictions in place; **Blank**: no data
 
-- **International travel controls** (`c8_international_travel_control`): Indicator of whether the country imposed restrictions on international travel (for foreign travellers, not citizens).
+- **International travel controls** (`c8_intl_travel`): Indicator of whether the country imposed restrictions on international travel (for foreign travellers, not citizens).
   - **0**: no restrictions; **1**: screening arrivals; **2**: quarantine arrivals from some or all regions; **3**: ban arrivals from some regions; **4**: ban on all regions or total border closure; **Blank**: no data
 
 - **Income support** (`e1_income_support`): Indicator of whether the country provided direct cash payments for those unable to work.
@@ -204,10 +204,10 @@ Here's an overview of these variables:
 ```{r glimpse-oxford}
 #| code-fold: false
 daily_panel %>% 
-  select(country_name, iso3, day, stringency_index, c3_cancel_public_events,
-         c4_restrictions_on_gaterings, c5_close_public_transport,
-         c6_stay_at_home_requirements, c7_movement_restrictions_intern,
-         c8_international_travel_control, e1_income_support, e2_debt_relief) %>% 
+  select(country_name, iso3, day, stringency_index, c3_cancel_events,
+         c4_gatherings, c5_public_transport,
+         c6_stay_at_home, c7_internal_movement,
+         c8_intl_travel, e1_income_support, e2_debt_relief) %>% 
   glimpse()
 ```
 
@@ -216,10 +216,10 @@ And here's an extract of the data from June 11, 2020:
 ```{r show-oxford}
 daily_panel %>%
   filter(day == ymd("2020-06-11")) %>%
-  select(country_name, iso3, day, stringency_index, c3_cancel_public_events,
-         c4_restrictions_on_gaterings, c5_close_public_transport,
-         c6_stay_at_home_requirements, c7_movement_restrictions_intern,
-         c8_international_travel_control, e1_income_support, e2_debt_relief) %>% 
+  select(country_name, iso3, day, stringency_index, c3_cancel_events,
+         c4_gatherings, c5_public_transport,
+         c6_stay_at_home, c7_internal_movement,
+         c8_intl_travel, e1_income_support, e2_debt_relief) %>% 
   datatable()
 ```
 
