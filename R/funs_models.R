@@ -6,6 +6,8 @@ coef_map <- c(
   "b_cumulative_cases_z" = "Cumulative cases (standardized)",
   "b_new_deaths_z" = "New deaths (standardized)",
   "b_cumulative_deaths_z" = "Cumulative deaths (standardized)",
+  "b_prior_iccpr_derogationsTRUE" = "Past ICCPR derogation",
+  "b_prior_iccpr_other_actionTRUE" = "Past ICCPR action",
   "b_year_week_num" = "Year-week",
   "b_v2x_rule" = "Rule of law",
   "b_v2x_civlib" = "Civil liberties",
@@ -63,7 +65,9 @@ f_prelim_derog <- function(panel) {
   
   prelim_derog_model <- function(y, data) {
     form <- glue::glue(y, " ~ derogation_ineffect + new_cases_z + cumulative_cases_z + ",
-                       "new_deaths_z + cumulative_deaths_z + year_week_num + (1 | country_name)") %>% 
+                       "new_deaths_z + cumulative_deaths_z + ",
+                       "prior_iccpr_derogations + prior_iccpr_other_action + ",
+                       "year_week_num + (1 | country_name)") %>% 
       as.formula()
     
     # Use rlang::inject() to evaluate the formula object before running the model

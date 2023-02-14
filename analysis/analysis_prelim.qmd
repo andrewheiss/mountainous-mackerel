@@ -118,8 +118,11 @@ logit_priors <- c(prior(student_t(1, 0, 3), class = Intercept),
                     prior(cauchy(0, 1), class = sd, lb = 0))
 
 model_prelim_prior_only <- brm(
-  bf(c7_internal_movement_bin ~ derogation_ineffect + new_cases_z + cumulative_cases_z + 
-       new_deaths_z + cumulative_deaths_z + year_week_num + (1 | country_name)), 
+  bf(c7_internal_movement_bin ~ derogation_ineffect + 
+       new_cases_z + cumulative_cases_z + 
+       new_deaths_z + cumulative_deaths_z + 
+       prior_iccpr_derogations + prior_iccpr_other_action + 
+       year_week_num + (1 | country_name)), 
   data = filter(weekly_panel, c7_internal_movement_never == 0),
   family = "bernoulli",
   prior = logit_priors,
@@ -141,7 +144,7 @@ datagrid(model = model_prelim_prior_only,
                                       labels = c("No", "Yes"),
                                       ordered = TRUE)) %>% 
   ggplot(aes(x = year_week_day, y = .epred, color = derogation_ineffect)) +
-  geom_line(aes(group = paste(.draw, derogation_ineffect)), alpha = 0.5, size = 0.5) +
+  geom_line(aes(group = paste(.draw, derogation_ineffect)), alpha = 0.5, linewidth = 0.5) +
   scale_color_manual(values = c(clrs[1], clrs[8])) +
   scale_x_date(date_breaks = "2 months", date_labels = "%b\n%Y") +
   scale_y_continuous(labels = label_percent()) +
@@ -171,7 +174,7 @@ prelim_trace <- function(model) {
   model %>% 
     gather_draws(b_Intercept, b_derogation_ineffect, b_year_week_num, sd_country_name__Intercept) %>% 
     ggplot(aes(x = .iteration, y = .value, color = factor(.chain))) +
-    geom_line(size = 0.1) +
+    geom_line(linewidth = 0.1) +
     scale_color_viridis_d(option = "rocket", end = 0.85) +
     labs(color = "Chain") +
     facet_wrap(vars(.variable), scales = "free_y") +
