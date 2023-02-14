@@ -1,5 +1,5 @@
 ---
-title: "2: Civil society and human rights"
+title: "H<sub>2</sub>: Civil society and human rights"
 format:
   html:
     code-fold: true

@@ -1,5 +1,5 @@
 ---
-title: "1: Derogations and human rights"
+title: "H<sub>1</sub>: Derogations and human rights"
 format:
   html:
     code-fold: true

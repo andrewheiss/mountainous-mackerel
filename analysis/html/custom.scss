@@ -1,10 +1,21 @@
 /*-- scss:rules --*/
 
-ul,
-ol {
-  font-family: $font-family-serif;
-}
+// ul,
+// ol {
+//   font-family: $font-family-serif;
+// }
 
 pre.sourceCode {
   font-size: 0.675em;
+}
+
+
+
+// Footer stuff
+.nav-footer-left {
+  text-align: left;
+}
+
+.nav-footer-right {
+  text-align: right;
 }

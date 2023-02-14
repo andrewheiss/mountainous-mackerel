@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+/*-- scss:defaults --*/
+
+$font-family-sans-serif: 'Noto Sans', sans-serif;
+
+$presentation-title-slide-text-align: left;
+
+$presentation-h1-font-size: 2.4em;
+$presentation-h2-font-size: 1.4em;
+$presentation-h3-font-size: 1.05em;
+
+$presentation-heading-font: 'Noto Sans', sans-serif;
+
+
+/*-- scss:rules --*/
+
+.has-dark-background .footer,
+.has-dark-background .slide-number a,
+.has-dark-background .slide-menu-button a .fa-bars {
+  color: #c6c6c6;
+}
+
+#title-slide .subtitle {
+  font-size: 1.3em;
+}
+
+#title-slide .date {
+  font-size: 0.7em;
+}
+
+.reveal .quarto-title-block .quarto-title-authors {
+  justify-content: left;
+  margin: 3em 0 1em;
+}
+
+.reveal .quarto-title-block .quarto-title-authors .quarto-title-author {
+  font-size: 0.8em;
+  padding-left: 0;
+  padding-right: 1.5em;
+}
+
+.white h1 {
+  color: #ffffff !important;
+}
+
+.middle h2 {
+  text-align: center !important;
+}
+
+.smaller {
+  font-size: 0.9em;
+}
+
+.smallest {
+  font-size: 0.7em;
+}
+
+.clrs-1 h2 {
+  color: #802417;
+  border-bottom: 4px solid #802417;
+  padding-bottom: 0.15em;
+  margin-bottom: 0.5em;
+}
+
+.clrs-3 h2 {
+  color: #ce9344;
+  border-bottom: 4px solid #ce9344;
+  padding-bottom: 0.15em;
+  margin-bottom: 0.5em;
+}
+
+.clrs-5 h2 {
+  color: #646e3b;
+  border-bottom: 4px solid #646e3b;
+  padding-bottom: 0.15em;
+  margin-bottom: 0.5em;
+}
+
+.clrs-8 h2 {
+  color: #17486f;
+  border-bottom: 4px solid #17486f;
+  padding-bottom: 0.15em;
+  margin-bottom: 0.5em;
+}

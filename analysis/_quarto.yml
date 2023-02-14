@@ -11,30 +11,63 @@ website:
   navbar:
     background: primary
     pinned: true
+    left:
+      - text: "Data"
+        file: data-final.qmd
+      - text: "Questions & methods"
+        file: hypotheses.qmd
+      - text: "Analysis"
+        file: analysis.qmd
+      - text: "Presentations"
+        file: presentations.qmd
     right:
       - icon: github
         aria-label: github
         href: https://github.com/andrewheiss/mountainous-mackerel
+
   sidebar:
-    style: docked
-    background: dark
-    contents:
-      - section: Data & workflow
-        contents:
-          - data-final.qmd
-          - data-details.qmd
-          - targets.qmd
-      - section: Questions & methods
-        contents:
-          - hypotheses.qmd
-          - methods.qmd
-      - section: Analysis
-        contents:
-          - analysis_prelim-tables.qmd
-          - analysis_prelim.qmd
-          - analysis_h1.qmd
-          - analysis_h2.qmd
-          - analysis_h3.qmd
+    - title: "Data"
+      style: docked
+      background: dark
+      contents:
+        - data-final.qmd
+        - data-details.qmd
+        - targets.qmd
+
+    - title: "Questions & methods"
+      contents:
+        - hypotheses.qmd
+        - methods.qmd
+
+    - title: "Analysis"
+      contents:
+        - analysis.qmd
+        - section: "Preliminary checks"
+          contents:
+            - analysis_prelim-tables.qmd
+            - analysis_prelim.qmd
+        - section: "Hypothesis testing"
+          contents:
+            - analysis_h1.qmd
+            - analysis_h2.qmd
+            - analysis_h3.qmd
+
+    - section: "Presentations"
+      contents:
+        - presentations.qmd
+        - presentation_2022-11-04_peace-science.qmd
+    
+    - title: "Empty space lol"
+
+  page-footer:
+    left: |
+      Content {{< fa brands creative-commons >}} 2022–2023 by Suparna Chaudhry, Audrey Comstock, and Andrew Heiss<br>
+      All content licensed under a {{< fa brands creative-commons >}}
+      {{< fa brands creative-commons-by >}} {{< fa brands creative-commons-nc >}}
+      [Creative Commons Attribution-NonCommercial 4.0 International license (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/)
+    right: |
+      Made with {{< fa brands r-project >}} and [Quarto](https://quarto.org/)<br>
+      [View the source at {{< fa brands github >}} GitHub](https://github.com/andrewheiss/mountainous-mackerel)
 
 format:
   html:

@@ -3,6 +3,7 @@ title: "Pandemic Pass? Treaty Derogations and Human Rights Practices During COVI
 format:
   html:
     code-tools: false
+sidebar: false
 ---
 
 - Suparna Chaudhry (Lewis & Clark College)

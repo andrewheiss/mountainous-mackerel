@@ -3,6 +3,9 @@
 .Rhistory
 .RData
 
+# Presentation stuff
+*.ai
+
 # Data stuff
 # (ignore for now)
 data/raw_data/
@@ -30,3 +33,5 @@ analysis/output/
 .dropbox
 Icon?
 admin/*
+
+/.luarc.json

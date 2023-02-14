@@ -1,0 +1,645 @@
+---
+title: "Pandemic Pass"
+subtitle: "Treaty Derogations and<br>Human Rights Practices During COVID-19"
+author:
+  - name: Suparna Chaudhry
+    affiliation: Lewis and Clark College
+  - name: Audrey Comstock
+    affiliation: Arizona State University
+  - name: Andrew Heiss
+    affiliation: Georgia State University
+date: "November 4, 2022"
+date-format: long
+output: revealjs
+format:
+  revealjs: 
+    slide-number: true
+    chalkboard:
+      buttons: true
+    preview-links: auto
+    footer: "Chaudhry, Comstock, and Heiss&emsp;|&emsp;Pandemic Pass"
+    # include-before-body: testing.html
+    # revealjs-plugins:
+    #   - simplemenu
+    theme: [simple, custom.scss]
+    title-slide-attributes:
+      data-background-color: "#c06636"
+# resources:
+  # - slides.pdf
+---
+
+```{r include=FALSE}
+library(tidyverse)
+library(targets)
+library(tidybayes)
+library(scales)
+library(marginaleffects)
+library(patchwork)
+library(sf)
+
+knitr::opts_chunk$set(fig.retina = 3, collapse = TRUE, echo = FALSE)
+options(digits = 3, width = 75)
+
+# Load targets 
+withr::with_dir(here::here(), {
+  tar_load(year_week_lookup)
+  tar_load(civicus_map_data)
+  
+  # Models
+  tar_load(m_prelim_derog)
+  tar_load(m_h1)
+  tar_load(m_h2)
+  tar_load(m_h3)
+
+  # Plotting functions
+  invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
+})
+
+clrs_lt <- colorspace::lighten(clrs, 0.9)
+```
+
+```{r make-plots, include=FALSE, cache=TRUE}
+preliminary_models_plots <- m_prelim_derog %>% 
+  filter(y != "c8_intl_travel_bin") %>% 
+  mutate(pred_plot = map2(model, nice, ~{
+    datagrid(model = .x,
+             year_week_num = 1:69,
+             derogation_ineffect = 0:1) %>% 
+      add_epred_draws(.x) %>% 
+      left_join(year_week_lookup, by = "year_week_num") %>% 
+      mutate(derogation_ineffect = factor(derogation_ineffect, 
+                                          levels = 0:1,
+                                      labels = c("No", "Yes"),
+                                      ordered = TRUE)) %>% 
+      ggplot(aes(x = year_week_day, y = .epred, color = derogation_ineffect)) +
+      stat_lineribbon(aes(fill = derogation_ineffect), alpha = 0.3) +
+      scale_color_manual(values = c(clrs[1], clrs[8])) +
+      scale_fill_manual(values = c(clrs[1], clrs[8])) +
+      scale_x_date(date_breaks = "2 months", date_labels = "%b\n%Y") +
+      scale_y_continuous(labels = label_percent()) +
+      labs(x = NULL, y = "Predicted probability", 
+           color = "Derogation in effect", fill = "Derogation in effect",
+           title = .y) +
+      theme_pandem()
+  }))
+
+h1_models_plots <- m_h1 %>% 
+  mutate(pred_plot = pmap(list(model, nice, family), ~{
+    if (..3 == "cumulative") {
+      datagrid(model = ..1,
+               year_week_num = 1:69,
+               derogation_ineffect = 0:1) %>% 
+        add_epred_draws(.x) %>% 
+        left_join(year_week_lookup, by = "year_week_num") %>% 
+        mutate(derogation_ineffect = factor(derogation_ineffect, 
+                                            levels = 0:1,
+                                            labels = c("No derogation", "Derogation in effect"),
+                                            ordered = TRUE)) %>% 
+        ggplot(aes(x = year_week_day, y = .epred, color = .category)) +
+        stat_lineribbon(aes(fill = .category), alpha = 0.3) +
+        scale_color_manual(values = c(clrs[c(2, 4, 6, 7)])) +
+        scale_fill_manual(values = c(clrs[c(2, 4, 6, 7)])) +
+        scale_x_date(date_breaks = "2 months", date_labels = "%b\n%Y") +
+        scale_y_continuous(labels = label_percent()) +
+        labs(x = NULL, y = "Predicted probability", 
+             color = "Severity", fill = "Severity",
+             title = ..2) +
+        facet_wrap(vars(derogation_ineffect)) +
+        theme_pandem()
+    } else {
+      datagrid(model = ..1,
+               year_week_num = 1:69,
+               derogation_ineffect = 0:1) %>% 
+        add_epred_draws(.x) %>% 
+        left_join(year_week_lookup, by = "year_week_num") %>% 
+        mutate(derogation_ineffect = factor(derogation_ineffect, 
+                                            levels = 0:1,
+                                            labels = c("No", "Yes"),
+                                            ordered = TRUE)) %>% 
+        ggplot(aes(x = year_week_day, y = .epred, color = derogation_ineffect)) +
+        stat_lineribbon(aes(fill = derogation_ineffect), alpha = 0.3) +
+        scale_color_manual(values = c(clrs[1], clrs[8])) +
+        scale_fill_manual(values = c(clrs[1], clrs[8])) +
+        scale_x_date(date_breaks = "2 months", date_labels = "%b\n%Y") +
+        scale_y_continuous(labels = label_percent()) +
+        labs(x = NULL, y = "Predicted probability", 
+             color = "Derogation in effect", fill = "Derogation in effect",
+             title = ..2) +
+        theme_pandem()
+    }
+  }))
+
+h2_models_plots <- m_h2 %>% 
+  mutate(pred_plot = pmap(list(model, nice, family), ~{
+    if (..3 == "cumulative") {
+      datagrid(model = ..1,
+               v2csreprss = seq(-2.5, 3, by = 0.1),
+               derogation_ineffect = 0:1) %>% 
+        add_epred_draws(.x) %>% 
+        mutate(derogation_ineffect = factor(derogation_ineffect, 
+                                            levels = 0:1,
+                                            labels = c("No derogation", "Derogation in effect"),
+                                            ordered = TRUE)) %>% 
+        ggplot(aes(x = v2csreprss, y = .epred, color = .category)) +
+        stat_lineribbon(aes(fill = .category), alpha = 0.3) +
+        scale_color_manual(values = c(clrs[c(2, 4, 6, 7)])) +
+        scale_fill_manual(values = c(clrs[c(2, 4, 6, 7)])) +
+        scale_y_continuous(labels = label_percent()) +
+        labs(x = "Civil society repression", y = "Predicted probability", 
+             color = "Severity", fill = "Severity",
+             title = ..2) +
+        facet_wrap(vars(derogation_ineffect)) +
+        theme_pandem()
+    } else {
+      datagrid(model = ..1,
+               v2csreprss = seq(-2.5, 3, by = 0.1),
+               derogation_ineffect = 0:1) %>% 
+        add_epred_draws(.x) %>% 
+        mutate(derogation_ineffect = factor(derogation_ineffect, 
+                                            levels = 0:1,
+                                            labels = c("No", "Yes"),
+                                            ordered = TRUE)) %>% 
+        ggplot(aes(x = v2csreprss, y = .epred, color = derogation_ineffect)) +
+        stat_lineribbon(aes(fill = derogation_ineffect), alpha = 0.3) +
+        scale_color_manual(values = c(clrs[1], clrs[8])) +
+        scale_fill_manual(values = c(clrs[1], clrs[8])) +
+        scale_y_continuous(labels = label_percent()) +
+        labs(x = "Civil society repression", y = "Predicted probability", 
+             color = "Derogation in effect", fill = "Derogation in effect",
+             title = ..2) +
+        theme_pandem()
+    }
+  }))
+
+h3_models_plots_cs <- m_h3 %>% 
+  mutate(pred_plot = map2(model, nice, ~{
+    datagrid(model = .x,
+             v2xcs_ccsi = seq(0, 1, by = 0.01),
+             derogation_ineffect = 0:1) %>% 
+      add_epred_draws(.x) %>% 
+      mutate(derogation_ineffect = factor(derogation_ineffect, 
+                                          levels = 0:1,
+                                      labels = c("No", "Yes"),
+                                      ordered = TRUE)) %>% 
+      ggplot(aes(x = v2xcs_ccsi, y = .epred, color = derogation_ineffect)) +
+      stat_lineribbon(aes(fill = derogation_ineffect), alpha = 0.3) +
+      scale_color_manual(values = c(clrs[1], clrs[8])) +
+      scale_fill_manual(values = c(clrs[1], clrs[8])) +
+      scale_y_continuous(labels = label_percent()) +
+      labs(x = "Core civil society index", y = "Predicted probability", 
+           color = "Derogation in effect", fill = "Derogation in effect",
+           title = .y) +
+      theme_pandem()
+  }))
+```
+
+
+# Question {background-color="`r clrs[3]`" .white}
+
+##
+
+![](img/covid-headlines@3x.png){fig-align="center" width="100%"}
+
+
+## Emergencies and international law {.clrs-3}
+
+### Derogations
+
+Provisions in international law that authorize states to temporarily suspend treaty obligations
+
+. . .
+
+Many states do not formally derogate and just implement emergency measures
+
+
+## ICCPR derogations during COVID-19 {.clrs-3}
+
+::: {.smaller}
+
+| Type of response                                              |   N |
+|:--------------------------------------------------------------|----:|
+| Derogated as intended                                         |  13 |
+| Derogated; measures not temporary, proportional, or necessary |   5 |
+| Emergency declared; no formal derogation                      |  74 |
+| No emergency; no formal derogation                            |  28 |
+| Has not ratified ICCPR                                        |   8 |
+
+:::
+
+## Research questions {.clrs-3}
+
+::: {.incremental}
+- Were derogating states less likely to abuse human rights as they implemented emergency measures for COVID-19?
+- Can civil society organizations (CSOs) mitigate the adverse effects of these emergency measures?
+:::
+
+
+## Preview of findings {.clrs-3}
+
+Derogating states are less likely to abuse emergency measures, have discriminatory policies, violate non-derogable rights, and impose measures without time limits
+
+. . .
+
+Permissive civil society environment increases likelihood of debt relief policies
+
+. . .
+
+Civil society repression increases the probability of abusive enforcement and discriminatory policies; derogations mitigate that probability
+
+
+## Significance {.clrs-3}
+
+**International law and human rights**
+
+International treaty provisions designed to safeguard rights may end up worsening conditions when there is a lack of review from the international community
+
+. . .
+
+**Democratic erosion and human rights**
+
+Emergencies are important for understanding the processes of autocratization and democratic backsliding
+
+
+# Theory and hypotheses {background-color="`r clrs[5]`" .white}
+
+## UN requirements for public health emergency measures {.clrs-5}
+
+Suspensions of rights must be:
+
+- Legal
+- Necessary
+- Proportional
+- Non-discriminatory
+
+
+## Derogations during COVID-19 {.clrs-5}
+
+```{r prelim-plots}
+#| echo: false
+#| fig-width: 9
+#| fig-height: 5
+#| out-width: 100%
+#| fig-align: center
+wrap_plots(preliminary_models_plots$pred_plot)
+```
+
+
+## Pandemic as excuse {.clrs-5}
+
+If states implement emergency measures without regard for international law, the implementation may be problematic and the process to restore rights may not be followed
+
+- Restrictions on travel or movement by minority or opposition groups
+- Limits on public assembly and protests
+- Deployment of surveillance systems that impede privacy
+
+
+## H~1~: Derogations & human rights {.clrs-5}
+
+If states formally derogate from international treaty provisions, then they are less likely to:
+
+a. Use discriminatory policy measures
+b. Violate non-derogable rights
+c. Impose measures with no time limits
+
+
+## Civil society and human rights {.clrs-5}
+
+Civil society helps mitigate the impact of crises, emergencies, and natural disasters
+
+:::: {.columns}
+
+::: {.column width="50%" .smallest}
+During COVID-19, civil society:
+
+- Broadened range of voices in policymaking process
+- Pursued civic initiatives to deal with impact of economic shutdown, product shortages, and spikes in unemployment
+- Assisted with public health initiatives
+:::
+
+::: {.column width="50%" .smaller}
+![](img/image5.png){fig-align="center" width="100%"}
+:::
+
+::::
+
+## H~2~: Civil society & supportive policies {.clrs-5}
+
+If civil society organizations are involved in the policy making process, then states are more likely to have supportive economic policies
+
+
+## Pandemic as excuse {.clrs-5}
+
+Some states used emergency measures as an excuse to limit democratic participation, dissent, and challenges to economic and political rule
+
+![](img/covid-excuse@3x.png){fig-align="center" width="100%"}
+
+## Civil society repression {.clrs-5}
+
+```{r civicus-map}
+#| echo: false
+#| fig-width: 6.5
+#| fig-height: 3.1
+#| out-width: 100%
+#| fig-align: center
+#| fig-cap: "2020 CIVICUS Monitor civic space ratings"
+ggplot() +
+  geom_sf(data = civicus_map_data, aes(fill = fct_rev(category)), size = 0.15, color = "black") +
+  coord_sf(crs = st_crs("ESRI:54030"), datum = NA) +  # Robinson
+  scale_fill_manual(values = clrs[c(8, 7, 4, 2, 1)],
+                    na.translate = FALSE, name = "Civic space") +
+  theme_void(base_family = "Noto Sans") +
+  theme(legend.position = "bottom",
+        legend.key.size = unit(0.7, "lines"))
+```
+
+
+## H~3~: Civil society & human rights {.clrs-5}
+
+If states are repressive towards civil society organizations, then they are more likely to:
+
+a. Violate non-derogable rights
+b. Use discriminatory policy measures
+c. Engage in abusive enforcement of emergency measures
+d. Impose limits on media freedom
+
+
+# Data and results {background-color="`r clrs[1]`" .white}
+
+## Data {.clrs-1}
+
+- Hand-coded derogations from the ICCPR
+- Oxford's COVID-19 Government Response Tracker
+- V-Dem's Pandemic Backsliding Project
+- WHO's case and death counts
+
+. . .
+
+Daily data for 139 countries from March 11, 2020 to June 30, 2021
+
+
+## Modeling approach {.clrs-1}
+
+:::: {.columns}
+
+::: {.column width="50%" .smallest}
+
+**Outcomes**
+
+- Discriminatory policies (H~1~, H~3~)
+- Violation of non-derogable rights (H~1~, H~3~)
+- Abusive enforcement (H~1~, H~3~)
+- Measures without time limits (H~1~)
+- Limiting media (H~3~)
+- Income support (H~2~)
+- Debt relief (H~2~)
+
+:::
+
+::: {.column width="50%" .smallest}
+**Explanatory variables**
+
+- Derogation in effect
+- Civil society repression
+- Core civil society index
+
+**Other controls**
+
+- COVID case counts
+- COVID death counts
+- Rule of law index
+- Civil liberties index
+
+:::
+
+::::
+
+
+## Modeling approach {.clrs-1}
+
+Bayesian multilevel models with country random effects and weekly time trend 
+
+. . .
+
+*(Logistic models for binary outcomes; ordered logistic models for outcomes with multiple categories)*
+
+. . .
+
+**Open to other ideas too!**
+
+
+## H~1~: Derogations and human rights {.clrs-1}
+
+:::: {.columns}
+
+::: {.column width="30%" .smaller}
+Substantial 2–3 percentage point difference in probability of violating non-derogable rights (P[∆ < 0] = 0.964)
+:::
+
+::: {.column width="70%"}
+```{r include=FALSE, eval=FALSE}
+qwer <- m_h1 %>% 
+  filter(y == "pandem_ndrights") %>% 
+  pull(model) %>% pluck(1) %>% 
+  marginaleffects(newdata = datagrid(year_week_num = c(1, 69)),
+                  variables = "derogation_ineffect",
+                  type = "response") %>% 
+  posteriordraws() %>% 
+  left_join(year_week_lookup, by = "year_week_num")
+
+qwer %>% 
+  group_by(year_week_day) %>% 
+  summarize(avg_effect = mean(draw), 
+            prop_less_0 = sum(draw < 0) / n())
+
+ggplot(qwer, aes(x = year_week_day, y = draw * 100)) +
+  stat_lineribbon()
+```
+
+```{r h1-nonderog}
+#| fig-width: 4.5
+#| fig-height: 3
+#| out-width: 100%
+#| fig-align: center
+h1_models_plots %>% 
+  filter(y == "pandem_ndrights") %>% 
+  pull(pred_plot) %>% pluck(1) +
+  labs(title = "Violation of non-derogable rights")
+```
+:::
+
+::::
+
+## H~1~: Derogations & human rights {.clrs-1}
+
+:::: {.columns}
+
+::: {.column width="30%" .smaller}
+Substantial ≈22 percentage point difference in probability of having time-limited measures (P[∆ ≠ 0] = 1)
+:::
+
+::: {.column width="70%"}
+```{r eval=FALSE, include=FALSE}
+m_h1 %>% 
+  filter(y == "pandem_nolimit") %>% 
+  pull(model) %>% pluck(1) %>% 
+  comparisons(newdata = datagrid(year_week_num = c(1)),
+                  variables = "derogation_ineffect",
+                  type = "response")
+```
+
+```{r h1-timelimit, message=FALSE}
+#| fig-width: 5
+#| fig-height: 3.65
+#| out-width: 100%
+#| fig-align: center
+h1_models_plots %>% 
+  filter(y == "pandem_nolimit") %>% 
+  pull(pred_plot) %>% pluck(1) +
+  labs(title = "Emergency measures with no time limits") +
+  scale_x_date(date_breaks = "2 months", date_labels = "%b\n%Y",
+               guide = guide_axis(n.dodge = 2))
+```
+:::
+
+::::
+
+## H~1~: Derogations & human rights {.clrs-1}
+
+### Null results
+
+No derogation-based difference in predicted probability of having discriminatory policies or abusive enforcement.
+
+
+## H~2~: Civil society & supportive policies {.clrs-1}
+
+:::: {.columns}
+
+::: {.column width="30%" .smaller}
+Both derogation status and civil society strength substantially increase the probability of a state providing COVID-related debt relief
+:::
+
+::: {.column width="70%"}
+```{r eval=FALSE, include=FALSE}
+m_h3 %>% 
+  filter(y == "e2_debt_relief_bin") %>% 
+  pull(model) %>% pluck(1) %>% 
+  comparisons(newdata = datagrid(v2xcs_ccsi = c(0, 0.5, 0.75, 1)),
+              variables = "derogation_ineffect",
+              type = "response")
+```
+
+```{r h3-incomesupport, message=FALSE}
+#| fig-width: 4.5
+#| fig-height: 3
+#| out-width: 100%
+#| fig-align: center
+h3_models_plots_cs %>% 
+  filter(y == "e2_debt_relief_bin") %>% 
+  pull(pred_plot) %>% pluck(1) +
+  labs(title = "Debt relief policies")
+```
+:::
+
+::::
+
+
+## H~3~: Civil society & human rights {.clrs-1}
+
+:::: {.columns}
+
+::: {.column width="30%" .smallest}
+Substantial difference in probability of implementing discriminatory policies across all levels of civil society repression (P[∆&nbsp;≠&nbsp;0] = 1) for states that derogated
+
+Better civil society associated with less discriminatory policy in derogating states
+:::
+
+::: {.column width="70%"}
+```{r eval=FALSE, include=FALSE}
+m_h2 %>% 
+  filter(y == "pandem_discrim") %>% 
+  pull(model) %>% pluck(1) %>% 
+  comparisons(newdata = datagrid(v2csreprss = c(-2, 0, 2)),
+                  variables = "derogation_ineffect",
+                  type = "response")
+```
+
+```{r h2-discrim}
+#| fig-width: 5
+#| fig-height: 3.65
+#| out-width: 100%
+#| fig-align: center
+h2_models_plots %>% 
+  filter(y == "pandem_discrim") %>% 
+  pull(pred_plot) %>% pluck(1) +
+  labs(title = "Discriminatory policies")
+```
+:::
+
+::::
+
+## H~3~: Civil society & human rights {.clrs-1}
+
+:::: {.columns}
+
+::: {.column width="30%" .smallest}
+Substantial difference in probability of abusive enforcement of emergency measures for countries with worse civil society repression in derogating states
+:::
+
+::: {.column width="70%"}
+```{r eval=FALSE, include=FALSE}
+m_h2 %>% 
+  filter(y == "pandem_abusive") %>% 
+  pull(model) %>% pluck(1) %>% 
+  comparisons(newdata = datagrid(v2csreprss = c(-2, 0, 2)),
+              variables = "derogation_ineffect",
+              type = "response")
+```
+
+```{r h2-abusive}
+#| fig-width: 5
+#| fig-height: 3.65
+#| out-width: 100%
+#| fig-align: center
+h2_models_plots %>% 
+  filter(y == "pandem_abusive") %>% 
+  pull(pred_plot) %>% pluck(1) +
+  labs(title = "Abusive enforcement")
+```
+:::
+
+::::
+
+
+## H~3~: Civil society & human rights {.clrs-1}
+
+### Null results
+
+No derogation-based difference in predicted probability of violating non-derogable rights or limiting media across range of civil society repression
+
+
+# Discussion {background-color="`r clrs[8]`" .white}
+
+## Summary {.clrs-8}
+
+Derogating states are less likely to abuse emergency measures, have discriminatory policies, violate non-derogable rights, and impose measures without time limits
+
+. . .
+
+Civil society repression increases the probability of abusive enforcement and discriminatory policies; derogations mitigate that probability
+
+. . .
+
+Permissive civil society environment increases likelihood of debt relief policies
+
+
+## Broader implications {.clrs-8}
+
+Derogations are meant to provide states with flexibility during crises and to encourage them to sign and ratify treaties
+
+. . .
+
+Some states use derogations as intended; others use them as an excuse to violate rights
+
+. . .
+
+Understanding how states treat derogations is important for understanding declining respect for human rights and democratic backsliding
