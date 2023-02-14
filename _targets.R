@@ -124,8 +124,7 @@ list(
   tar_target(m_prelim_derog, f_prelim_derog(weekly_panel)),
   tar_target(m_h1, f_h1(weekly_panel)),
   tar_target(m_h2, f_h2(weekly_panel)),
-  tar_target(m_h3, f_h3(weekly_panel)),
-  
+
   tar_target(m_coef_gof, lst(coef_map, gof_map)),
   
   ## Graphics ----

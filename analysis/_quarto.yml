@@ -50,7 +50,6 @@ website:
           contents:
             - analysis_h1.qmd
             - analysis_h2.qmd
-            - analysis_h3.qmd
 
     - section: "Presentations"
       contents:
