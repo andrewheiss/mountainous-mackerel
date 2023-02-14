@@ -45,8 +45,19 @@ list(
              here_rel("data", "raw_data", "Country_Year_V-Dem_Full+others_R_v12",
                       "V-Dem-CY-Full+Others-v12.rds"),
              format = "file"),
+  tar_target(naturalearth_raw_file,
+             here_rel("data", "raw_data", "ne_110m_admin_0_countries",
+                      "ne_110m_admin_0_countries.shp"),
+             format = "file"),
+  tar_target(civicus_raw_file,
+             here_rel("data", "raw_data", "Civicus", "civicus_2021-03-19.json"),
+             format = "file"),
   
   ## Process and clean data ----
+  tar_target(world_map, load_world_map(naturalearth_raw_file)),
+  tar_target(civicus_clean, load_clean_civicus(civicus_raw_file)),
+  tar_target(civicus_map_data, create_civicus_map_data(civicus_clean, world_map)),
+  
   tar_target(iccpr_who_clean, clean_iccpr_who(iccpr_who_raw_file)),
   tar_target(oxford_clean, clean_oxford(oxford_raw_file)),
   tar_target(pandem_clean, clean_pandem(pandem_raw_file)),
