@@ -44,6 +44,19 @@ clean_iccpr_who <- function(path) {
   return(x)
 }
 
+clean_iccpr_action <- function(path) {
+  x <- read_excel(path) %>% 
+    janitor::clean_names() %>% 
+    rename(prior_iccpr_other_action = other_prior_iccpr_post_commitment_treaty_actions,
+           country_name = country) %>% 
+    mutate(across(starts_with("prior_"), ~case_when(
+      . == 1 ~ TRUE,
+      is.na(.) ~ FALSE
+    )))
+  
+  return(x)
+}
+
 clean_oxford <- function(path) {
   x <- tibble(
     # Get a list of all the sheets in the Excel file
@@ -210,9 +223,10 @@ create_daily_skeleton <- function(iccpr_who, oxford, pandem, vdem) {
   return(daily_skeleton)
 }
 
-make_final_data <- function(skeleton, iccpr_who, oxford, pandem, vdem) {
+make_final_data <- function(skeleton, iccpr_who, iccpr_action, oxford, pandem, vdem) {
   daily_final <- skeleton %>% 
     left_join(select(iccpr_who, -country_name), by = c("iso3", "day")) %>% 
+    left_join(select(iccpr_action, -country_name), by = c("iso3")) %>% 
     left_join(select(oxford, -country_name), by = c("iso3", "day")) %>% 
     left_join(select(pandem, -c(country_name, year)), by = c("iso3", "year_quarter")) %>% 
     left_join(select(vdem, -country_name), by = c("iso3", "year"))
@@ -222,7 +236,8 @@ make_final_data <- function(skeleton, iccpr_who, oxford, pandem, vdem) {
 
 make_weekly_data <- function(daily_final) {
   weekly_final <- daily_final %>% 
-    group_by(year_week, year_week_day, country_name, iso3, who_region, who_region_long) %>% 
+    group_by(year_week, year_week_day, country_name, iso3, who_region, who_region_long, 
+             prior_iccpr_derogations, prior_iccpr_other_action) %>% 
     summarize(across(c(new_cases, new_deaths), ~sum(., na.rm = TRUE)),
               across(c(iccpr_derogation_filed, derogation_start, 
                        derogation_ineffect, derogation_end), ~max(., na.rm = TRUE)),

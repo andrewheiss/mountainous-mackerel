@@ -35,6 +35,9 @@ list(
   tar_target(iccpr_who_raw_file,
              here_rel("data", "raw_data", "ICCPR Derogation and WHO case data 1 3 2020 to 6 30 2021.xlsx"),
              format = "file"),
+  tar_target(iccpr_treaty_action_file,
+             here_rel("data", "raw_data", "ICCPR Treaty Action Variables.xlsx"),
+             format = "file"),
   tar_target(oxford_raw_file,
              here_rel("data", "raw_data", "Oxford Covid Response Data 1 3 2020 to 6 20 2021.xlsx"),
              format = "file"),
@@ -59,6 +62,7 @@ list(
   tar_target(civicus_map_data, create_civicus_map_data(civicus_clean, world_map)),
   
   tar_target(iccpr_who_clean, clean_iccpr_who(iccpr_who_raw_file)),
+  tar_target(iccpr_action_clean, clean_iccpr_action(iccpr_treaty_action_file)),
   tar_target(oxford_clean, clean_oxford(oxford_raw_file)),
   tar_target(pandem_clean, clean_pandem(pandem_raw_file)),
   tar_target(vdem_clean, clean_vdem(vdem_raw_file)),
@@ -68,8 +72,8 @@ list(
                                    pandem_clean, vdem_clean)),
   
   tar_target(daily_panel, 
-             make_final_data(skeleton, iccpr_who_clean, oxford_clean, 
-                             pandem_clean, vdem_clean)),
+             make_final_data(skeleton, iccpr_who_clean, iccpr_action_clean, 
+                             oxford_clean, pandem_clean, vdem_clean)),
   
   tar_target(weekly_panel, make_weekly_data(daily_panel)),
   
