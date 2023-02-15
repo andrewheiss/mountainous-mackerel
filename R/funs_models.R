@@ -126,6 +126,7 @@ f_h1 <- function(panel) {
   h1_model <- function(y, family, prior) {
     form <- glue::glue(y, " ~ derogation_ineffect + new_cases_z + cumulative_cases_z + ",
                        "new_deaths_z + cumulative_deaths_z + ", 
+                       "prior_iccpr_derogations + prior_iccpr_other_action + ",
                        "v2x_rule + v2x_civlib + v2xcs_ccsi + ",
                        "year_week_num + (1 | who_region)") %>% 
       as.formula()
@@ -183,6 +184,7 @@ f_h2 <- function(panel) {
     form <- glue::glue(y, " ~ derogation_ineffect*v2csreprss + ",
                        "new_cases_z + cumulative_cases_z + ",
                        "new_deaths_z + cumulative_deaths_z + ", 
+                       "prior_iccpr_derogations + prior_iccpr_other_action + ",
                        "v2x_rule + v2x_civlib + ",
                        "year_week_num + (1 | who_region)") %>% 
       as.formula()

@@ -5,7 +5,6 @@ format:
     code-fold: true
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(fig.align = "center", fig.retina = 3,
                       fig.width = 6, fig.height = (6 * 0.618),
@@ -76,12 +75,13 @@ $$
 &\ \beta_3\ {(\text{Derogation} \times \text{Civil society repression})}_{i}\ + \\
 &\ \beta_4\ \text{New cases}_{i}\ + \beta_5\ \text{Cumulative cases}_{i}\ + \\
 &\ \beta_6\ \text{New deaths}_{i}\ + \beta_7\ \text{Cumulative deaths}_{i}\ + \\
-&\ \beta_8\ \text{Rule of law index}_{i}\ + \beta_9\ \text{Civil liberties index}_{i}\ + \\
-&\ \beta_{10}\ \text{Week number}_{i} \\
+&\ \beta_8\ \text{Past ICCPR derogation}_{i}\ + \beta_9\ \text{Past ICCPR action}_{i}\ + \\
+&\ \beta_{10}\ \text{Rule of law index}_{i}\ + \beta_{11}\ \text{Civil liberties index}_{i}\ + \\
+&\ \beta_{12}\ \text{Week number}_{i} \\
 \alpha_j \sim&\ \mathcal{N}(\bar{\alpha}, \sigma_\alpha) \text{, for } j \text{ in } 1 \dots J \\
 \\
 \bar{\alpha} \sim&\ \operatorname{Student t}(\nu = 1, \mu = 0, \sigma = 3) \\
-\beta_{1 \dots 10} \sim&\ \operatorname{Student t}(\nu = 1, \mu = 0, \sigma = 3) \\
+\beta_{1 \dots 12} \sim&\ \operatorname{Student t}(\nu = 1, \mu = 0, \sigma = 3) \\
 \sigma_a \sim&\ \operatorname{Cauchy}(x = 0, \gamma = 1) \text{, lower bound} = 0
 \end{aligned}
 $$
@@ -120,8 +120,11 @@ ologit_priors <- c(prior(student_t(1, 0, 3), class = Intercept),
                    prior(cauchy(0, 1), class = sd, lb = 0))
 
 model_h2_prior_only <- brm(
-  bf(pandem_abusive ~ derogation_ineffect*v2csreprss + new_cases_z + cumulative_cases_z + 
-       new_deaths_z + cumulative_deaths_z + v2x_rule + v2x_civlib +
+  bf(pandem_abusive ~ derogation_ineffect*v2csreprss + 
+       new_cases_z + cumulative_cases_z + 
+       new_deaths_z + cumulative_deaths_z + 
+       prior_iccpr_derogations + prior_iccpr_other_action +
+       v2x_rule + v2x_civlib +
        year_week_num + (1 | who_region)), 
   data = weekly_panel,
   family = "cumulative",
@@ -144,7 +147,7 @@ datagrid(model = model_h2_prior_only,
                                       labels = c("No", "Yes"),
                                       ordered = TRUE)) %>% 
   ggplot(aes(x = year_week_day, y = .epred, color = .category)) +
-  geom_line(aes(group = paste(.draw, .category, derogation_ineffect)), alpha = 0.5, size = 0.5) +
+  geom_line(aes(group = paste(.draw, .category, derogation_ineffect)), alpha = 0.5, linewidth = 0.5) +
   scale_color_manual(values = c(clrs[c(2, 4, 6, 7)])) +
   scale_x_date(date_breaks = "2 months", date_labels = "%b\n%Y") +
   scale_y_continuous(labels = label_percent()) +
@@ -174,7 +177,7 @@ prelim_trace <- function(model) {
   model %>% 
     gather_draws(b_derogation_ineffect, b_year_week_num, b_v2csreprss, sd_who_region__Intercept) %>% 
     ggplot(aes(x = .iteration, y = .value, color = factor(.chain))) +
-    geom_line(size = 0.1) +
+    geom_line(linewidth = 0.1) +
     scale_color_viridis_d(option = "rocket", end = 0.85) +
     labs(color = "Chain") +
     facet_wrap(vars(.variable), scales = "free_y") +
@@ -275,7 +278,7 @@ h2_models_plots <- m_h2 %>%
       datagrid(model = ..1,
                year_week_num = 1:69,
                derogation_ineffect = 0:1) %>% 
-        add_epred_draws(.x) %>% 
+        add_epred_draws(..1) %>% 
         left_join(year_week_lookup, by = "year_week_num") %>% 
         mutate(derogation_ineffect = factor(derogation_ineffect, 
                                             levels = 0:1,
@@ -296,7 +299,7 @@ h2_models_plots <- m_h2 %>%
       datagrid(model = ..1,
                year_week_num = 1:69,
                derogation_ineffect = 0:1) %>% 
-        add_epred_draws(.x) %>% 
+        add_epred_draws(..1) %>% 
         left_join(year_week_lookup, by = "year_week_num") %>% 
         mutate(derogation_ineffect = factor(derogation_ineffect, 
                                             levels = 0:1,
@@ -331,7 +334,7 @@ h2_models_plots1 <- m_h2 %>%
       datagrid(model = ..1,
                v2csreprss = seq(-2.5, 3, by = 0.1),
                derogation_ineffect = 0:1) %>% 
-        add_epred_draws(.x) %>% 
+        add_epred_draws(..1) %>% 
         mutate(derogation_ineffect = factor(derogation_ineffect, 
                                             levels = 0:1,
                                             labels = c("No derogation", "Derogation in effect"),
@@ -350,7 +353,7 @@ h2_models_plots1 <- m_h2 %>%
       datagrid(model = ..1,
                v2csreprss = seq(-2.5, 3, by = 0.1),
                derogation_ineffect = 0:1) %>% 
-        add_epred_draws(.x) %>% 
+        add_epred_draws(..1) %>% 
         mutate(derogation_ineffect = factor(derogation_ineffect, 
                                             levels = 0:1,
                                             labels = c("No", "Yes"),
