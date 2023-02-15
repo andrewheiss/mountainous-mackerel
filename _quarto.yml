@@ -1,0 +1,116 @@
+project:
+  title: "Pandemic Pass?"
+  type: website
+  
+  preview: 
+    port: 3333
+    browser: true
+    watch-inputs: false
+    navigate: true
+  
+  render: 
+    # Render all .qmd files
+    - "**/*.qmd"
+    - "!admin/sandbox.qmd"
+
+    # Don't render anything in the manuscript folder because otherwise all the 
+    # output gets placed in _site/ only, which is annoying. Instead this folder 
+    # needs to be rendered separately, and *before* the overall website project 
+    # (which is doable since this whole build process is orchestrated by targets)
+    - "!manuscript/"
+    
+    # Don't render anything in the presentations folder because those are 
+    # designed to be frozen in time (i.e. we used to have an H3, and it was in 
+    # a presentation once, and now it's not)
+    - "!slides/"
+  
+  resources:
+    # But *do* place the outputs from the manuscript and presentation folders 
+    # in the rendered site folder
+    - "manuscript/output/*.pdf"
+    - "manuscript/output/*.png"
+    - "slides"
+
+# See https://quarto.org/docs/projects/code-execution.html#freeze
+execute:
+  freeze: auto  # Re-render only when source changes
+
+website:
+  repo-url: "https://github.com/andrewheiss/mountainous-mackerel"
+  repo-actions: [edit, issue]
+  
+  page-navigation: true
+  
+  navbar:
+    pinned: true
+    background: primary
+    search: false
+    left:
+      - text: "Data"
+        file: analysis/data-final.qmd
+      - text: "Questions & methods"
+        file: analysis/hypotheses.qmd
+      - text: "Analysis"
+        file: analysis/analysis.qmd
+      - text: "Presentations"
+        file: analysis/presentations.qmd
+    right:
+      - icon: github
+        aria-label: github
+        href: https://github.com/andrewheiss/mountainous-mackerel
+
+  sidebar:
+    - title: "Data"
+      style: docked
+      background: dark
+      contents:
+        - analysis/data-final.qmd
+        - analysis/data-details.qmd
+        - analysis/targets.qmd
+
+    - title: "Questions & methods"
+      contents:
+        - analysis/hypotheses.qmd
+        - analysis/methods.qmd
+
+    - title: "Analysis"
+      contents:
+        - analysis/analysis.qmd
+        - section: "Preliminary checks"
+          contents:
+            - analysis/analysis_prelim-tables.qmd
+            - analysis/analysis_prelim.qmd
+        - section: "Hypothesis testing"
+          contents:
+            - analysis/analysis_h1.qmd
+            - analysis/analysis_h2.qmd
+
+    - title: "Presentations"
+      contents:
+        - analysis/presentations.qmd
+        - analysis/presentation_2022-11-04_peace-science.qmd
+    
+    - title: "Empty space lol"
+
+  page-footer:
+    left: |
+      Content {{< fa brands creative-commons >}} 2022–2023 by Suparna Chaudhry, Audrey Comstock, and Andrew Heiss<br>
+      All content licensed under a {{< fa brands creative-commons >}}
+      {{< fa brands creative-commons-by >}} {{< fa brands creative-commons-nc >}}
+      [Creative Commons Attribution-NonCommercial 4.0 International license (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/)
+    right: |
+      Made with {{< fa brands r-project >}} and [Quarto](https://quarto.org/)<br>
+      [View the source at {{< fa brands github >}} GitHub](https://github.com/andrewheiss/mountainous-mackerel)
+
+format:
+  html:
+    shift-heading-level-by: 1
+    theme: 
+      - litera
+      - html/custom.scss
+    toc: true
+    toc-depth: 4
+    retina: 3
+    highlight-style: monokai
+    code-fold: true
+    code-tools: true

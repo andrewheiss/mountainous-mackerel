@@ -35,3 +35,5 @@ Icon?
 admin/*
 
 /.luarc.json
+
+/.quarto/

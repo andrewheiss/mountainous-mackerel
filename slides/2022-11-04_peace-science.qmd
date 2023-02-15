@@ -18,6 +18,9 @@ format:
       buttons: true
     preview-links: auto
     footer: "Chaudhry, Comstock, and Heiss&emsp;|&emsp;Pandemic Pass"
+    # include-before-body: testing.html
+    # revealjs-plugins:
+    #   - simplemenu
     theme: [simple, custom.scss]
     title-slide-attributes:
       data-background-color: "#c06636"
