@@ -131,11 +131,11 @@ list(
   tar_target(graphic_functions, lst(theme_pandem, set_annotation_fonts, clrs)),
   
   ## Analysis notebook ----
-  tar_quarto(analysis_notebook, path = "analysis"),
+  tar_quarto(website, path = "."),
   tar_target(deploy_script, here_rel("deploy.sh"), format = "file"),
   tar_target(deploy_notebook, {
     # Force a dependency
-    analysis_notebook
+    website
     # Run the deploy script
     if (Sys.getenv("UPLOAD_WEBSITES") == "TRUE") processx::run(paste0("./", deploy_script))
   })
