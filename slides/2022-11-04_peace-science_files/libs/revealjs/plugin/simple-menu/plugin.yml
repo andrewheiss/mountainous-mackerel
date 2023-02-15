@@ -1,0 +1,3 @@
+name: simpleMenu
+script: [simplemenu.js]
+stylesheet: [simplemenu.css]

@@ -22,6 +22,7 @@ _targets
 # knitr and caching stuff
 **/*_files/*
 **/*_cache/*
+!slides/**/*_files/*
 
 # Output
 # (ignore for now)
