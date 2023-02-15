@@ -5,7 +5,7 @@ format:
     code-tools: false
 ---
 
-We test three sets of hypotheses:
+We test two sets of hypotheses:
 
 ## H~1~: Formal derogations and pandemic-related human rights violations
 
@@ -19,8 +19,3 @@ We test three sets of hypotheses:
 - **H~2b~**: If states are repressive towards civil society organizations, then they are more likely to use discriminatory policy measures during the pandemic.
 - **H~2c~**: If states are repressive towards civil society organizations, then they are more likely to engage in abusive enforcement of measures instated to deal with the pandemic.
 - **H~2d~**: If states are repressive towards civil society organizations, then they are more likely to impose limits on media freedom.
-
-## H~3~: Civil society, derogations, and pandemic-related economic policies
-
-- **H~3a~**: If civil society organizations are involved in the policy making process and consulted by the government), then states are more likely to have supportive economic policies during the pandemic.
-- **H~3b~**: If states formally derogate from their international treaty provisions, then states are more likely to have supportive economic policies during the pandemic.
