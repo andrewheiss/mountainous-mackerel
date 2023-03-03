@@ -103,3 +103,55 @@ build_h1_plot_data <- function(model_df, year_week_lookup) {
   
   return(model_df_preds_mfx)
 }
+
+
+build_h2_plot_data <- function(model_df) {
+  model_df_preds_mfx <- model_df %>% 
+    mutate(pred_data = pmap(list(model, family), \(.model, .family) {
+      if (.family == "cumulative") {
+        df <- datagrid(model = .model,
+                       v2csreprss = seq(-2.5, 3, by = 0.1),
+                       derogation_ineffect = 0:1) %>% 
+          tidybayes::add_epred_draws(.model) %>% 
+          mutate(derogation_ineffect = factor(derogation_ineffect, 
+                                              levels = 0:1,
+                                              labels = c("No derogation", "Derogation in effect"),
+                                              ordered = TRUE)) %>% 
+          group_by(v2csreprss, .category, derogation_ineffect) %>% 
+          tidybayes::median_qi(.epred, .width = c(0.5, 0.8, 0.95))
+      } else {
+        df <- datagrid(model = .model,
+                       v2csreprss = seq(-2.5, 3, by = 0.1),
+                       derogation_ineffect = 0:1) %>% 
+          tidybayes::add_epred_draws(.model) %>% 
+          mutate(derogation_ineffect = factor(derogation_ineffect, 
+                                              levels = 0:1,
+                                              labels = c("No", "Yes"),
+                                              ordered = TRUE)) %>% 
+          group_by(v2csreprss, derogation_ineffect) %>% 
+          tidybayes::median_qi(.epred, .width = c(0.5, 0.8, 0.95))
+      }
+    })) %>% 
+    mutate(mfx_data = pmap(list(model, family, y), \(.model, .family, .y) {
+      mfx <- .model %>%
+        comparisons(newdata = datagrid(v2csreprss = seq(-2.5, 3, by = 0.1)),
+                    variables = "derogation_ineffect",
+                    type = "response")  %>%
+        posteriordraws()
+
+      if (.family == "cumulative") {
+        mfx <- mfx %>%
+          mutate(group = factor(group, levels = levels(.model$data[[.y]]), ordered = TRUE)) %>%
+          group_by(v2csreprss, group) %>%
+          tidybayes::median_qi(draw, .width = c(0.5, 0.8, 0.95))
+      } else {
+        mfx <- mfx %>%
+          group_by(v2csreprss) %>%
+          tidybayes::median_qi(draw, .width = c(0.5, 0.8, 0.95))
+      }
+
+      mfx
+    }))
+  
+  return(model_df_preds_mfx)
+}
