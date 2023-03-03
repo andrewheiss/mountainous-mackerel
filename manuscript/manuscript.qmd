@@ -180,7 +180,7 @@ Next, to test our first hypothesis, we explore the relationship between formal t
 
 We use three different primary independent variables to explain changes in these policy and human rights outcomes. For our preliminary models and in models related to our first hypothesis, we rely on a binary indicator of whether a state was under ICCPR derogation conditions during a given week. We collected and coded this data from real time state action updates recorded at the UN Treaty Collection [@UnitedNations:2023]. During the 15 months covered in this project, there were 115 formal derogations submitted mentioning 8 specific ICCPR articles; 15 derogations made no reference to any specific article. Of the derogations that indicated specific time limits, the average derogation duration was 41 days. We mark the start and end date of each derogation so that each country-week observation indicates whether a state has derogated.
 
-For our second hypothesis, we use a measure of civil society repression from the Varieties of Democracy (V-Dem) project [@vdem-v12], derived from a latent Bayesian item response theory model of expert opinions, with values ranging from roughly −3 to 3 (where higher values represent less repression). This data is only recorded annually, so as with our PanDem-based outcomes, civil society repression reflects the overall anti=civil society environment.
+For our second hypothesis, we use a measure of civil society repression from the Varieties of Democracy (V-Dem) project [@vdem-v12], derived from a latent Bayesian item response theory model of expert opinions, with values ranging from roughly −3 to 3 (where higher values represent less repression). This data is only recorded annually, so as with our PanDem-based outcomes, civil society repression reflects the overall anti-civil society environment.
 
 ### Confounding variables
 
@@ -299,7 +299,7 @@ Based on our model results, derogations have different ASDF ASDF
 
 There is no substantial difference between derogating and non-derogating countries when considering the probability of imposing discriminatory policies or engaging in abusive enforcement. Both types of countries follow nearly identical trends over the first 15 months of the pandemic, with an 85% predicted probability of no discriminatory policy in March 2020 rising to nearly 100% by June 2021. The next most probable outcomes—minor and moderate levels of discriminatory policies—are equally likely regardless of derogation status. 
 
-In contrast, the patterns in predicted probabilities of the adherence to time limit measures are influenced strongly by derogation status. For non-derogating countries, the two most likely predicted outcomes throughout the beginning of the pandemic are to have no issues with time limits (with a roughly 60% probability) and to have moderate issues with limits, or an absence of an end date for emergency measures (with 30–40% probability). The middle ground of only minor issues with time limits is exceptionally unlikely. Countries that formally derogated, on the other hand, have a 90% probability of having no issues with time limits throughout the 15 months, and only a less-than-10% probability of moderate issues. The derogation process requires that emergency measures be timebound and limited, and countries that care about their treaty obligations appear to actually follow the time limits they establish.
+In contrast, the patterns in predicted probabilities of the adherence to time limit measures are influenced strongly by derogation status. For non-derogating countries, the two most likely predicted outcomes throughout the beginning of the pandemic are to have no issues with time limits (with a roughly 60% probability) and to have moderate issues with limits, or an absence of an end date for emergency measures (with 30–40% probability). The middle ground of only minor issues with time limits is exceptionally unlikely. Countries that formally derogated, on the other hand, have a 90% probability of having no issues with time limits throughout the 15 months, and only a less-than-10% probability of moderate issues. The derogation process requires that emergency measures be time-limited, and countries that care about their treaty obligations appear to actually follow the time limits they establish.
 
 TODO: Kind of help with non derogable
 
@@ -501,7 +501,6 @@ On paper vs. in practice
 @Lebret:2020 argued that derogations are the best legal mechanism for states to notify the global community of their inability to comply with human rights standards during the COVID-19 pandemic. However, @richardson2020 see derogations as a less clear path for states during COVID-19, describing the actions, their conditions, and human rights as a "tangled morass" (p. 106). 
 
 Is this good news? Derogators aren't using this opportunistically - derogators are doing the process correctly
-
 
 Enforcement is carried out by lower level officials - principal agent issues and local bureaucrats not caring about international law - the time limit and nonderogable rights things are done by high level people
 
