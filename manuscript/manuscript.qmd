@@ -52,8 +52,10 @@ set.seed(8511)
 # Load targets 
 weekly_panel <- tar_read(weekly_panel) %>% 
   mutate(year_week_day = ymd(year_week_day))
-tar_load(year_week_lookup)
-tar_load(m_prelim_derog)
+
+tar_load(prelim_plot_data)
+tar_load(h1_plot_data)
+tar_load(h2_plot_data)
 
 # Plotting functions
 invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
@@ -257,20 +259,13 @@ For instance, all countries were highly likely to cancel public events in March 
 #|   - "Predicted probabilities"
 #|   - "Contrasts between predicted probabilities"
 
-# Predicted probabilities
-preliminary_models_plots <- m_prelim_derog %>% 
-  mutate(pred_plot = map2(model, nice, ~{
-    datagrid(model = .x,
-             year_week_num = 1:69,
-             derogation_ineffect = 0:1) %>% 
-      add_epred_draws(.x) %>% 
-      left_join(year_week_lookup, by = "year_week_num") %>% 
-      mutate(derogation_ineffect = factor(derogation_ineffect, 
-                                          levels = 0:1,
-                                      labels = c("No", "Yes"),
-                                      ordered = TRUE)) %>% 
-      ggplot(aes(x = year_week_day, y = .epred, color = derogation_ineffect)) +
-      stat_lineribbon(aes(fill = derogation_ineffect), alpha = 0.3) +
+prelim_plots <- prelim_plot_data %>% 
+  mutate(pred_plot = map2(pred_data, nice, ~{
+    .x %>% 
+      ggplot(aes(x = year_week_day, y = .epred, ymin = .lower, ymax = .upper,
+                 color = derogation_ineffect, fill = after_scale(color), 
+                 group = forcats::fct_rev(ordered(.width)))) +
+      geom_lineribbon(alpha = 0.3) +
       scale_color_manual(values = c(clrs[1], clrs[8])) +
       scale_fill_manual(values = c(clrs[1], clrs[8])) +
       scale_x_date(date_breaks = "2 months", date_labels = "%b\n%Y") +
@@ -279,24 +274,13 @@ preliminary_models_plots <- m_prelim_derog %>%
            color = "Derogation in effect", fill = "Derogation in effect",
            title = .y) +
       theme_pandem()
-  }))
-
-wrap_plots(preliminary_models_plots$pred_plot)
-
-# Marginal effects / contrasts
-preliminary_models_mfx <- m_prelim_derog %>% 
-  mutate(mfx = map(model, ~{
-    .x %>% 
-      comparisons(newdata = datagrid(year_week_num = 1:69),
-                  variables = "derogation_ineffect",
-                  type = "response") |> 
-      posteriordraws()
   })) %>% 
-  mutate(mfx_plot = map2(mfx, nice, ~{
+  mutate(mfx_plot = map2(mfx_data, nice, ~{
     .x %>% 
-      left_join(year_week_lookup, by = "year_week_num") %>% 
-      ggplot(aes(x = year_week_day, y = draw * 100)) +
-      stat_lineribbon(alpha = 0.25, fill = clrs[5], color = clrs[5]) +
+      mutate(across(c(draw, .lower, .upper), ~ . * 100)) %>% 
+      ggplot(aes(x = year_week_day, y = draw, ymin = .lower, ymax = .upper,
+                 group = forcats::fct_rev(ordered(.width)))) +
+      geom_lineribbon(alpha = 0.25, fill = clrs[5], color = clrs[5]) +
       scale_x_date(date_breaks = "2 months", date_labels = "%b\n%Y") +
       labs(x = NULL,
            y = "Percentage point difference\nin probability of policy",
@@ -304,7 +288,8 @@ preliminary_models_mfx <- m_prelim_derog %>%
       theme_pandem()
   }))
 
-wrap_plots(preliminary_models_mfx$mfx_plot)
+wrap_plots(prelim_plots$pred_plot)
+wrap_plots(prelim_plots$mfx_plot)
 ```
 
 While these results do not speak directly to our main hypotheses, they do reveal important insights into the motivations of derogating states. Countries that undertook emergency safety measures seem to have taken the time to follow international law and uphold their treaty obligations. International law thus appears to not just be an empty commitment—states that took the time to formally derogate were more likely to keep these emergency measures in place for longer and take their derogations seriously.
@@ -322,12 +307,179 @@ TODO: Kind of help with non derogable
 
 Derogations therefore appear to help protect against limitless emergency measures and somewhat against violations of non-derogable rights, but they don't do much to protect against actual observed human rights abuses like discriminatory policies and abuse enforcement of those policies. They help with bureaucratic processes, not the implementation of those processes.
 
+```{r fig-preds-mfx-h1, fig.width=13, fig.height=6, out.width="100%"}
+#| include: true
+#| echo: false
+#| layout-ncol: 1
+#| fig-cap: "Predicted effects of imposing specific emergency public health measures over first 15 months of the COVID pandemic, split by whether states formally derogated from the ICCPR"
+#| fig-subcap:
+#|   - "Predicted probabilities"
+#|   - "Contrasts between predicted probabilities"
+
+h1_plots <- h1_plot_data %>% 
+  # Predicted probabilties
+  mutate(pred_plot = pmap(list(pred_data, nice, family), \(.data, .nice_name, .family) {
+    if (.family == "cumulative") {
+      .data %>% 
+        ggplot(aes(
+          x = year_week_day, y = .epred, ymin = .lower, ymax = .upper,
+          color = .category, fill = after_scale(color),
+          group = forcats::fct_rev(ordered(.width))
+        )) +
+        geom_lineribbon(alpha = 0.3) +
+        scale_color_manual(values = c(clrs[c(2, 4, 6, 7)])) +
+        scale_x_date(date_breaks = "2 months", date_labels = "%b\n%Y") +
+        scale_y_continuous(labels = label_percent()) +
+        labs(x = NULL, y = "Predicted probability", 
+             color = "Severity", fill = "Severity",
+             title = .nice_name) +
+        facet_wrap(vars(derogation_ineffect)) +
+        theme_pandem()
+    } else {
+      .data %>% 
+        ggplot(aes(
+          x = year_week_day, y = .epred, ymin = .lower, ymax = .upper,
+          color = derogation_ineffect, fill = after_scale(color),
+          group = forcats::fct_rev(ordered(.width))
+        )) +
+        geom_lineribbon(alpha = 0.3) +
+        scale_color_manual(values = c(clrs[1], clrs[8])) +
+        scale_x_date(date_breaks = "2 months", date_labels = "%b\n%Y") +
+        scale_y_continuous(labels = label_percent()) +
+        labs(x = NULL, y = "Predicted probability", 
+             color = "Derogation in effect", fill = "Derogation in effect",
+             title = .nice_name) +
+        theme_pandem()
+    }
+  })) %>% 
+  # Marginal effects / contrasts
+  mutate(mfx_plot = pmap(list(mfx_data, nice, family), \(.data, .nice_name, .family) {
+    if (.family == "cumulative") {
+      .data %>% 
+        mutate(across(c(draw, .lower, .upper), ~ . * 100)) %>%
+        ggplot(aes(
+          x = year_week_day, y = draw, ymin = .lower, ymax = .upper,
+          color = group, fill = after_scale(color),
+          group = forcats::fct_rev(ordered(.width))
+        )) +
+        geom_lineribbon(alpha = 0.3) +
+        geom_hline(yintercept = 0, linewidth = 0.5, color = "grey50") +
+        scale_color_manual(values = c(clrs[c(2, 4, 6, 7)]), guide = "none") +
+        scale_x_date(date_breaks = "2 months", date_labels = "%b\n%Y") +
+        labs(x = NULL,
+             y = "Percentage point difference\nin probability of outcome level",
+             title = .nice_name) +
+        facet_wrap(vars(group), ncol = 2) +
+        theme_pandem()
+    } else {
+      .data %>% 
+        mutate(across(c(draw, .lower, .upper), ~ . * 100)) %>%
+        ggplot(aes(
+          x = year_week_day, y = draw, ymin = .lower, ymax = .upper,
+          group = forcats::fct_rev(ordered(.width))
+        )) +
+        geom_lineribbon(alpha = 0.3, fill = clrs[5], color = clrs[5]) +
+        geom_hline(yintercept = 0, linewidth = 0.5, color = "grey50") +
+        scale_x_date(date_breaks = "2 months", date_labels = "%b\n%Y") +
+        labs(x = NULL,
+             y = "Percentage point difference\nin probability of outcome",
+             title = .nice_name) +
+        theme_pandem()
+    }
+  }))
+
+wrap_plots(h1_plots$pred_plot)
+wrap_plots(h1_plots$mfx_plot)
+```
+
 
 ## Derogations, civil society, and human rights
 
 Civil society repression, on the other hand, adds an additional wrinkle to the story
 
 The derogations vs. non-derogations split matters when looking across the range of civil society repression. In countries with bad repression that don't derogate, there's a higher likelihood of discriminatory policies and abusive enforcement. Countries with similar levels of civil society repression that *do* formally derogate, however, have a nearly 100% predicted probability having no discriminatory policies. The derogation process could thus serve as a strong signal that emergency measures are indeed planned to be limited and non-discriminatory even in countries where civil society is under threat. 
+
+```{r fig-preds-mfx-h2, fig.width=13, fig.height=6, out.width="100%"}
+#| include: true
+#| echo: false
+#| layout-ncol: 1
+#| fig-cap: "Predicted effects of imposing specific emergency public health measures over first 15 months of the COVID pandemic, split by whether states formally derogated from the ICCPR"
+#| fig-subcap:
+#|   - "Predicted probabilities"
+#|   - "Contrasts between predicted probabilities"
+
+h2_plots <- h2_plot_data %>% 
+  # Predicted probabilities
+  mutate(pred_plot = pmap(list(pred_data, nice, family), \(.data, .nice_name, .family) {
+    if (.family == "cumulative") {
+      .data %>% 
+        ggplot(aes(
+          x = v2csreprss, y = .epred, ymin = .lower, ymax = .upper,
+          color = .category, fill = after_scale(color),
+          group = forcats::fct_rev(ordered(.width))
+        )) +
+        geom_lineribbon(alpha = 0.3) +
+        scale_color_manual(values = c(clrs[c(2, 4, 6, 7)])) +
+        scale_y_continuous(labels = label_percent()) +
+        labs(x = "Civil society repression", y = "Predicted probability", 
+             color = "Severity", fill = "Severity",
+             title = .nice_name) +
+        facet_wrap(vars(derogation_ineffect)) +
+        theme_pandem()
+    } else {
+      .data %>% 
+        ggplot(aes(
+          x = v2csreprss, y = .epred, ymin = .lower, ymax = .upper,
+          color = derogation_ineffect, fill = after_scale(color),
+          group = forcats::fct_rev(ordered(.width))
+        )) +
+        geom_lineribbon(alpha = 0.3) +
+        scale_color_manual(values = c(clrs[1], clrs[8])) +
+        scale_y_continuous(labels = label_percent()) +
+        labs(x = "Civil society repression", y = "Predicted probability", 
+             color = "Derogation in effect", fill = "Derogation in effect",
+             title = .nice_name) +
+        theme_pandem()
+    }
+  })) %>% 
+  # Marginal effects / contrasts
+  mutate(mfx_plot = pmap(list(mfx_data, nice, family), \(.data, .nice_name, .family) {
+    if (.family == "cumulative") {
+      .data %>% 
+        mutate(across(c(draw, .lower, .upper), ~ . * 100)) %>%
+        ggplot(aes(
+          x = v2csreprss, y = draw, ymin = .lower, ymax = .upper,
+          color = group, fill = after_scale(color),
+          group = forcats::fct_rev(ordered(.width))
+        )) +
+        geom_lineribbon(alpha = 0.3) +
+        geom_hline(yintercept = 0, linewidth = 0.5, color = "grey50") +
+        scale_color_manual(values = c(clrs[c(2, 4, 6, 7)]), guide = "none") +
+        labs(x = NULL,
+             y = "Percentage point difference\nin probability of outcome level",
+             title = .nice_name) +
+        facet_wrap(vars(group), ncol = 2) +
+        theme_pandem()
+    } else {
+      .data %>% 
+        mutate(across(c(draw, .lower, .upper), ~ . * 100)) %>%
+        ggplot(aes(
+          x = v2csreprss, y = draw, ymin = .lower, ymax = .upper,
+          group = forcats::fct_rev(ordered(.width))
+        )) +
+        geom_lineribbon(alpha = 0.3, fill = clrs[5], color = clrs[5]) +
+        geom_hline(yintercept = 0, linewidth = 0.5, color = "grey50") +
+        labs(x = NULL,
+             y = "Percentage point difference\nin probability of outcome",
+             title = .nice_name) +
+        theme_pandem()
+    }
+  }))
+
+wrap_plots(h2_plots$pred_plot)
+wrap_plots(h2_plots$mfx_plot)
+```
+
 
 TODO: Abusive enforcement
 
