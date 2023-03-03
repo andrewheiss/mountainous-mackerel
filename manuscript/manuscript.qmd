@@ -17,6 +17,8 @@ date: February 27, 2023
 code-repo: "Access the code, data, and analysis at <https://github.com/andrewheiss/mountainous-mackerel>"
 bibliography: bib.bib
 toc: true
+language: 
+  title-block-published: "Latest version"
 ---
 
 ```{r setup, include=FALSE}
