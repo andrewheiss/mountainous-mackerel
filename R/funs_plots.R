@@ -79,17 +79,17 @@ build_h1_plot_data <- function(model_df, year_week_lookup) {
           tidybayes::median_qi(.epred, .width = c(0.5, 0.8, 0.95))
       }
     })) %>% 
-    mutate(mfx_data = pmap(list(model, family, model, y), ~{
-      mfx <- ..1 %>% 
+    mutate(mfx_data = pmap(list(model, family, y), \(.model, .family, .y) {
+      mfx <- .model %>% 
         comparisons(newdata = datagrid(year_week_num = 1:69),
                     variables = "derogation_ineffect",
                     type = "response")  %>%  
         posteriordraws() %>% 
         left_join(year_week_lookup, by = "year_week_num") 
       
-      if (..2 == "cumulative") {
+      if (.family == "cumulative") {
         mfx <- mfx %>% 
-          mutate(group = factor(group, levels = levels(..3$data[[..4]]), ordered = TRUE)) %>% 
+          mutate(group = factor(group, levels = levels(.model$data[[.y]]), ordered = TRUE)) %>% 
           group_by(year_week_day, group) %>% 
           tidybayes::median_qi(draw, .width = c(0.5, 0.8, 0.95))
       } else {
