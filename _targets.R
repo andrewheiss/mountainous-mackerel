@@ -131,16 +131,9 @@ list(
   tar_target(graphic_functions, lst(theme_pandem, set_annotation_fonts, clrs)),
   
   ## Plots ----
-  tar_target(prelim_plot_data, 
-             build_prelim_plot_data(m_prelim_derog, year_week_lookup)),
-  
-  tar_target(h1_plot_data, 
-             build_h1_plot_data(m_h1, year_week_lookup)),
-  
-  # tar_target(h1_preds_plot, 
-  #            build_h1_plots_preds(m_h1, year_week_lookup, graphic_functions)),
-  # tar_target(h1_mfx_plot, 
-  #            build_h1_plots_mfx(m_h1, year_week_lookup, graphic_functions)),
+  tar_target(prelim_plot_data, build_prelim_plot_data(m_prelim_derog, year_week_lookup)),
+  tar_target(h1_plot_data, build_h1_plot_data(m_h1, year_week_lookup)),
+  tar_target(h2_plot_data, build_h2_plot_data(m_h2)),
   
   ## Analysis notebook ----
   tar_quarto(website, path = "."),
