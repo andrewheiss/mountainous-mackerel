@@ -1,0 +1,32 @@
+project:
+  title: "Manuscript"
+  output-dir: output
+
+  preview: 
+    port: 2222
+    browser: true
+    watch-inputs: false
+    navigate: true
+
+  render: 
+    - "*.qmd"
+
+format:
+  html:
+    shift-heading-level-by: 1
+    theme: 
+      - zephyr
+      - html/custom.scss
+    knitr:
+      opts_chunk:
+        dev: "ragg_png"
+        dpi: 300
+
+  pdf:
+    documentclass: article
+    include-in-header: 
+      text: |
+        \usepackage{mathtools}
+    knitr:
+      opts_chunk:
+        dev: "cairo_pdf"
