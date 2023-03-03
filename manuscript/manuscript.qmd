@@ -250,7 +250,7 @@ Before exploring whether COVID-induced derogations are associated with specific 
 
 For instance, all countries were highly likely to cancel public events in March and April 2020, with greater than a 95% chance. Over time, countries that did not derogate became less likely to cancel events, with the probability dropping to just above 90% in June 2021. Countries that derogated, however, were essentially guaranteed to regularly cancel events throughout the entire period of study, with a nearly 100% probability. The difference in predicted probabilities between the two types of countries ranged from 3 to 8 percentage points ($p(\Delta > 0) = 1$). The differences in policy implementation are starker for other types of emergency measures. Derogating states had a nearly 100% probability of imposing restrictions on gathering across all 15 months, while non-derogating states ranged between 80% and 90%, representing a 15–18 percentage point difference ($p(\Delta > 0) = 1$). Derogating states were also far more likely to close public transit, beginning with a roughly 80% probability in March 2020 and ending in June 2021 with a 60% probability. Non-derogating states followed a similar downward trend over time, but 23–25 percentage points lower than their derogating counterparts ($p(\Delta > 0) = 1$). Restrictions on internal movement were practically guaranteed at the beginning of the pandemic for derogating states, with a nearly 100% probability, dropping to roughly 70% by June 2021. Non-derogating states, on the other hand, began the pandemic with a predicted 75% probability of limiting movement, dropping to only 25% by June 2021, representing a 20–40 percentage point difference ($p(\Delta > 0) = 1$). The only policy we observed where there was no sizable difference between the two types of states is restrictions on international travel. Both derogating and non-derogating states had a nearly 100% probability of limiting international movement across all 15 months.
 
-```{r fig-preds-prelim, fig.width=12, fig.height=6, out.width="100%"}
+```{r fig-preds-mfx-prelim, fig.width=12, fig.height=6, out.width="100%", cache=FALSE}
 #| include: true
 #| echo: false
 #| layout-ncol: 1
@@ -267,7 +267,6 @@ prelim_plots <- prelim_plot_data %>%
                  group = forcats::fct_rev(ordered(.width)))) +
       geom_lineribbon(alpha = 0.3) +
       scale_color_manual(values = c(clrs[1], clrs[8])) +
-      scale_fill_manual(values = c(clrs[1], clrs[8])) +
       scale_x_date(date_breaks = "2 months", date_labels = "%b\n%Y") +
       scale_y_continuous(labels = label_percent()) +
       labs(x = NULL, y = "Predicted probability", 
