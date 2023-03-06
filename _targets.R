@@ -125,8 +125,13 @@ list(
   tar_target(m_h1, f_h1(weekly_panel)),
   tar_target(m_h2, f_h2(weekly_panel)),
 
-  tar_target(m_coef_gof, lst(coef_map, gof_map)),
-  
+  ## Model tables ----
+  # Build tables here because they take a while
+  tar_target(modelsummary_functions, lst(coef_map, gof_map)),
+  tar_target(models_tbl_prelim, build_modelsummary(m_prelim_derog)),
+  tar_target(models_tbl_h1, build_modelsummary(m_h1)),
+  tar_target(models_tbl_h2, build_modelsummary(m_h2)),
+
   ## Graphics ----
   tar_target(graphic_functions, lst(theme_pandem, set_annotation_fonts, clrs)),
   

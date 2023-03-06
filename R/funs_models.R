@@ -1,3 +1,46 @@
+# Running modelsummary() on Bayesian models takes a while because of all the
+# calculations involved in creating the GOF statistics. With modelsummary 0.7+,
+# though it's now possible to build the base model with modelsummary(..., output
+# = "modelsummary_list"), save that as an intermediate object, and then feed it
+# through modelsummary() again with whatever other output you want. The
+# modelsummary_list-based object thus acts like an output-agnostic ur-model.
+
+build_modelsummary <- function(model_df) {
+  msl <- model_df %>% 
+    pull(model, name = nice) %>% 
+    modelsummary::modelsummary(output = "modelsummary_list",
+                               statistic = "[{conf.low}, {conf.high}]",
+                               ci_method = "hdi",
+                               metrics = c("R2"))
+  return(msl)
+}
+
+# This is how to get other stats like ELPD (using metrics = "LOOIC" is required
+# for that; metrics = "R2" provides nobs). I would do this for all the summary
+# tables, but for whatever reason, it takes forever to calculate ELPD/LOO stuff
+# on ordered logit models, so we just show N instead
+#
+# gm <- tribble(
+#   ~raw,        ~clean,      ~fmt, ~omit,
+#   "nobs",      "N",         0,    FALSE,
+#   "r.squared", "R2",        3,    FALSE,
+#   "elpd",      "ELPD",      1,    FALSE,
+#   "elpd.se",   "ELPD (SE)", 1,    FALSE
+# )
+# 
+# modelsummary(models_prelim,
+#              estimate = "{estimate}",
+#              statistic = "conf.int",
+#              gof_map = gm,
+#              metrics = c("R2", "LOOIC"))
+
+gof_map <- tribble(
+  ~raw,          ~clean,                 ~fmt, ~omit,
+  "nobs",        "N",                    0,    FALSE,
+  "r.squared",   "\\(R^2\\) (total)",    2,    FALSE,
+  "r2.marginal", "\\(R^2\\) (marginal)", 2,    FALSE
+)
+
 coef_map <- c(
   "b_derogation_ineffect" = "Derogation in effect",
   "b_v2csreprss" = "Civil society repression",
@@ -20,31 +63,8 @@ coef_map <- c(
   "sd_who_region__Intercept" = "Region random effects σ"
 )
 
-gof_map <- tribble(
-  ~raw,        ~clean,     ~fmt, ~omit,
-  "nobs",      "N",        0,    TRUE
-)
 
-# This is how to get other stats like ELPD (using metrics = "LOOIC" is required
-# for that; metrics = "R2" provides nobs). I would do this for all the summary
-# tables, but for whatever reason, it takes forever to calculate ELPD/LOO stuff
-# on ordered logit models, so we just show N instead
-#
-# gm <- tribble(
-#   ~raw,        ~clean,      ~fmt, ~omit,
-#   "nobs",      "N",         0,    FALSE,
-#   "r.squared", "R2",        3,    FALSE,
-#   "elpd",      "ELPD",      1,    FALSE,
-#   "elpd.se",   "ELPD (SE)", 1,    FALSE
-# )
-# 
-# modelsummary(models_prelim,
-#              estimate = "{estimate}",
-#              statistic = "conf.int",
-#              gof_map = gm,
-#              metrics = c("R2", "LOOIC"))
-
-
+# Model definitions
 f_prelim_derog <- function(panel) {
   BAYES_SEED <- 1757  # From random.org
   
