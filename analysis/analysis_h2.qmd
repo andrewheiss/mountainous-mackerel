@@ -29,6 +29,7 @@ library(tidybayes)
 library(ggdist)
 library(bayesplot)
 library(patchwork)
+library(colorspace)
 library(scales)
 
 # Bayes stuff
@@ -40,19 +41,19 @@ options(mc.cores = 4,
 set.seed(2385)
 
 # Load targets
-withr::with_dir(here::here(), {
-  # Final data
-  tar_load(daily_panel)
-  tar_load(weekly_panel)
-  tar_load(year_week_lookup)
-  
-  # Models
-  tar_load(m_h2)
-  tar_load(m_coef_gof)
-  
-  # Plotting functions
-  invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
-})
+# Final data
+tar_load(daily_panel)
+tar_load(weekly_panel)
+tar_load(year_week_lookup)
+
+# Models
+tar_load(m_h2)
+tar_load(h2_plot_data)
+tar_load(models_tbl_h2)
+
+# Plotting functions
+invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
+invisible(list2env(tar_read(modelsummary_functions), .GlobalEnv))
 
 # Tell bayesplot to use the Lakota palette for things like pp_check()
 bayesplot::color_scheme_set(clrs[c(1, 2, 4, 5, 7, 8)])
@@ -161,12 +162,21 @@ datagrid(model = model_h2_prior_only,
 # Posterior
 
 ```{r tbl-h2, cache=TRUE, warning=FALSE}
-modelsummary(pull(m_h2, model, name = nice),
+notes <- c(
+  "Estimates are median posterior log odds from ordered logistic and binary logistic regression models; 95% credible intervals (highest density posterior interval, or HDPI) in brackets.", 
+  "Total \\(R^2\\) considers the variance of both population and group effects;", 
+  "marginal \\(R^2\\) only takes population effects into account."
+)
+
+modelsummary(models_tbl_h2,
              estimate = "{estimate}",
-             statistic = "conf.int",
-             fmt = 2, coef_map = m_coef_gof$coef_map, 
-             gof_map = m_coef_gof$gof_map,
-             metrics = c("none"))
+             statistic = "[{conf.low}, {conf.high}]",
+             coef_map = coef_map,
+             gof_map = gof_map,
+             output = "kableExtra",
+             fmt =  list(estimate = 2, conf.low = 2, conf.high = 2)) %>% 
+  kable_styling(htmltable_class = "table-sm light-border") %>% 
+  footnote(general = notes, footnote_as_chunk = TRUE)
 ```
 
 
@@ -267,116 +277,88 @@ prelim_pp(m_h2$model[[4]])
 
 ## Predictions
 
-### Across time
-
 ::: {.column-page-right}
 
 ```{r fig.width=13, fig.height=6, out.width="100%"}
-h2_models_plots <- m_h2 %>% 
-  mutate(pred_plot = pmap(list(model, nice, family), ~{
-    if (..3 == "cumulative") {
-      datagrid(model = ..1,
-               year_week_num = 1:69,
-               derogation_ineffect = 0:1) %>% 
-        add_epred_draws(..1) %>% 
-        left_join(year_week_lookup, by = "year_week_num") %>% 
-        mutate(derogation_ineffect = factor(derogation_ineffect, 
-                                            levels = 0:1,
-                                            labels = c("No derogation", "Derogation in effect"),
-                                            ordered = TRUE)) %>% 
-        ggplot(aes(x = year_week_day, y = .epred, color = .category)) +
-        stat_lineribbon(aes(fill = .category), alpha = 0.3) +
+h2_plots <- h2_plot_data %>% 
+  # Predicted probabilities
+  mutate(pred_plot = pmap(list(pred_data, nice, family), \(.data, .nice_name, .family) {
+    if (.family == "cumulative") {
+      .data %>% 
+        ggplot(aes(
+          x = v2csreprss, y = .epred, ymin = .lower, ymax = .upper,
+          color = .category, fill = after_scale(color),
+          group = forcats::fct_rev(ordered(.width))
+        )) +
+        geom_lineribbon(alpha = 0.3) +
         scale_color_manual(values = c(clrs[c(2, 4, 6, 7)])) +
-        scale_fill_manual(values = c(clrs[c(2, 4, 6, 7)])) +
-        scale_x_date(date_breaks = "2 months", date_labels = "%b\n%Y") +
         scale_y_continuous(labels = label_percent()) +
-        labs(x = NULL, y = "Predicted probability", 
+        labs(x = "Civil society repression", y = "Predicted probability", 
              color = "Severity", fill = "Severity",
-             title = ..2) +
+             title = .nice_name) +
         facet_wrap(vars(derogation_ineffect)) +
         theme_pandem()
     } else {
-      datagrid(model = ..1,
-               year_week_num = 1:69,
-               derogation_ineffect = 0:1) %>% 
-        add_epred_draws(..1) %>% 
-        left_join(year_week_lookup, by = "year_week_num") %>% 
-        mutate(derogation_ineffect = factor(derogation_ineffect, 
-                                            levels = 0:1,
-                                            labels = c("No", "Yes"),
-                                            ordered = TRUE)) %>% 
-        ggplot(aes(x = year_week_day, y = .epred, color = derogation_ineffect)) +
-        stat_lineribbon(aes(fill = derogation_ineffect), alpha = 0.3) +
+      .data %>% 
+        ggplot(aes(
+          x = v2csreprss, y = .epred, ymin = .lower, ymax = .upper,
+          color = derogation_ineffect, fill = after_scale(color),
+          group = forcats::fct_rev(ordered(.width))
+        )) +
+        geom_lineribbon(alpha = 0.3) +
         scale_color_manual(values = c(clrs[1], clrs[8])) +
-        scale_fill_manual(values = c(clrs[1], clrs[8])) +
-        scale_x_date(date_breaks = "2 months", date_labels = "%b\n%Y") +
         scale_y_continuous(labels = label_percent()) +
-        labs(x = NULL, y = "Predicted probability", 
+        labs(x = "Civil society repression", y = "Predicted probability", 
              color = "Derogation in effect", fill = "Derogation in effect",
-             title = ..2) +
+             title = .nice_name) +
+        theme_pandem()
+    }
+  })) %>% 
+  # Marginal effects / contrasts
+  mutate(mfx_plot = pmap(list(mfx_data, nice, family), \(.data, .nice_name, .family) {
+    if (.family == "cumulative") {
+      .data %>% 
+        mutate(across(c(draw, .lower, .upper), ~ . * 100)) %>%
+        ggplot(aes(
+          x = v2csreprss, y = draw, ymin = .lower, ymax = .upper,
+          color = group, fill = after_scale(color),
+          group = forcats::fct_rev(ordered(.width))
+        )) +
+        geom_lineribbon(alpha = 0.3) +
+        geom_hline(yintercept = 0, linewidth = 0.5, color = "grey50") +
+        scale_color_manual(values = c(clrs[c(2, 4, 6, 7)]), guide = "none") +
+        labs(x = NULL,
+             y = "Percentage point difference\nin probability of outcome level",
+             title = .nice_name) +
+        facet_wrap(vars(group), ncol = 2) +
+        theme_pandem()
+    } else {
+      .data %>% 
+        mutate(across(c(draw, .lower, .upper), ~ . * 100)) %>%
+        ggplot(aes(
+          x = v2csreprss, y = draw, ymin = .lower, ymax = .upper,
+          group = forcats::fct_rev(ordered(.width))
+        )) +
+        geom_lineribbon(alpha = 0.3, fill = clrs[5], color = clrs[5]) +
+        geom_hline(yintercept = 0, linewidth = 0.5, color = "grey50") +
+        labs(x = NULL,
+             y = "Percentage point difference\nin probability of outcome",
+             title = .nice_name) +
         theme_pandem()
     }
   }))
 
-wrap_plots(h2_models_plots$pred_plot)
+wrap_plots(h2_plots$pred_plot)
 ```
 
 :::
-
-### Across civil society repression
 
 ::: {.column-page-right}
-
-```{r fig.width=13, fig.height=6, out.width="100%"}
-h2_models_plots1 <- m_h2 %>% 
-  mutate(pred_plot = pmap(list(model, nice, family), ~{
-    if (..3 == "cumulative") {
-      datagrid(model = ..1,
-               v2csreprss = seq(-2.5, 3, by = 0.1),
-               derogation_ineffect = 0:1) %>% 
-        add_epred_draws(..1) %>% 
-        mutate(derogation_ineffect = factor(derogation_ineffect, 
-                                            levels = 0:1,
-                                            labels = c("No derogation", "Derogation in effect"),
-                                            ordered = TRUE)) %>% 
-        ggplot(aes(x = v2csreprss, y = .epred, color = .category)) +
-        stat_lineribbon(aes(fill = .category), alpha = 0.3) +
-        scale_color_manual(values = c(clrs[c(2, 4, 6, 7)])) +
-        scale_fill_manual(values = c(clrs[c(2, 4, 6, 7)])) +
-        scale_y_continuous(labels = label_percent()) +
-        labs(x = "Civil society repression", y = "Predicted probability", 
-             color = "Severity", fill = "Severity",
-             title = ..2) +
-        facet_wrap(vars(derogation_ineffect)) +
-        theme_pandem()
-    } else {
-      datagrid(model = ..1,
-               v2csreprss = seq(-2.5, 3, by = 0.1),
-               derogation_ineffect = 0:1) %>% 
-        add_epred_draws(..1) %>% 
-        mutate(derogation_ineffect = factor(derogation_ineffect, 
-                                            levels = 0:1,
-                                            labels = c("No", "Yes"),
-                                            ordered = TRUE)) %>% 
-        ggplot(aes(x = v2csreprss, y = .epred, color = derogation_ineffect)) +
-        stat_lineribbon(aes(fill = derogation_ineffect), alpha = 0.3) +
-        scale_color_manual(values = c(clrs[1], clrs[8])) +
-        scale_fill_manual(values = c(clrs[1], clrs[8])) +
-        scale_y_continuous(labels = label_percent()) +
-        labs(x = "Civil society repression", y = "Predicted probability", 
-             color = "Derogation in effect", fill = "Derogation in effect",
-             title = ..2) +
-        theme_pandem()
-    }
-  }))
-
-wrap_plots(h2_models_plots1$pred_plot)
-```
-
-:::
 
 ## Marginal effects
 
 ```{r}
-# TODO: Figure out how to work with ordered logit marginal effects
+wrap_plots(h2_plots$mfx_plot)
 ```
+
+:::

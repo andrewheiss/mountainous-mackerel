@@ -27,8 +27,7 @@ project:
   resources:
     # But *do* place the outputs from the manuscript and presentation folders 
     # in the rendered site folder
-    - "manuscript/output/*.pdf"
-    - "manuscript/output/*.png"
+    - "manuscript/output"
     - "slides"
 
 # See https://quarto.org/docs/projects/code-execution.html#freeze
@@ -54,6 +53,8 @@ website:
         file: analysis/analysis.qmd
       - text: "Presentations"
         file: analysis/presentations.qmd
+      - text: "Manuscript"
+        file: manuscript/output/manuscript.html
     right:
       - icon: github
         aria-label: github
@@ -106,7 +107,7 @@ format:
   html:
     shift-heading-level-by: 1
     theme: 
-      - litera
+      - zephyr
       - html/custom.scss
     toc: true
     toc-depth: 4
@@ -114,3 +115,7 @@ format:
     highlight-style: monokai
     code-fold: true
     code-tools: true
+    knitr:
+      opts_chunk:
+        dev: "ragg_png"
+        dpi: 300

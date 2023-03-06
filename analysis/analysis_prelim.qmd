@@ -31,6 +31,7 @@ library(tidybayes)
 library(ggdist)
 library(bayesplot)
 library(patchwork)
+library(colorspace)
 library(scales)
 
 # Bayes stuff
@@ -41,20 +42,23 @@ options(mc.cores = 4,
 # Generated via random.org
 set.seed(2385)
 
+tar_config_set(store = here::here('_targets'),
+               script = here::here('_targets.R'))
+
 # Load targets 
-withr::with_dir(here::here(), {
-  # Final data
-  tar_load(daily_panel)
-  tar_load(weekly_panel)
-  tar_load(year_week_lookup)
-  
-  # Models
-  tar_load(m_prelim_derog)
-  tar_load(m_coef_gof)
-  
-  # Plotting functions
-  invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
-})
+# Final data
+tar_load(daily_panel)
+tar_load(weekly_panel)
+tar_load(year_week_lookup)
+
+# Models
+tar_load(m_prelim_derog)
+tar_load(prelim_plot_data)
+tar_load(models_tbl_prelim)
+
+# Plotting functions
+invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
+invisible(list2env(tar_read(modelsummary_functions), .GlobalEnv))
 
 # Tell bayesplot to use the Lakota palette for things like pp_check()
 bayesplot::color_scheme_set(clrs[c(1, 2, 4, 5, 7, 8)])
@@ -158,12 +162,21 @@ datagrid(model = model_prelim_prior_only,
 # Posterior
 
 ```{r tbl-prelim, cache=TRUE}
-modelsummary(pull(m_prelim_derog, model, name = nice),
+notes <- c(
+  "Estimates are median posterior log odds from ordered logistic and binary logistic regression models; 95% credible intervals (highest density posterior interval, or HDPI) in brackets.", 
+  "Total \\(R^2\\) considers the variance of both population and group effects;", 
+  "marginal \\(R^2\\) only takes population effects into account."
+)
+
+modelsummary(models_tbl_prelim,
              estimate = "{estimate}",
-             statistic = "conf.int",
-             fmt = 2, coef_map = m_coef_gof$coef_map, 
-             gof_map = m_coef_gof$gof_map,
-             metrics = c("R2"))
+             statistic = "[{conf.low}, {conf.high}]",
+             coef_map = coef_map,
+             gof_map = gof_map,
+             output = "kableExtra",
+             fmt =  list(estimate = 2, conf.low = 2, conf.high = 2)) %>% 
+  kable_styling(htmltable_class = "table-sm light-border") %>% 
+  footnote(general = notes, footnote_as_chunk = TRUE)
 ```
 
 
@@ -281,30 +294,35 @@ prelim_pp(m_prelim_derog$model[[5]])
 ::: {.column-page-right}
 
 ```{r fig.width=12, fig.height=6, out.width="100%"}
-preliminary_models_plots <- m_prelim_derog %>% 
-  mutate(pred_plot = map2(model, nice, ~{
-    datagrid(model = .x,
-             year_week_num = 1:69,
-             derogation_ineffect = 0:1) %>% 
-      add_epred_draws(.x) %>% 
-      left_join(year_week_lookup, by = "year_week_num") %>% 
-      mutate(derogation_ineffect = factor(derogation_ineffect, 
-                                          levels = 0:1,
-                                      labels = c("No", "Yes"),
-                                      ordered = TRUE)) %>% 
-      ggplot(aes(x = year_week_day, y = .epred, color = derogation_ineffect)) +
-      stat_lineribbon(aes(fill = derogation_ineffect), alpha = 0.3) +
+prelim_plots <- prelim_plot_data %>% 
+  mutate(pred_plot = map2(pred_data, nice, ~{
+    .x %>% 
+      ggplot(aes(x = year_week_day, y = .epred, ymin = .lower, ymax = .upper,
+                 color = derogation_ineffect, fill = after_scale(color), 
+                 group = forcats::fct_rev(ordered(.width)))) +
+      geom_lineribbon(alpha = 0.3) +
       scale_color_manual(values = c(clrs[1], clrs[8])) +
-      scale_fill_manual(values = c(clrs[1], clrs[8])) +
       scale_x_date(date_breaks = "2 months", date_labels = "%b\n%Y") +
       scale_y_continuous(labels = label_percent()) +
       labs(x = NULL, y = "Predicted probability", 
            color = "Derogation in effect", fill = "Derogation in effect",
            title = .y) +
       theme_pandem()
+  })) %>% 
+  mutate(mfx_plot = map2(mfx_data, nice, ~{
+    .x %>% 
+      mutate(across(c(draw, .lower, .upper), ~ . * 100)) %>% 
+      ggplot(aes(x = year_week_day, y = draw, ymin = .lower, ymax = .upper,
+                 group = forcats::fct_rev(ordered(.width)))) +
+      geom_lineribbon(alpha = 0.25, fill = clrs[5], color = clrs[5]) +
+      scale_x_date(date_breaks = "2 months", date_labels = "%b\n%Y") +
+      labs(x = NULL,
+           y = "Percentage point difference\nin probability of policy",
+           title = .y) +
+      theme_pandem()
   }))
 
-wrap_plots(preliminary_models_plots$pred_plot)
+wrap_plots(prelim_plots$pred_plot)
 ```
 
 :::
@@ -314,27 +332,7 @@ wrap_plots(preliminary_models_plots$pred_plot)
 ::: {.column-page-right}
 
 ```{r fig.width=12, fig.height=6, out.width="100%"}
-preliminary_models_mfx <- m_prelim_derog %>% 
-  mutate(mfx = map(model, ~{
-    .x %>% 
-      marginaleffects(newdata = datagrid(year_week_num = 1:69),
-                      variables = "derogation_ineffect",
-                      type = "response") |> 
-      posteriordraws()
-  })) %>% 
-  mutate(mfx_plot = map2(mfx, nice, ~{
-    .x %>% 
-      left_join(year_week_lookup, by = "year_week_num") %>% 
-      ggplot(aes(x = year_week_day, y = draw * 100)) +
-      stat_lineribbon(alpha = 0.25, fill = clrs[5], color = clrs[5]) +
-      scale_x_date(date_breaks = "2 months", date_labels = "%b\n%Y") +
-      labs(x = NULL,
-           y = "Percentage point change\nin probability of policy",
-           title = .y) +
-      theme_pandem()
-  }))
-
-wrap_plots(preliminary_models_mfx$mfx_plot)
+wrap_plots(prelim_plots$mfx_plot)
 ```
 
 :::
