@@ -44,7 +44,7 @@ gof_map <- tribble(
 coef_map <- c(
   "b_derogation_ineffect" = "Derogation in effect",
   "b_v2csreprss" = "Civil society repression",
-  "b_derogation_ineffect:v2csreprss" = "Derogation × Civil society represstion",
+  "b_derogation_ineffect:v2csreprss" = "Derogation × Civil society repression",
   "b_new_cases_z" = "New cases (standardized)",
   "b_cumulative_cases_z" = "Cumulative cases (standardized)",
   "b_new_deaths_z" = "New deaths (standardized)",
