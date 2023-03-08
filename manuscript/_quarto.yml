@@ -17,16 +17,40 @@ format:
     theme: 
       - zephyr
       - html/custom.scss
+    appendix-style: plain
+    toc: true
+    language: 
+      title-block-published: "Latest version"
     knitr:
       opts_chunk:
         dev: "ragg_png"
         dpi: 300
 
-  pdf:
-    documentclass: article
+  # pdf:
+  #   documentclass: article
+  #   include-in-header: 
+  #     text: |
+  #       \usepackage{mathtools}
+  #   knitr:
+  #     opts_chunk:
+  #       dev: "cairo_pdf"
+  
+  hikmah-pdf: 
+    # Custom fonts
+    mainfont: "Linux Libertine O"
+    mainfontoptions: 
+      - "Numbers=Proportional"
+      - "Numbers=OldStyle"
+    sansfont: "Noto Sans"
+    mathfont: "Libertinus Math"
+    linestretch: 1.1
+    
     include-in-header: 
+      # The \everydisplay thing makes all math blocks use \small font
       text: |
         \usepackage{mathtools}
+        \everydisplay\expandafter{\the\everydisplay\small }
+    
     knitr:
       opts_chunk:
         dev: "cairo_pdf"

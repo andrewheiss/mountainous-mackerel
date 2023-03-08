@@ -12,25 +12,16 @@ author:
   affiliation: Georgia State University
   email: aheiss@gsu.edu
 abstract: |
-  In an effort to combat the COVID-19 pandemic, many countries declared states of emergency and derogated (temporarily suspended) from their international human rights treaty obligations. Did states actually end up complying with their pandemic-era derogations? Did derogating and non-derogating states implement emergency measures differently, and if so, how?  Using data from the Varieties of Democracy PanDem dataset and the Oxford Covid-19 Government Response Tracker, we find that states which derogated from their international human rights obligations imposed emergency measures that were temporary and non-discriminatory. On the other hand, states that did not derogate were more likely impose discriminatory measures, enact emergency measures without time limits and violate non-derogable rights. Our results support the role that flexibility mechanisms such as derogations play in international law.
-date: March 5, 2023
+  In an effort to combat the COVID-19 pandemic, many countries declared states of emergency and derogated (temporarily suspended) from their international human rights treaty obligations. Did states actually end up complying with their pandemic-era derogations? Did derogating and non-derogating states implement emergency measures differently, and if so, how? Using data from the Varieties of Democracy PanDem dataset and the Oxford Covid-19 Government Response Tracker, we find that states which derogated from their international human rights obligations imposed emergency measures that were temporary and non-discriminatory. On the other hand, states that did not derogate were more likely impose discriminatory measures, enact emergency measures without time limits and violate non-derogable rights. Our results support the role that flexibility mechanisms such as derogations play in international law.
+date: March 8, 2023
 code-repo: "Access the code, data, and analysis at <https://github.com/andrewheiss/mountainous-mackerel>"
 bibliography: bib.bib
 link-citations: true
-format: 
-  html:
-    appendix-style: plain
-    toc: true
-  pdf:
-    mainfont: "IBM Plex Serif"
-    sansfont: "Noto Sans"
-    linestretch: 1.25
-    toc: false
-language: 
-  title-block-published: "Latest version"
 ---
 
 ```{r setup, include=FALSE}
+fmt_out <- knitr::pandoc_to()
+
 knitr::opts_chunk$set(echo = FALSE, include = FALSE, 
                       warning = FALSE, message = FALSE)
 
@@ -73,9 +64,7 @@ invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
 invisible(list2env(tar_read(modelsummary_functions), .GlobalEnv))
 ```
 
-# Introduction
-
-Do emergency provisions during crises do more harm or good when it comes to human rights? Combating a deadly virus like SARS-CoV-2 required extraordinary public health measures. In an effort to fight the COVID-19 pandemic, governments across the world imposed restrictions on the freedom of movement, association, assembly and privacy. While countries were ostensibly free to instate these policies within their own borders, the imposition of these restrictions raised important questions about states' commitments to international human rights law. Some human rights treaties recognize states' needs for emergency measures during public health concerns and contain escape clauses that establish safeguards to prevent permanent erosion of these rights during emergencies. The temporary suspension of state compliance with its international treaty obligations occurs through a legal action known as derogation. However, the potential abuse of emergency measures during  derogations raises concerns about the long-lasting impact of emergency measures on human rights. Under emergency decrees, states often impose restrictions that are temporary in theory but difficult to roll back or contain in practice [@Stasavage2020; @LuhrmannRooney2021].
+Do emergency provisions during crises do more harm or good when it comes to human rights? Combating a deadly virus like SARS-CoV-2 required extraordinary public health measures. In an effort to fight the COVID-19 pandemic, governments across the world imposed restrictions on the freedom of movement, association, assembly and privacy. While countries were ostensibly free to instate these policies within their own borders, the imposition of these restrictions raised important questions about states' commitments to international human rights law. Some human rights treaties recognize states' needs for emergency measures during public health concerns and contain escape clauses that establish safeguards to prevent permanent erosion of these rights during emergencies. The temporary suspension of state compliance with its international treaty obligations occurs through a legal action known as derogation. However, the potential abuse of emergency measures during derogations raises concerns about the long-lasting impact of emergency measures on human rights. Under emergency decrees, states often impose restrictions that are temporary in theory but difficult to roll back or contain in practice [@Stasavage2020; @LuhrmannRooney2021].
 
 Given recent medical advancements and dwindling concerns about the pandemic, the Biden administration announced that it would end the public health emergency in the US on May 11, 2023, ending measures instituted at the beginning of the pandemic—a move that has occurred in many other countries as well. With the lifting of these measures, we can assess important descriptive and analytical questions raised regarding states' respect for international law and human rights during this emergency period. What did derogations mean for compliance? Did states deviate from treaty provisions when they said they would? Are derogating and non-derogating states different in terms of how they implemented emergency measures during COVID-19? Were derogating states more likely to exploit the provisions and to abuse human rights during COVID-19? These questions are important for the study of international law, compliance, and times of crises. 
 
@@ -148,7 +137,7 @@ Given reduced monitoring by rights-based organizations, states may also have gre
 
 Finally, this trend of state repression of CSOs and NGOs may also impact state behavior towards the media. States typically repress CSOs because they make democratic participation, particularly protests, more likely, highlight rights violations, and challenge economic policies—all of which may be seen as even more threatening during the pandemic [@MurdieBhasin2011; @BBCM2014; @KeckSikkink:1998; @RisseRoppSikkink; @Boulding2014; @chaudhry2022]. 
 
-With many governments trying to centralize authority and decisionmaking, a free and independent media may pose challenges similar to those posed by CSOs. As such, if states are engaging in repression of CSOs during the pandemic, they may be more likely to repress the media as well. For instance, over the last five years, Hungary has increasingly cracked down on CSOs. During the pandemic, this extended towards the media as well as the country passed a new law which sought to punish anyone who published 'false information' on the pandemic with up to five years in jail [@brechenmacheretal2020, 3]. Similarly, Zimbabwe criminalized false reporting on the government's response to the pandemic and subsequently, used this law to crack down on media freedom. On the other hand, a vibrant civil society may help protect against limitations on media freedom. For instance, in Tunisia, the parliament withdrew a draft law restricting media freedom after it faced criticism from CSOs [@brechenmacheretal2020, 3]. 
+With many governments trying to centralize authority and decisionmaking, a free and independent media may pose challenges similar to those posed by CSOs [@Themudo:2013]. As such, if states are engaging in repression of CSOs during the pandemic, they may be more likely to repress the media as well. For instance, over the last five years, Hungary has increasingly cracked down on CSOs. During the pandemic, this extended towards the media as well as the country passed a new law which sought to punish anyone who published 'false information' on the pandemic with up to five years in jail [@brechenmacheretal2020, 3]. Similarly, Zimbabwe criminalized false reporting on the government's response to the pandemic and subsequently, used this law to crack down on media freedom. On the other hand, a vibrant civil society may help protect against limitations on media freedom. For instance, in Tunisia, the parliament withdrew a draft law restricting media freedom after it faced criticism from CSOs [@brechenmacheretal2020, 3]. 
 
 > **Hypothesis 2~d~**: If states are repressive towards civil society organizations, then they are more likely to impose limits on media freedom during the pandemic.
 
@@ -187,17 +176,21 @@ tribble(
   "Civil liberties index",                     "0–1; higher values represent greater respect for civil liberties",  "Annual",    "Varieties of Democracy",
   "Core civil society index",                  "0–1; higher values represent better environment for civil society", "Annual",    "Varieties of Democracy"
 ) %>% 
-  kbl(booktabs = TRUE) %>% 
-  kable_styling() %>% 
+  kbl(booktabs = TRUE, linesep = "\\addlinespace[0.5em]") %>% 
+  kable_styling(font_size = ifelse(fmt_out == "latex", 8.5, NA)) %>% 
   pack_rows(index = c(" " = 2, "Primary explanatory variables" = 2, "Secondary explanatory variables" = 5),
-            indent = FALSE)
-
+            indent = FALSE) %>% 
+  column_spec(c(1, 2, 4), width = "0.25\\\\textwidth") %>% 
+  column_spec(3, width = "0.1\\\\textwidth")
 ```
 
+\newpage
 
 ## Outcome variables
 
 We examine the relationship between formal treaty derogations and different human rights and policy outcomes in three stages (see @tbl-vars). First, to explore whether derogations were associated with emergency state responses in general, we look at the connection between ICCPR derogations and five different emergency public health measures recorded by the Oxford Covid-19 Government Response Tracker [@HaleAngristGoldszmidt:2021]: (1) cancelling public events, (2) imposing restrictions on gathering, (3) closing public transit, (4) restricting internal movement, and (5) limiting international travel. Each of these outcomes is recorded as an ordered categorical variable, with levels ranging from "no measures" to increasing counts and severity of emergency measures. As we are most interested in the overall association between derogations and emergency measures, we collapse these variables into binary outcomes that indicate whether a country had no emergency measures or some emergency measures in a given week.
+
+\begingroup\footnotesize
 
 | General question                                    | Outcomes                                                                                                                                  | Main explanatory variable                   | Other explanatory variables                                                                                                                                              |
 |----------------|------------------|----------------|----------------------|
@@ -206,6 +199,8 @@ We examine the relationship between formal treaty derogations and different huma
 | Derogations, human rights, and civil society (H~2~) | Discriminatory policy, Violations of non-derogable rights, Limiting media, Abusive enforcement                                            | ICCPR derogation × civil society repression | New and cumulative COVID cases, new and cumulative COVID deaths, prior ICCPR derogations and actions, rule of law index, civil liberties index                           |
 
 : Overview of outcomes and explanatory variables included in models {#tbl-vars}
+
+\endgroup
 
 Next, to test our first hypothesis, we explore the relationship between formal treaty derogations on four different human rights and policy outcomes from V-Dem's PanDem project [@vdem-pandem]: (1) whether pandemic-related emergency measures violated the ICCPR's principle of non-discrimination, (2) whether countries derogated from non-derogable ICCPR rights, (3) whether emergency measures failed to state a time limit, and (4) whether state security forces violated physical integrity rights while enforcing emergency measures. Similar to the Oxford data, each of these outcomes is an ordered category measuring the severity of the outcomes, including no, minor, moderate, and major violations. We do not collapse these variables into binary indicators and instead work with them as ordered categories. Finally, we test our second hypothesis by exploring the more complex relationship treaty derogations, civil society regulations, and four policy outcomes from the PanDem project. We look at the same four policies as the first hypothesis with one exception: since civil society is often concerned with advocacy and information provision during public emergencies, we replace whether emergency measures have a time limit with an ordinal measure of whether limits were placed on media freedom as part of a state's pandemic response. Importantly, since these PanDem variables are all measured quarterly, while our main data is recorded weekly, these variables act more like country-level fixed effects in our models, capturing the overall level of the severity of pandemic response each week.
 
@@ -225,7 +220,7 @@ Since formally derogating from treaties can serve as a signal that countries tak
 
 ## Modeling strategy
 
-Our data is structured as a balanced time series cross-sectional (TSCS) panel that has a natural hierarchical structure, with `r info$n_weeks` weekly observations nested within `r info$n_countries` countries. Accordingly, we model our outcome variables with multilevel or hierarchical models, with country-specific random offsets for each intercept and a fixed global year trend. When working with binary outcomes like the declaration of general emergency measures or the violation of non-derogable rights, we use logistic regression models; when working ordered categorical outcomes like the degree of discriminatory policy or abusive enforcement, use use ordered logistic regression models. We take a Bayesian approach to better model the uncertainty inherent in measuring the effect of derogations on these broad policies. 
+Our data is structured as a balanced time series cross-sectional (TSCS) panel that has a natural hierarchical structure, with `r info$n_weeks` weekly observations nested within `r info$n_countries` countries. Accordingly, we model our outcome variables with multilevel or hierarchical models, with region-specific random offsets for each intercept and a fixed global year trend. When working with binary outcomes like the declaration of general emergency measures or the violation of non-derogable rights, we use logistic regression models; when working ordered categorical outcomes like the degree of discriminatory policy or abusive enforcement, use use ordered logistic regression models. We take a Bayesian approach to better model the uncertainty inherent in measuring the effect of derogations on these broad policies. 
 
 We include complete formal specifications of all our models, likelihoods, and priors in the appendix. Here we include two simplified model specifications to help demonstrate the intuition behind these multilevel TSCS models. For binary outcomes, we use a logistic model with country-specific offsets:
 
@@ -234,38 +229,34 @@ We include complete formal specifications of all our models, likelihoods, and pr
 $$
 \begin{aligned}
 &\ \mathrlap{\textbf{Binary outcome $i$ across week $t$ within each country $j$}} \\
-\text{Outcome}_{it_j} \sim&\ \operatorname{Bernoulli}(\pi_{it_j}, \alpha_k) \\
-\\
+\text{Outcome}_{it_j} \sim&\ \operatorname{Bernoulli}(\pi_{it_j}) \\[0.75em]
 &\ \textbf{Distribution parameters} \\
-\pi_{it_j} =&\ (\beta_0 + b_{0_j}) + \beta_1 \text{Derogation in effect}_{it} & \text{Probability of outcome} \\
+\pi_{it_j} =&\ (\beta_0 + b_{0_j}) + \beta_1 \text{Derogation in effect}_{it} + & \text{Probability of outcome} \\
 &\ \beta_{2 \dots n-1}\ \text{Other controls}_{it}\ + \beta_{n}\ \text{Week number}_{it} \\
-b_{0_j} \sim&\ \mathcal{N}(0, \sigma_0) & \text{Random country offsets} \\
-\\
+b_{0_j} \sim&\ \mathcal{N}(0, \sigma_0) & \text{Random region offsets} \\[0.75em]
 &\ \textbf{Priors} \\
 \beta_{0 \dots n} \sim&\ \operatorname{Student\,t}(\nu = 1, \mu = 0, \sigma = 3) & \text{Prior for global averages and effects} \\
-\sigma_0 \sim&\ \operatorname{Cauchy}(x = 0, \gamma = 1) \text{, lower bound} = 0 & \text{Prior for between-country variability,}
+\sigma_0 \sim&\ \operatorname{Cauchy}(x = 0, \gamma = 1) \text{, lower bound} = 0 & \text{Prior for between-region variability,}
 \end{aligned}
 $$
 
 :::
 
-while for ordered outcomes, we use ordered logistic regression with country-specific offsets:
+\noindent while for ordered outcomes, we use ordered logistic regression with country-specific offsets:
 
 ::: {.column-page-inset-right}
 
 $$
 \begin{aligned}
 &\ \mathrlap{\textbf{Outcome level $i$ across week $t$ within each country $j$}} \\
-\text{Outcome}_{it_j} \sim&\ \operatorname{Ordered\,logit}(\phi_{it_j}, \alpha_k) \\
-\\
+\text{Outcome}_{it_j} \sim&\ \operatorname{Ordered\ logit}(\phi_{it_j}, \alpha_k) \\[0.75em]
 &\ \textbf{Distribution parameters} \\
-\phi_{it_j} =&\ (\beta_0 + b_{0_j}) + \beta_1 \text{Derogation in effect}_{it} & \text{Cumulative probability of outcome} \\
+\phi_{it_j} =&\ (\beta_0 + b_{0_j}) + \beta_1 \text{Derogation in effect}_{it} + & \text{Cumulative probability of outcome} \\
 &\ \beta_{2 \dots n-1}\ \text{Other controls}_{it}\ + \beta_{n}\ \text{Week number}_{it} \\
-b_{0_j} \sim&\ \mathcal{N}(0, \sigma_0) & \text{Random country offsets} \\
-\\
+b_{0_j} \sim&\ \mathcal{N}(0, \sigma_0) & \text{Random region offsets} \\[0.75em]
 &\ \textbf{Priors} \\
 \beta_{0 \dots n} \sim&\ \operatorname{Student\,t}(\nu = 1, \mu = 0, \sigma = 3) & \text{Prior for global averages and effects} \\
-\sigma_0 \sim&\ \operatorname{Cauchy}(x = 0, \gamma = 1) \text{, lower bound} = 0 & \text{Prior for between-country variability} \\
+\sigma_0 \sim&\ \operatorname{Cauchy}(x = 0, \gamma = 1) \text{, lower bound} = 0 & \text{Prior for between-region variability} \\
 \alpha_k \sim&\ \mathcal{N}(0, 1) & \text{Boundaries between thresholds}
 \end{aligned}
 $$
@@ -331,12 +322,6 @@ While these results do not speak directly to our main hypotheses, they do reveal
 ## Derogations and human rights
 
 The results of our models show that derogations have some protective effect against more bureaucratic forms of human rights abuses and less against practical abuses (see @fig-preds-mfx-h1). There is no substantial difference between derogating and non-derogating countries when considering the probability of imposing discriminatory policies or engaging in abusive enforcement. Both types of countries follow nearly identical trends over the first 15 months of the pandemic, with an 85% predicted probability of no discriminatory policy in March 2020 rising to nearly 100% by June 2021. The next most probable outcomes—minor and moderate levels of discriminatory policies—are equally likely regardless of derogation status. Moreover, countries that derogate were substantially less likely to engage in no abusive enforcement and instead turn to minor or moderate levels of abusive enforcement, particularly in the early months of the pandemic. Minor and moderate levels of excessive enforcement are each several percentage points more likely for derogating countries than for their non-derogating counterparts. 
-
-The mechanisms behind this seeming reversal—where countries that follow correct human rights procedures end up enforcing emergency policies in a more abusive way may be attributable to principal-agent problems. While elites or diplomats are the ones submitting derogations and committing to complying with international law, they are not the actors implementing emergency measures. During the pandemic, there may be immense variation in states' abilities to enforce these policies as intended, especially when it relates to human rights. Lower-level officials such as those in the police, state security forces and regional bureaucrats are often the ones enforcing emergency measures. Unlike their principals (elites), these agents neither have training in international law nor incentives to comply with derogations. Further, as previous research shows, during high levels of stress and fear, decisionmaking is more likely to be driven by agents who discounts principals' (dis)incentives [@HooverGreen:2016]. As such, these differences in incentives and training between elites and local officials may explain the incidences of abusive enforcement even when states submit derogations and claim that emergency measures will be implemented proportional to the threat at hand. 
-
-In contrast, the patterns in predicted probabilities of the adherence to time limit measures are influenced strongly by derogation status. For non-derogating countries, the two most likely predicted outcomes throughout the beginning of the pandemic are to have no issues with time limits (with a roughly 60% probability) and to have moderate issues with limits, or an absence of an end date for emergency measures (with 30–40% probability). The middle ground of only minor issues with time limits is exceptionally unlikely. Countries that formally derogated, on the other hand, have a 90% probability of having no issues with time limits throughout the 15 months, and only a less-than-10% probability of moderate issues. The derogation process requires that emergency measures be time-limited, and countries that care about their treaty obligations appear to actually follow the time limits they establish. Additionally, the risk of violating non-derogable rights is generally slightly lower in non-derogating states—countries that derogate are a percentage point less likely to violate non-derogable rights ($p(\Delta < 0) \approx 0.83$)
-
-Derogations therefore appear to help protect against limitless emergency measures and somewhat against violations of non-derogable rights, but they do not appear to do much to protect against actual observed human rights abuses like discriminatory policies and abuse enforcement of those policies. We thus find strong support only for H~1c~—that derogating states are less likely to impose measures with no time limits. We find weak support for our hypothesis that derogating states will be less likely to violated non-derogable rights (H~1b~) and no support for our hypothesis that derogations protect against discriminatory policies (H~1c~). Derogations seem to help with bureaucratic processes and might protect against severe violations of human rights, but they do not appear to influence the overall implementation of emergency measures.
 
 ```{r fig-preds-mfx-h1, fig.width=13, fig.height=6, out.width="100%"}
 #| include: true
@@ -423,6 +408,11 @@ wrap_plots(h1_plots$pred_plot)
 wrap_plots(h1_plots$mfx_plot)
 ```
 
+The mechanisms behind this seeming reversal—where countries that follow correct human rights procedures end up enforcing emergency policies in a more abusive way may be attributable to principal-agent problems. While elites or diplomats are the ones submitting derogations and committing to complying with international law, they are not the actors implementing emergency measures. During the pandemic, there may be immense variation in states' abilities to enforce these policies as intended, especially when it relates to human rights. Lower-level officials such as those in the police, state security forces and regional bureaucrats are often the ones enforcing emergency measures. Unlike their principals (elites), these agents neither have training in international law nor incentives to comply with derogations. Further, as previous research shows, during high levels of stress and fear, decisionmaking is more likely to be driven by agents who discounts principals' (dis)incentives [@HooverGreen:2016]. As such, these differences in incentives and training between elites and local officials may explain the incidences of abusive enforcement even when states submit derogations and claim that emergency measures will be implemented proportional to the threat at hand. 
+
+In contrast, the patterns in predicted probabilities of the adherence to time limit measures are influenced strongly by derogation status. For non-derogating countries, the two most likely predicted outcomes throughout the beginning of the pandemic are to have no issues with time limits (with a roughly 60% probability) and to have moderate issues with limits, or an absence of an end date for emergency measures (with 30–40% probability). The middle ground of only minor issues with time limits is exceptionally unlikely. Countries that formally derogated, on the other hand, have a 90% probability of having no issues with time limits throughout the 15 months, and only a less-than-10% probability of moderate issues. The derogation process requires that emergency measures be time-limited, and countries that care about their treaty obligations appear to actually follow the time limits they establish. Additionally, the risk of violating non-derogable rights is generally slightly lower in non-derogating states—countries that derogate are a percentage point less likely to violate non-derogable rights ($p(\Delta < 0) \approx 0.83$)
+
+Derogations therefore appear to help protect against limitless emergency measures and somewhat against violations of non-derogable rights, but they do not appear to do much to protect against actual observed human rights abuses like discriminatory policies and abuse enforcement of those policies. We thus find strong support only for H~1c~—that derogating states are less likely to impose measures with no time limits. We find weak support for our hypothesis that derogating states will be less likely to violated non-derogable rights (H~1b~) and no support for our hypothesis that derogations protect against discriminatory policies (H~1c~). Derogations seem to help with bureaucratic processes and might protect against severe violations of human rights, but they do not appear to influence the overall implementation of emergency measures.
 
 ## Derogations, civil society, and human rights
 
@@ -520,7 +510,7 @@ Derogations are an international legal means to communicate to both the UN and g
 
 Derogations are meant to provide states with flexibility during crises and to encourage them to sign and ratify treaties without concern about the inability to adapt to times of emergency. International legal scholarship has been divided over expectations of derogations during the pandemic. @Lebret:2020 argued that derogations are the best legal mechanism for states to notify the global community of their inability to comply with human rights standards during the COVID-19 pandemic. However, @richardson2020 see derogations as a less clear path for states during COVID-19, describing the actions, their conditions, and human rights as a "tangled morass" (p. 106). 
 
-Looking back to our driving questions, what we find is that there is good news for compliance when we look to derogations. Derogators did not systematically use this legal 'escape clause' opportunistically—derogators used the process correctly. Most derogations included time limitations, states tended to adhere to the time limits, and there was not an overall abuse of the derogation time to abuse, repress, and discriminate. Though not many states submitted COVID-19 related derogations, the ones that did, it seems, used derogations as intended by international law. Once the time of derogation ended, states readjusted to typical compliance once more. States, therefore complied with the intent of derogations and the purpose of the treaty. This is an important finding for international legal behavior and compliance studies. Even in a time of crisis, overall, states considered it important to follow through with the processes and expectations of international human rights law bureaucracy. 
+Looking back to our driving questions, what we find is that there is good news for compliance when we look to derogations. Derogators did not systematically use this legal "escape clause" opportunistically—derogators used the process correctly. Most derogations included time limitations, states tended to adhere to the time limits, and there was not an overall abuse of the derogation time to abuse, repress, and discriminate. Though not many states submitted COVID-19 related derogations, the ones that did, it seems, used derogations as intended by international law. Once the time of derogation ended, states readjusted to typical compliance once more. States, therefore complied with the intent of derogations and the purpose of the treaty. This is an important finding for international legal behavior and compliance studies. Even in a time of crisis, overall, states considered it important to follow through with the processes and expectations of international human rights law bureaucracy. 
 
 We suggest that future research look to differences in levels within states during crisis. There may be key differences in enforcement between local level bureaucrats and higher level elites. While higher level diplomats submit derogations and may be more cautious about international law, local level enforcement may not be as concerned about international legal aspects such as time limits and derogable vs. non-derogable rights. This distinction may explain some variation in policy and discrimination practices during the pandemic. 
 
@@ -531,41 +521,103 @@ Overall, we find that states used derogations as they were intended during the C
 
 # Appendix {.appendix}
 
-### Formal statistical models
+### H~1~: Derogations and human rights (ordered logistic regression)
 
 $$
 \begin{aligned}
 &\ \mathrlap{\textbf{Model of outcome level $i$ across week $t$ within each country $j$}} \\
-\text{Outcome}_{it_j} \sim&\ \operatorname{Ordered logit}(\phi_{it_j}, \alpha_k) \\
-\\
+\text{Outcome}_{it_j} \sim&\ \operatorname{Ordered\ logit}(\phi_{it_j}, \alpha_k) \\[0.75em]
 &\ \textbf{Models for distribution parameters} \\
-\phi_{it_j} =&\ (\beta_0 + b_{0_j}) + \beta_1 \text{Derogation in effect}_{it} \\
+\phi_{it_j} =&\ (\beta_0 + b_{0_j}) + \beta_1 \text{Derogation in effect}_{it} + \\
 &\ \beta_2\ \text{New cases}_{it}\ + \beta_3\ \text{Cumulative cases}_{it}\ + \\
 &\ \beta_4\ \text{New deaths}_{it}\ + \beta_5\ \text{Cumulative deaths}_{it}\ + \\
 &\ \beta_6\ \text{Past ICCPR derogation}_{it}\ + \beta_7\ \text{Past ICCPR action}_{it}\ + \\
 &\ \beta_8\ \text{Rule of law index}_{it}\ + \beta_9\ \text{Civil liberties index}_{it}\ + \\
 &\ \beta_{10}\ \text{Core civil society index}_{it}\ + \beta_{11}\ \text{Week number}_{it} \\
-b_{0_j} \sim&\ \mathcal{N}(0, \sigma_0) \\
-\\
+b_{0_j} \sim&\ \mathcal{N}(0, \sigma_0) \\[0.75em]
 &\ \textbf{Priors} \\
-\beta_{0 \dots 11} \sim&\ \operatorname{Student t}(\nu = 1, \mu = 0, \sigma = 3) \\
+\beta_{0 \dots 11} \sim&\ \operatorname{Student\ t}(\nu = 1, \mu = 0, \sigma = 3) \\
 \sigma_0 \sim&\ \operatorname{Cauchy}(x = 0, \gamma = 1) \text{, lower bound} = 0 \\
 \alpha_k \sim&\ \mathcal{N}(0, 1)
 \end{aligned}
 $$
 
-### Complete regression results
+### H~1~: Derogations and human rights (logistic regression)
 
-#### Derogations and emergency policies
+$$
+\begin{aligned}
+&\ \mathrlap{\textbf{Binary outcome $i$ across week $t$ within each country $j$}} \\
+\text{Outcome}_{it_j} \sim&\ \operatorname{Bernoulli}(\pi_{it_j}) \\[0.75em]
+&\ \textbf{Distribution parameters} \\
+\pi_{it_j} =&\ (\beta_0 + b_{0_j}) + \beta_1 \text{Derogation in effect}_{it} + \\
+&\ \beta_2\ \text{New cases}_{it}\ + \beta_3\ \text{Cumulative cases}_{it}\ + \\
+&\ \beta_4\ \text{New deaths}_{it}\ + \beta_5\ \text{Cumulative deaths}_{it}\ + \\
+&\ \beta_6\ \text{Past ICCPR derogation}_{it}\ + \beta_7\ \text{Past ICCPR action}_{it}\ + \\
+&\ \beta_8\ \text{Rule of law index}_{it}\ + \beta_9\ \text{Civil liberties index}_{it}\ + \\
+&\ \beta_{10}\ \text{Core civil society index}_{it}\ + \beta_{11}\ \text{Week number}_{it} \\
+b_{0_j} \sim&\ \mathcal{N}(0, \sigma_0) \\[0.75em]
+&\ \textbf{Priors} \\
+\beta_{0 \dots 11} \sim&\ \operatorname{Student\ t}(\nu = 1, \mu = 0, \sigma = 3) \\
+\sigma_0 \sim&\ \operatorname{Cauchy}(x = 0, \gamma = 1) \text{, lower bound} = 0
+\end{aligned}
+$$
+
+### H~2~: Derogations, civil society, and human rights (ordered logistic regression)
+
+$$
+\begin{aligned}
+&\ \mathrlap{\textbf{Model of outcome level $i$ across week $t$ within each country $j$}} \\
+\text{Outcome}_{it_j} \sim&\ \operatorname{Ordered\ logit}(\phi_{it_j}, \alpha_k) \\[0.75em]
+&\ \textbf{Models for distribution parameters} \\
+\phi_{it_j} =&\ (\beta_0 + b_{0_j})\ + \\
+&\ \beta_1 \text{Derogation in effect}_{it} + \beta_2 \text{Civil society repression}_{it} \\
+&\ \beta_3\ {(\text{Derogation} \times \text{Civil society repression})}_{i}\ + \\
+&\ \beta_4\ \text{New cases}_{it}\ + \beta_5\ \text{Cumulative cases}_{it}\ + \\
+&\ \beta_6\ \text{New deaths}_{it}\ + \beta_7\ \text{Cumulative deaths}_{it}\ + \\
+&\ \beta_8\ \text{Past ICCPR derogation}_{it}\ + \beta_9\ \text{Past ICCPR action}_{it}\ + \\
+&\ \beta_{10}\ \text{Rule of law index}_{it}\ + \beta_{11}\ \text{Civil liberties index}_{it}\ + \\
+&\ \beta_{12}\ \text{Week number}_{it} \\
+b_{0_j} \sim&\ \mathcal{N}(0, \sigma_0) \\[0.75em]
+&\ \textbf{Priors} \\
+\beta_{0 \dots 12} \sim&\ \operatorname{Student\ t}(\nu = 1, \mu = 0, \sigma = 3) \\
+\sigma_0 \sim&\ \operatorname{Cauchy}(x = 0, \gamma = 1) \text{, lower bound} = 0 \\
+\alpha_k \sim&\ \mathcal{N}(0, 1)
+\end{aligned}
+$$
+
+### H~2~: Derogations, civil society, and human rights (logistic regression)
+
+$$
+\begin{aligned}
+&\ \mathrlap{\textbf{Binary outcome $i$ across week $t$ within each country $j$}} \\
+\text{Outcome}_{it_j} \sim&\ \operatorname{Bernoulli}(\pi_{it_j}) \\[0.75em]
+&\ \textbf{Distribution parameters} \\
+\pi_{it_j} =&\ (\beta_0 + b_{0_j})\ + \\
+&\ \beta_1 \text{Derogation in effect}_{it} + \beta_2 \text{Civil society repression}_{it} \\
+&\ \beta_3\ {(\text{Derogation} \times \text{Civil society repression})}_{i}\ + \\
+&\ \beta_4\ \text{New cases}_{it}\ + \beta_5\ \text{Cumulative cases}_{it}\ + \\
+&\ \beta_6\ \text{New deaths}_{it}\ + \beta_7\ \text{Cumulative deaths}_{it}\ + \\
+&\ \beta_8\ \text{Past ICCPR derogation}_{it}\ + \beta_9\ \text{Past ICCPR action}_{it}\ + \\
+&\ \beta_{10}\ \text{Rule of law index}_{it}\ + \beta_{11}\ \text{Civil liberties index}_{it}\ + \\
+&\ \beta_{12}\ \text{Week number}_{it} \\
+b_{0_j} \sim&\ \mathcal{N}(0, \sigma_0) \\[0.75em]
+&\ \textbf{Priors} \\
+\beta_{0 \dots 12} \sim&\ \operatorname{Student\ t}(\nu = 1, \mu = 0, \sigma = 3) \\
+\sigma_0 \sim&\ \operatorname{Cauchy}(x = 0, \gamma = 1) \text{, lower bound} = 0
+\end{aligned}
+$$
+
+\newpage
 
 ```{r tbl-results-full-prelim}
-#| tbl-cap: Complete results from models showing relationship between derogations and emergency policies
+#| tbl-cap: Results from models showing relationship between derogations and emergency policies
 #| include: true
 #| echo: false
 notes <- c(
-  "Estimates are median posterior log odds from ordered logistic and binary logistic regression models; 95% credible intervals (highest density posterior interval, or HDPI) in brackets.", 
-  "Total \\(R^2\\) considers the variance of both population and group effects;", 
-  "marginal \\(R^2\\) only takes population effects into account."
+  "Estimates are median posterior log odds from ordered logistic and binary logistic regression models;",
+  r"(95\\% credible intervals (highest density posterior interval, or HDPI) in brackets.)",
+  "Total $R^2$ considers the variance of both population and group effects;",
+  "marginal $R^2$ only takes population effects into account."
 )
 
 modelsummary(models_tbl_prelim,
@@ -574,12 +626,15 @@ modelsummary(models_tbl_prelim,
              coef_map = coef_map,
              gof_map = gof_map,
              output = "kableExtra",
-             fmt =  list(estimate = 2, conf.low = 2, conf.high = 2)) %>% 
-  kable_styling(htmltable_class = "table-sm light-border") %>% 
-  footnote(general = notes, footnote_as_chunk = TRUE)
+             fmt =  list(estimate = 2, conf.low = 2, conf.high = 2),
+             escape = FALSE) %>% 
+  kable_styling(htmltable_class = "table-sm light-border",
+                font_size = ifelse(fmt_out == "latex", 8, NA)) %>% 
+  footnote(general = notes, footnote_as_chunk = FALSE, escape = FALSE) %>% 
+  column_spec(1:6, width = "0.16\\\\textwidth")
 ```
 
-#### Derogations and human rights
+\newpage
 
 ```{r tbl-results-full-h1}
 #| tbl-cap: Complete results from models showing relationship between derogations and human rights (H~1~)
@@ -591,15 +646,18 @@ modelsummary(models_tbl_h1,
              coef_map = coef_map,
              gof_map = gof_map,
              output = "kableExtra",
-             fmt =  list(estimate = 2, conf.low = 2, conf.high = 2)) %>% 
-  kable_styling(htmltable_class = "table-sm light-border") %>% 
-  footnote(general = notes, footnote_as_chunk = TRUE)
+             fmt =  list(estimate = 2, conf.low = 2, conf.high = 2),
+             escape = FALSE) %>% 
+  kable_styling(htmltable_class = "table-sm light-border",
+                font_size = ifelse(fmt_out == "latex", 8, NA)) %>% 
+  footnote(general = notes, footnote_as_chunk = FALSE, escape = FALSE) %>% 
+  column_spec(1:5, width = "0.18\\\\textwidth")
 ```
 
-#### Derogations, civil society, and human rights
+\newpage
 
 ```{r tbl-results-full-h2}
-#| tbl-cap: Complete results from models showing relationship between derogations, civil society, and human rights (H~2~)
+#| tbl-cap: Models showing relationship between derogations, civil society, and human rights (H~2~)
 #| include: true
 #| echo: false
 modelsummary(models_tbl_h2,
@@ -608,10 +666,14 @@ modelsummary(models_tbl_h2,
              coef_map = coef_map,
              gof_map = gof_map,
              output = "kableExtra",
-             fmt =  list(estimate = 2, conf.low = 2, conf.high = 2)) %>% 
-  kable_styling(htmltable_class = "table-sm light-border") %>% 
-  footnote(general = notes, footnote_as_chunk = TRUE)
+             fmt =  list(estimate = 2, conf.low = 2, conf.high = 2),
+             escape = FALSE) %>% 
+  kable_styling(htmltable_class = "table-sm light-border",
+                font_size = ifelse(fmt_out == "latex", 8, NA)) %>% 
+  footnote(general = notes, footnote_as_chunk = FALSE, escape = FALSE) %>% 
+  column_spec(1:5, width = "0.18\\\\textwidth")
 ```
 
+\clearpage
 
 # References
