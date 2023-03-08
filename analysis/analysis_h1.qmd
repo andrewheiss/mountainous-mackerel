@@ -363,7 +363,7 @@ wrap_plots(h1_plots$pred_plot)
 
 ## Marginal effects
 
-```{r}
+```{r fig.width=13, fig.height=6, out.width="100%"}
 wrap_plots(h1_plots$mfx_plot)
 ```
 
