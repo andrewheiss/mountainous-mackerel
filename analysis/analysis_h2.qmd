@@ -53,6 +53,7 @@ tar_load(models_tbl_h2)
 
 # Plotting functions
 invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
+invisible(list2env(tar_read(diagnostic_functions), .GlobalEnv))
 invisible(list2env(tar_read(modelsummary_functions), .GlobalEnv))
 
 # Tell bayesplot to use the Lakota palette for things like pp_check()
@@ -182,33 +183,8 @@ modelsummary(models_tbl_h2,
 # Model evaluation
 
 ```{r}
-prelim_trace <- function(model) {
-  model %>% 
-    gather_draws(b_derogation_ineffect, b_year_week_num, b_v2csreprss, sd_who_region__Intercept) %>% 
-    ggplot(aes(x = .iteration, y = .value, color = factor(.chain))) +
-    geom_line(linewidth = 0.1) +
-    scale_color_viridis_d(option = "rocket", end = 0.85) +
-    labs(color = "Chain") +
-    facet_wrap(vars(.variable), scales = "free_y") +
-    theme_pandem()
-}
-
-prelim_trank <- function(model) {
-  model %>% 
-    gather_draws(b_derogation_ineffect, b_year_week_num, b_v2csreprss, sd_who_region__Intercept) %>% 
-    group_by(.variable) %>% 
-    mutate(draw_rank = rank(.value)) %>% 
-    ggplot(aes(x = draw_rank, color = factor(.chain))) +
-    stat_bin(geom = "step", binwidth = 200, position = position_identity(), boundary = 0) +
-    scale_color_viridis_d(option = "rocket", end = 0.85) +
-    labs(color = "Chain") +
-    facet_wrap(vars(.variable), scales = "free_y") +
-    theme_pandem()
-}
-
-prelim_pp <- function(model) {
-  pp_check(model, ndraws = 100, type = "bars")
-}
+params_to_show <- c("b_derogation_ineffect", "b_year_week_num", 
+                    "b_v2csreprss", "sd_who_region__Intercept")
 ```
 
 ::: {.panel-tabset}
@@ -216,57 +192,57 @@ prelim_pp <- function(model) {
 ### `r m_h2$nice[[1]]`
 
 ```{r}
-prelim_trace(m_h2$model[[1]])
+plot_trace(m_h2$model[[1]], params_to_show)
 ```
 
 ```{r}
-prelim_trank(m_h2$model[[1]])
+plot_trank(m_h2$model[[1]], params_to_show)
 ```
 
 ```{r}
-prelim_pp(m_h2$model[[1]])
+plot_pp(m_h2$model[[1]])
 ```
 
 ### `r m_h2$nice[[2]]`
 
 ```{r}
-prelim_trace(m_h2$model[[2]])
+plot_trace(m_h2$model[[2]], params_to_show)
 ```
 
 ```{r}
-prelim_trank(m_h2$model[[2]])
+plot_trank(m_h2$model[[2]], params_to_show)
 ```
 
 ```{r}
-prelim_pp(m_h2$model[[2]])
+plot_pp(m_h2$model[[2]])
 ```
 
 ### `r m_h2$nice[[3]]`
 
 ```{r}
-prelim_trace(m_h2$model[[3]])
+plot_trace(m_h2$model[[3]], params_to_show)
 ```
 
 ```{r}
-prelim_trank(m_h2$model[[3]])
+plot_trank(m_h2$model[[3]], params_to_show)
 ```
 
 ```{r}
-prelim_pp(m_h2$model[[3]])
+plot_pp(m_h2$model[[3]])
 ```
 
 ### `r m_h2$nice[[4]]`
 
 ```{r}
-prelim_trace(m_h2$model[[4]])
+plot_trace(m_h2$model[[4]], params_to_show)
 ```
 
 ```{r}
-prelim_trank(m_h2$model[[4]])
+plot_trank(m_h2$model[[4]], params_to_show)
 ```
 
 ```{r}
-prelim_pp(m_h2$model[[4]])
+plot_pp(m_h2$model[[4]])
 ```
 
 :::

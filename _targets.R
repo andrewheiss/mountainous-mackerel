@@ -134,6 +134,7 @@ list(
 
   ## Graphics ----
   tar_target(graphic_functions, lst(theme_pandem, set_annotation_fonts, clrs)),
+  tar_target(diagnostic_functions, lst(plot_trace, plot_trank, plot_pp)),
   
   ## Plots ----
   tar_target(prelim_plot_data, build_prelim_plot_data(m_prelim_derog, year_week_lookup)),
