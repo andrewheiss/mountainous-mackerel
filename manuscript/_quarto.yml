@@ -13,6 +13,7 @@ project:
 
 format:
   html:
+    format-links: false
     shift-heading-level-by: 1
     theme: 
       - zephyr

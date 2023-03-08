@@ -54,7 +54,7 @@ website:
       - text: "Presentations"
         file: analysis/presentations.qmd
       - text: "Manuscript"
-        file: manuscript/output/manuscript.html
+        file: analysis/manuscript.qmd
     right:
       - icon: github
         aria-label: github
