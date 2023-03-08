@@ -24,7 +24,7 @@ tar_load(c(m_prelim_derog, m_h1, m_h2))
 ```
 
 
-```{r calculate-model-times, include=FALSE}
+```{r calculate-model-times}
 model_times <- bind_rows(list("**Preliminary models: Derogations and emergency policies**" = m_prelim_derog, 
                               "**H<sub>1</sub>: Derogations and human rights**" = m_h1, 
                               "**H<sub>2</sub>: Derogations, civil society, and human rights**" = m_h2), 
