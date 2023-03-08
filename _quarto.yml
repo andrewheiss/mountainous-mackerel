@@ -77,11 +77,10 @@ website:
     - title: "Analysis"
       contents:
         - analysis/analysis.qmd
-        - section: "Preliminary models"
+        - section: "Models"
           contents:
+            - analysis/model-details.qmd
             - analysis/analysis_prelim.qmd
-        - section: "Hypothesis testing"
-          contents:
             - analysis/analysis_h1.qmd
             - analysis/analysis_h2.qmd
 

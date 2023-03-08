@@ -1,0 +1,87 @@
+---
+title: "Model details"
+---
+
+```{r setup, include=FALSE}
+options(dplyr.summarise.inform = FALSE,
+        knitr.kable.NA = "")
+```
+
+```{r load-libraries-data, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(targets)
+library(brms)
+library(glue)
+library(gt)
+library(lubridate)
+library(here)
+
+tar_config_set(store = here::here('_targets'),
+               script = here::here('_targets.R'))
+
+# Models
+tar_load(c(m_prelim_derog, m_h1, m_h2))
+```
+
+
+```{r calculate-model-times, include=FALSE}
+model_times <- bind_rows(list("**Preliminary models: Derogations and emergency policies**" = m_prelim_derog, 
+                              "**H<sub>1</sub>: Derogations and human rights**" = m_h1, 
+                              "**H<sub>2</sub>: Derogations, civil society, and human rights**" = m_h2), 
+                         .id = "hypothesis") %>%  
+  mutate(family = case_when(
+    family == "cumulative" ~ "Ordered logistic",
+    family == "bernoulli" | is.na(family) ~ "Logistic"
+  )) %>% 
+  mutate(duration = map(model, ~{
+    .$fit %>% 
+      rstan::get_elapsed_time() %>% 
+      as_tibble() %>% 
+      summarize(total = as.duration(max(warmup + sample)))
+  })) %>% 
+  select(-prior, -y, -never, -data, -model) %>% 
+  unnest(duration)
+
+dur <- as.period(as.duration(sum(model_times$total)))
+
+total_run_time <- glue("{hours} hours, {minutes} minutes, and {seconds} seconds",
+                       hours = hour(dur), minutes = minute(dur), seconds = round(second(dur), 0))
+```
+
+
+We ran these models on a 2021 M1 MacBook Pro with 32 GB of RAM, with 4 MCMC chains spread across 8 cores, with two CPU threads per chain, using Stan through brms through cmdstanr. 
+
+In total, it took `r total_run_time` to run everything.
+
+```{r}
+model_times %>% 
+  gt(rowname_col = "nice",
+     groupname_col = "hypothesis",
+     process_md = TRUE) %>% 
+  cols_label(
+    family = md("**Model family**"),
+    total = md("**Total time** (i.e. longest chain)")
+  ) %>% 
+  tab_stubhead(label = md("**Outcome**")) %>% 
+  cols_align(
+    align = "left",
+    columns = everything()
+  ) %>%
+  summary_rows(
+    groups = everything(), 
+    columns = c(total),
+    fns = list(Total = ~as.duration(sum(.)))
+  ) %>% 
+  grand_summary_rows(
+    columns = c(total),
+    fns = list(`Overall total` = ~as.duration(sum(.)))
+  ) %>% 
+  tab_style(
+    style = cell_text(align = "left", indent = px(15)),
+    locations = cells_stub()
+  ) %>% 
+  opt_horizontal_padding(scale = 3) %>% 
+  opt_vertical_padding(scale = 1) %>% 
+  tab_options(table.width = pct(80))
+```
+
