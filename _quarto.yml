@@ -77,9 +77,8 @@ website:
     - title: "Analysis"
       contents:
         - analysis/analysis.qmd
-        - section: "Preliminary checks"
+        - section: "Preliminary models"
           contents:
-            - analysis/analysis_prelim-tables.qmd
             - analysis/analysis_prelim.qmd
         - section: "Hypothesis testing"
           contents:
