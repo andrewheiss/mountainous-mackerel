@@ -75,13 +75,12 @@ weekly_panel <- weekly_panel %>%
 
 $$
 \begin{aligned}
-\text{COVID policy}_{i, t} \sim&\ \operatorname{Bernoulli}(\pi_{i, t}) \\
+\text{COVID policy}_{i, t} \sim&\ \operatorname{Bernoulli}(\pi_{i, t}) \\[0.75em]
 \operatorname{logit}(\pi_{i, t}) =&\ \alpha_{\text{country} [i]} + \beta_1\ \text{Derogation in effect}_{i}\ + \\
 &\ \beta_2\ \text{New cases}_{i}\ + \beta_3\ \text{Cumulative cases}_{i}\ + \\
 &\ \beta_4\ \text{New deaths}_{i}\ + \beta_5\ \text{Cumulative deaths}_{i}\ + \\
 &\ \beta_6\ \text{Week number}_{i} \\
-\alpha_j \sim&\ \mathcal{N}(\bar{\alpha}, \sigma_\alpha) \text{, for } j \text{ in } 1 \dots J \\
-\\
+\alpha_j \sim&\ \mathcal{N}(\bar{\alpha}, \sigma_\alpha) \text{, for } j \text{ in } 1 \dots J \\[0.75em]
 \bar{\alpha} \sim&\ \operatorname{Student t}(\nu = 1, \mu = 0, \sigma = 3) \\
 \beta_{1 \dots 6} \sim&\ \operatorname{Student t}(\nu = 1, \mu = 0, \sigma = 3) \\
 \sigma_a \sim&\ \operatorname{Cauchy}(x = 0, \gamma = 1) \text{, lower bound} = 0
