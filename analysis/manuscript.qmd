@@ -4,6 +4,11 @@ toc: false
 page-layout: full
 ---
 
+```{r include=FALSE}
+# Add the manuscript target as a dependency to the overall website
+targets::tar_load(manuscript)
+```
+
 <p class="text-center"><a class="btn btn-success" href="/manuscript/output/manuscript.html" target="manuscript">{{< fa file-lines >}} &ensp;HTML</a> <a class="btn btn-success" href="/manuscript/output/manuscript.html" target="_blank">{{< fa arrow-up-right-from-square >}} &ensp;HTML (new window)</a> <a class="btn btn-success" href="/manuscript/output/manuscript.pdf" target="manuscript">{{< fa file-pdf >}} &ensp;PDF</a> <a class="btn btn-success" target="_blank" href="/manuscript/output/manuscript.pdf">{{< fa file-arrow-down >}} &ensp;PDF (download)</a></p>
 
 <iframe src="/manuscript/output/manuscript.html" frameborder="0" style="overflow:hidden;height:90%;width:100%;border:2px solid #ccc;" height="90%" width="100%" name="manuscript"></iframe>

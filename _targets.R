@@ -142,13 +142,13 @@ list(
   tar_target(h2_plot_data, build_h2_plot_data(m_h2)),
   
   ## Analysis notebook ----
-  # tar_quarto(website, path = "analysis", quiet = FALSE),
-  # tar_quarto(manuscript, path = "manuscript"),
-  # tar_target(deploy_script, here_rel("deploy.sh"), format = "file"),
-  # tar_target(deploy_notebook, {
-  #   # Force a dependency
-  #   website
-  #   # Run the deploy script
-  #   if (Sys.getenv("UPLOAD_WEBSITES") == "TRUE") processx::run(paste0("./", deploy_script))
-  # })
+  tar_quarto(manuscript, path = "manuscript", quiet = FALSE),
+  tar_quarto(website, path = ".", quiet = FALSE),
+  tar_target(deploy_script, here_rel("deploy.sh"), format = "file"),
+  tar_target(deploy, {
+    # Force a dependency
+    website
+    # Run the deploy script
+    if (Sys.getenv("UPLOAD_WEBSITES") == "TRUE") processx::run(paste0("./", deploy_script))
+  })
 )
