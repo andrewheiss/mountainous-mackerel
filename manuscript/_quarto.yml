@@ -44,7 +44,7 @@ format:
       - "Numbers=OldStyle"
     sansfont: "Noto Sans"
     mathfont: "Libertinus Math"
-    linestretch: 1.1
+    # linestretch: 1.05
     
     include-in-header: 
       # The \everydisplay thing makes all math blocks use \small font
@@ -55,3 +55,22 @@ format:
     knitr:
       opts_chunk:
         dev: "cairo_pdf"
+  
+  # hikmah-manuscript-pdf: 
+  #   output-ext: "ms.pdf"
+  #   # Custom fonts
+  #   mainfont: "Linux Libertine O"
+  #   mainfontoptions: 
+  #     - "Numbers=Proportional"
+  #     - "Numbers=OldStyle"
+  #   mathfont: "Libertinus Math"
+  #   
+  #   include-in-header: 
+  #     # The \everydisplay thing makes all math blocks use \small font
+  #     text: |
+  #       \usepackage{mathtools}
+  #       \everydisplay\expandafter{\the\everydisplay\small }
+  #   
+  #   knitr:
+  #     opts_chunk:
+  #       dev: "cairo_pdf"
