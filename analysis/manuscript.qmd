@@ -6,9 +6,35 @@ page-layout: full
 
 ```{r include=FALSE}
 # Add the manuscript target as a dependency to the overall website
-targets::tar_load(manuscript)
+targets::tar_load(c(manuscript_nice, manuscript_manuscripty))
 ```
 
-<p class="text-center"><a class="btn btn-success" href="/manuscript/output/manuscript.html" target="manuscript">{{< fa file-lines >}} &ensp;HTML</a> <a class="btn btn-success" href="/manuscript/output/manuscript.html" target="_blank">{{< fa arrow-up-right-from-square >}} &ensp;HTML (new window)</a> <a class="btn btn-success" href="/manuscript/output/manuscript.pdf" target="manuscript">{{< fa file-pdf >}} &ensp;PDF</a> <a class="btn btn-success" target="_blank" href="/manuscript/output/manuscript.pdf">{{< fa file-arrow-down >}} &ensp;PDF (download)</a></p>
+```{=html}
+<p class="text-center">
+  <a class="btn btn-success btn-sm mb-1" href="/manuscript/output/manuscript.html" target="manuscript">
+  <i class="fa-solid fa-file-lines"></i> &ensp;HTML
+  </a> 
+  
+  <a class="btn btn-success btn-sm mb-1" href="/manuscript/output/manuscript.html" target="_blank">
+  <i class="fa-solid fa-arrow-up-right-from-square"></i>&ensp;HTML <small>(new window)</small>
+  </a>
+
+  <a class="btn btn-primary btn-sm mb-1" href="/manuscript/output/manuscript.pdf" target="manuscript">
+  <i class="fa-solid fa-file-pdf"></i>&ensp;PDF
+  </a> 
+  
+  <a class="btn btn-primary btn-sm mb-1" target="_blank" href="/manuscript/output/manuscript.pdf">
+  <i class="fa-solid fa-file-arrow-down"></i>&ensp;PDF <small>(download)</small>
+  </a>
+  
+  <a class="btn btn-info btn-sm mb-1" href="/manuscript/output-ms/manuscript-ms.pdf" target="manuscript">
+  <i class="fa-solid fa-file-pdf"></i>&ensp;Manuscripty PDF
+  </a> 
+  
+  <a class="btn btn-info btn-sm mb-1" target="_blank" href="/manuscript/output-ms/manuscript-ms.pdf">
+  <i class="fa-solid fa-file-arrow-down"></i>&ensp;Manuscripty PDF <small>(download)</small>
+  </a>
+</p>
 
 <iframe src="/manuscript/output/manuscript.html" frameborder="0" style="overflow:hidden;height:90%;width:100%;border:2px solid #ccc;" height="90%" width="100%" name="manuscript"></iframe>
+```

@@ -1,0 +1,34 @@
+project:
+  output-dir: output-ms
+
+format:
+  # Manuscript-y PDF output
+  hikmah-manuscript-pdf:
+    output-file: "manuscript-ms.pdf"
+    # Custom fonts
+    mainfont: "Linux Libertine O"
+    mainfontoptions:
+      - "Numbers=Proportional"
+      - "Numbers=OldStyle"
+    mathfont: "Libertinus Math"
+
+    include-in-header:
+      # The \everydisplay thing makes all math blocks use \small font
+      text: |
+        \usepackage{mathtools}
+        \everydisplay\expandafter{\the\everydisplay\small }
+
+    knitr:
+      opts_chunk:
+        dev: "cairo_pdf"
+
+
+  # Manuscript-y Word output
+  hikmah-manuscript-odt:
+    output-file: "manuscript-ms.odt"
+    prefer-html: true
+    
+    knitr:
+      opts_chunk:
+        dev: "ragg_png"
+        dpi: 300

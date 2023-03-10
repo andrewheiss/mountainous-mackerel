@@ -29,6 +29,7 @@ _targets.yaml
 # (ignore for now)
 analysis/output/
 manuscript/output/
+manuscript/output-ms/
 
 # Miscellaneous
 *.~lock.*

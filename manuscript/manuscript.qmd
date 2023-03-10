@@ -1,5 +1,6 @@
 ---
 title: "Pandemic Pass? Treaty Derogations and Human Rights Practices During COVID-19"
+short-title: "Pandemic Pass?"
 subtitle: "Research note"
 author:
 - name: Suparna Chaudhry
@@ -20,7 +21,11 @@ link-citations: true
 ---
 
 ```{r setup, include=FALSE}
-fmt_out <- knitr::pandoc_to()
+if (is.null(knitr::pandoc_to())) {
+  fmt_out <- "interactive"
+} else {
+  fmt_out <- knitr::pandoc_to()
+}
 
 knitr::opts_chunk$set(echo = FALSE, include = FALSE, 
                       warning = FALSE, message = FALSE)
@@ -44,6 +49,7 @@ library(patchwork)
 library(colorspace)
 library(modelsummary)
 library(kableExtra)
+library(gt)
 library(targets)
 
 tar_config_set(store = here::here('_targets'),
@@ -64,6 +70,17 @@ invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
 invisible(list2env(tar_read(modelsummary_functions), .GlobalEnv))
 ```
 
+\begingroup\small\sffamily
+
+::: {.callout-note}
+## Scope of this paper
+
+This paper is not a traditional research article with statistical tests of novel theories. Instead it is a research note aimed at examining unexplored relationships between derogations, human rights, and civil society. We look forward to feedback and ideas to make it a strong research note!
+
+:::
+
+\endgroup
+
 Do emergency provisions during crises do more harm or good when it comes to human rights? Combating a deadly virus like SARS-CoV-2 required extraordinary public health measures. In an effort to fight the COVID-19 pandemic, governments across the world imposed restrictions on the freedom of movement, association, assembly and privacy. While countries were ostensibly free to instate these policies within their own borders, the imposition of these restrictions raised important questions about states' commitments to international human rights law. Some human rights treaties recognize states' needs for emergency measures during public health concerns and contain escape clauses that establish safeguards to prevent permanent erosion of these rights during emergencies. The temporary suspension of state compliance with its international treaty obligations occurs through a legal action known as derogation. However, the potential abuse of emergency measures during derogations raises concerns about the long-lasting impact of emergency measures on human rights. Under emergency decrees, states often impose restrictions that are temporary in theory but difficult to roll back or contain in practice [@Stasavage2020; @LuhrmannRooney2021].
 
 Given recent medical advancements and dwindling concerns about the pandemic, the Biden administration announced that it would end the public health emergency in the US on May 11, 2023, ending measures instituted at the beginning of the pandemic—a move that has occurred in many other countries as well. With the lifting of these measures, we can assess important descriptive and analytical questions raised regarding states' respect for international law and human rights during this emergency period. What did derogations mean for compliance? Did states deviate from treaty provisions when they said they would? Are derogating and non-derogating states different in terms of how they implemented emergency measures during COVID-19? Were derogating states more likely to exploit the provisions and to abuse human rights during COVID-19? These questions are important for the study of international law, compliance, and times of crises. 
@@ -72,7 +89,7 @@ The potential violations of human rights during this period also raises question
 
 Typically, when international relations scholars write about human rights treaty compliance, they write of positive human rights recognition. Compliance is an adherence to the expectations and written standards within the treaties, often described as a "state of conformity or identity between an actor’s behavior and a specified rule" [@RaustialaSlaughter:2002, 539]. However, there are treaty qualifications that are legal addendums to commitment that alter or even limit compliance expectations. When states comply with these legal actions, they are in fact, limiting their obligations to human rights standards. In this research note, we focus on one such legal addendum—the treaty derogation. If and when states adhere to the written expectations of treaty derogations, they will be suspending human rights recognition during a set time of domestic emergency and crisis. If states are complying with the derogation expectations, we should in fact expect a reduction in compliance with the overall human rights treaty during that time. We explore how the potential decline in compliance may actually support human rights during the COVID-19 period since emergency mitigation strategies also require certain rules and standards to prevent the abuse of rights. 
 
-Using data from the Varieties of Democracy PanDem dataset, the Oxford Covid-19 Government Response Tracker, and United Nations treaty derogation data, we first assess the variation in human rights responses among governments during the pandemic. We then analyze the effect of derogating (or not) on human rights practices during the pandemic and assess the role of civil society in mitigating the effects of rights-violating policies. We find that states that derogated and specified time limits to the emergency provisions generally stuck to the time limits and adhered to standards required during derogation by avoiding discriminatory policies, the abusive enforcement of these policies, and not violating non-derogable rights. On the other hand, states that did not derogate from their international human rights obligations and still imposed emergency measures were more likely impose discriminatory policies, violate non-derogable rights (the right to life, freedom from torture, and freedom from slavery), and impose emergency measures without time limits. 
+Using data from the Varieties of Democracy PanDem dataset, the Oxford Covid-19 Government Response Tracker, and United Nations treaty derogation data, we first assess the variation in human rights responses among governments during the pandemic. We then analyze the effect of derogating (or not) on human rights practices during the pandemic and assess the role of civil society in mitigating the effects of rights-violating policies. We find that states that derogated and specified time limits to the emergency provisions generally stuck to the time limits and adhered to standards required during derogation by avoiding discriminatory policies and not violating non-derogable rights. On the other hand, states that did not derogate from their international human rights obligations and still imposed emergency measures were more likely impose discriminatory policies, violate non-derogable rights (the right to life, freedom from torture, and freedom from slavery), and impose emergency measures without time limits. 
 
 We also find that civil society can play an important mitigating role in curbing discriminatory policies. States with low levels of civil society repression were the least likely to abuse human rights when enforcing emergency policies. The likelihood of discriminatory policies increased as civil society repression worsened, but derogations appear to protect against worsening abuses—even in countries with severe civil society repression, those that derogated had a nearly 100% probability of no discriminatory policies.
 
@@ -101,14 +118,16 @@ In this research note, we look at states' derogations from the International Cov
 
 To legally derogate, government must first officially declare a state of emergency (Article 4). Derogations must fulfill three criteria: they should be temporary in application, proportional to a crisis' actual threat and non-discriminatory. However, it is worth noting that states cannot derogate from the entirety of the ICCPR. Seven rights enshrined in the ICCPR are non-derogable: the right to life, the prohibition of torture or cruel, inhumane punishment,the prohibition of slavery, the right to recognition as a person before the law, and the protection of freedom of thought, conscience and religion. The international legal community viewed these rights as so fundamental and important that no type of crisis could justify their suspension. Other types of rights are seen as able to be suspended during crises. Several ICCPR Articles provide that public health needs can justify limitations on or derogations from certain rights [@richardson2020, 112]: freedom of movement (Article 12), freedom of expression (Article 19), and the rights to peaceful assembly and freedom of association (Article 22). 
 
-Recognizing that public health exigencies would require states to curb civil and political rights, the UN Human Rights Office of the High Commissioner (OHCHR) published guidance stating that any emergency measures must meet specific criteria of legality, necessity, proportionality, and non-discrimination. However,not every country formally derogated—a number of countries implemented emergency measures without formally derogating from ICCPR. Over 100 countries issued emergency declarations while fewer than 30 submitted COVID-19 related derogations [@icnl-covid]. These COVID-19 emergency declarations may have longer term impacts beyond temporary human rights violations [@BrownBrechenmacherCarothers:2020]. Below, we first theorize how derogations can protect against rights violations and the excesses of emergency measures, followed by the role of civil society in mitigating these violations. 
+Recognizing that public health exigencies would require states to curb civil and political rights, the UN Human Rights Office of the High Commissioner (OHCHR) published guidance stating that any emergency measures must meet specific criteria of legality, necessity, proportionality, and non-discrimination. However, not every country formally derogated—a number of countries implemented emergency measures without formally derogating from ICCPR. Over 100 countries issued emergency declarations while fewer than 30 submitted COVID-19 related derogations [@icnl-covid]. These COVID-19 emergency declarations may have longer term impacts beyond temporary human rights violations [@BrownBrechenmacherCarothers:2020]. Below, we first theorize how derogations can protect against rights violations and the excesses of emergency measures, followed by the role of civil society in mitigating these violations. 
 
 
 # The impact of derogations on human rights outcomes
 
+## Derogations and human rights
+
 During the pandemic, as @helfer2021 notes, states have had “sharply divergent responses” to international human rights law even when they are parties to the same treaty and confronting similar threats (21). If states determine that emergency measures are justified without regard for international law, the processes for restoring rights at the end of the emergency may not be followed. As such, many states used the pandemic an as excuse to centralize authority and implemented measures that didn’t meet international legal standards. Many states imposed restrictions on travel or movement by minority or opposition groups, limiting public assembly and democratic protests, and deployed surveillance systems that impeded privacy. For instance, in Australia, indigenous and migrant communities were disproportionately targeted in the enforcement of movement restrictions [@ICRC2021]. In Bulgaria, checkpoint controls went into effect in neighborhoods largely composed of the Roma community [@bulgaria2020]. In India, the police used a ban on public gatherings as an excuse to get rid of a months-long sit-in protesting the country's new citizenship law seen as discriminatory towards Muslims [@bbc2020]. 
 
-We expect that states that did not notify the ICCPR of impending rights suspensions and submit derogations were less likely to take the the criteria for derogations—necessity, proportionality, non-discrimination and time delimited seriously, and therefore more likely to impose measures that violated these criteria. If states determined that emergency measures are justified without consideration of international law, we expect that there will be more violations. 
+We expect that states that did not notify the ICCPR of impending rights suspensions and submit derogations were less likely to take the criteria for derogations—necessity, proportionality, non-discrimination and time delimited seriously, and therefore more likely to impose measures that violated these criteria. If states determined that emergency measures are justified without consideration of international law, we expect that there will be more violations. 
  
 > **Hypothesis 1~a~**: If states formally derogate from international treaty provisions, then they are less likely to use discriminatory policy measures during the pandemic.
 >
@@ -184,8 +203,6 @@ tribble(
   column_spec(3, width = "0.1\\\\textwidth")
 ```
 
-\newpage
-
 ## Outcome variables
 
 We examine the relationship between formal treaty derogations and different human rights and policy outcomes in three stages (see @tbl-vars). First, to explore whether derogations were associated with emergency state responses in general, we look at the connection between ICCPR derogations and five different emergency public health measures recorded by the Oxford Covid-19 Government Response Tracker [@HaleAngristGoldszmidt:2021]: (1) cancelling public events, (2) imposing restrictions on gathering, (3) closing public transit, (4) restricting internal movement, and (5) limiting international travel. Each of these outcomes is recorded as an ordered categorical variable, with levels ranging from "no measures" to increasing counts and severity of emergency measures. As we are most interested in the overall association between derogations and emergency measures, we collapse these variables into binary outcomes that indicate whether a country had no emergency measures or some emergency measures in a given week.
@@ -203,6 +220,8 @@ We examine the relationship between formal treaty derogations and different huma
 \endgroup
 
 Next, to test our first hypothesis, we explore the relationship between formal treaty derogations on four different human rights and policy outcomes from V-Dem's PanDem project [@vdem-pandem]: (1) whether pandemic-related emergency measures violated the ICCPR's principle of non-discrimination, (2) whether countries derogated from non-derogable ICCPR rights, (3) whether emergency measures failed to state a time limit, and (4) whether state security forces violated physical integrity rights while enforcing emergency measures. Similar to the Oxford data, each of these outcomes is an ordered category measuring the severity of the outcomes, including no, minor, moderate, and major violations. We do not collapse these variables into binary indicators and instead work with them as ordered categories. Finally, we test our second hypothesis by exploring the more complex relationship treaty derogations, civil society regulations, and four policy outcomes from the PanDem project. We look at the same four policies as the first hypothesis with one exception: since civil society is often concerned with advocacy and information provision during public emergencies, we replace whether emergency measures have a time limit with an ordinal measure of whether limits were placed on media freedom as part of a state's pandemic response. Importantly, since these PanDem variables are all measured quarterly, while our main data is recorded weekly, these variables act more like country-level fixed effects in our models, capturing the overall level of the severity of pandemic response each week.
+
+\newpage
 
 ## Explanatory variables
 
@@ -504,17 +523,13 @@ wrap_plots(h2_plots$mfx_plot)
 
 # Discussion and conclusion
 
-The first few months of the pandemic raised numerous concerns that the pandemic would contribute to violations of democratic standards and human rights in a number of countries and would reinforce the powers of repressive governments worldwide.
-
-Derogations are an international legal means to communicate to both the UN and global community that certain rights will be suspended during times of crisis. This research note set out to examine state responses to their international human rights treaty obligations, particularly the ICCPR, during the COVID-19 pandemic and any subsequent impact on human rights violations. 
+The first few months of the pandemic raised numerous concerns that the pandemic would contribute to violations of democratic standards and human rights in a number of countries and would reinforce the powers of repressive governments worldwide. Derogations are an international legal means to communicate to both the UN and global community that certain rights will be suspended during times of crisis. This research note set out to examine state responses to their international human rights treaty obligations, particularly the ICCPR, during the COVID-19 pandemic and any subsequent impact on human rights violations. 
 
 Derogations are meant to provide states with flexibility during crises and to encourage them to sign and ratify treaties without concern about the inability to adapt to times of emergency. International legal scholarship has been divided over expectations of derogations during the pandemic. @Lebret:2020 argued that derogations are the best legal mechanism for states to notify the global community of their inability to comply with human rights standards during the COVID-19 pandemic. However, @richardson2020 see derogations as a less clear path for states during COVID-19, describing the actions, their conditions, and human rights as a "tangled morass" (p. 106). 
 
-Looking back to our driving questions, what we find is that there is good news for compliance when we look to derogations. Derogators did not systematically use this legal "escape clause" opportunistically—derogators used the process correctly. Most derogations included time limitations, states tended to adhere to the time limits, and there was not an overall abuse of the derogation time to abuse, repress, and discriminate. Though not many states submitted COVID-19 related derogations, the ones that did, it seems, used derogations as intended by international law. Once the time of derogation ended, states readjusted to typical compliance once more. States, therefore complied with the intent of derogations and the purpose of the treaty. This is an important finding for international legal behavior and compliance studies. Even in a time of crisis, overall, states considered it important to follow through with the processes and expectations of international human rights law bureaucracy. 
+With the caveat that our results are by no means causal—we have not attempted to use any formal strategy to identify an unconfounded causal effect, and our findings are merely descriptive—we find that we find that there is good news for compliance and derogations. Derogators did not systematically use this legal "escape clause" opportunistically—derogators used the process correctly. Most derogations included time limitations, states tended to adhere to the time limits, and there was not an overall abuse of the derogation time to abuse, repress, and discriminate. Though not many states submitted COVID-19 related derogations, it seems that the ones that did used derogations as intended by international law. Once the time of derogation ended, states readjusted to typical compliance once more. States, therefore complied with the intent of derogations and the purpose of the treaty. This is an important finding for international legal behavior and compliance studies. Even in a time of crisis, overall, states considered it important to follow through with the processes and expectations of international human rights law bureaucracy. 
 
-We suggest that future research look to differences in levels within states during crisis. There may be key differences in enforcement between local level bureaucrats and higher level elites. While higher level diplomats submit derogations and may be more cautious about international law, local level enforcement may not be as concerned about international legal aspects such as time limits and derogable vs. non-derogable rights. This distinction may explain some variation in policy and discrimination practices during the pandemic. 
-
-We suggest future research look to other times of crisis and derogation use to compare COVID-19 area derogation compliance with that in other crises. This note contributed to the study of derogations by building on the analysis between derogation submission and outcome. States did end up taking the restriction measures they signaled they would via the derogations. 
+We suggest that future research look to differences in levels within states during crisis. There may be key differences in enforcement between local level bureaucrats and higher level elites. While higher level diplomats submit derogations and may be more cautious about international law, local level enforcement may not be as concerned about international legal aspects such as time limits and derogable vs. non-derogable rights. This distinction may explain some variation in policy and discrimination practices during the pandemic. We also recommend that future research compare COVID-19 area derogation compliance with that in other crises. This note contributed to the study of derogations by building on the analysis between derogation submission and outcome. States did end up taking the restriction measures they signaled they would via the derogations. Finally, the relationship and interaction between civil society, human rights, and international law remains an important and ripe field for future research.
 
 Overall, we find that states used derogations as they were intended during the COVID-19 pandemic and no large-scale misuse of the legal action took place. It can be an important signal for states to submit derogations, both to international and domestic communities, about intentions to mitigate the spread of disease through the temporary suspension of human rights. 
 
@@ -615,23 +630,44 @@ $$
 #| echo: false
 notes <- c(
   "Estimates are median posterior log odds from ordered logistic and binary logistic regression models;",
-  r"(95\\% credible intervals (highest density posterior interval, or HDPI) in brackets.)",
-  "Total $R^2$ considers the variance of both population and group effects;",
-  "marginal $R^2$ only takes population effects into account."
+  "95% credible intervals (highest density posterior interval, or HDPI) in brackets.",
+  "Total \\(R^2\\) considers the variance of both population and group effects;",
+  "marginal \\(R^2\\) only takes population effects into account."
 )
 
-modelsummary(models_tbl_prelim,
-             estimate = "{estimate}",
-             statistic = "[{conf.low}, {conf.high}]",
-             coef_map = coef_map,
-             gof_map = gof_map,
-             output = "kableExtra",
-             fmt =  list(estimate = 2, conf.low = 2, conf.high = 2),
-             escape = FALSE) %>% 
-  kable_styling(htmltable_class = "table-sm light-border",
-                font_size = ifelse(fmt_out == "latex", 8, NA)) %>% 
-  footnote(general = notes, footnote_as_chunk = FALSE, escape = FALSE) %>% 
-  column_spec(1:6, width = "0.16\\\\textwidth")
+if (fmt_out == "latex") {
+  notes <- notes %>% 
+    str_replace_all(r"[\\]", r"[\\\\]") %>% 
+    str_replace_all("%", r"(\\\\%)")
+} else {
+  notes <- paste(notes, collapse = " ")
+}
+
+if (fmt_out == "latex") { 
+  modelsummary(models_tbl_prelim,
+               estimate = "{estimate}",
+               statistic = "[{conf.low}, {conf.high}]",
+               coef_map = coef_map,
+               gof_map = gof_map,
+               output = "kableExtra",
+               fmt =  list(estimate = 2, conf.low = 2, conf.high = 2),
+               escape = FALSE) %>% 
+    kable_styling(htmltable_class = "table-sm light-border",
+                  font_size = ifelse(fmt_out == "latex", 8, NA)) %>% 
+    footnote(general = notes, footnote_as_chunk = FALSE, escape = FALSE) %>% 
+    column_spec(1:6, width = "0.16\\\\textwidth")
+} else {
+  modelsummary(models_tbl_prelim,
+               estimate = "{estimate}",
+               statistic = "[{conf.low}, {conf.high}]",
+               coef_map = coef_map,
+               gof_map = gof_map,
+               output = "gt",
+               fmt =  list(estimate = 2, conf.low = 2, conf.high = 2)) %>% 
+    tab_footnote(footnote = notes) %>% 
+    tab_style(style = cell_text(weight = "bold"),
+              locations = cells_column_labels())
+}
 ```
 
 \newpage
@@ -640,18 +676,32 @@ modelsummary(models_tbl_prelim,
 #| tbl-cap: Complete results from models showing relationship between derogations and human rights (H~1~)
 #| include: true
 #| echo: false
-modelsummary(models_tbl_h1,
-             estimate = "{estimate}",
-             statistic = "[{conf.low}, {conf.high}]",
-             coef_map = coef_map,
-             gof_map = gof_map,
-             output = "kableExtra",
-             fmt =  list(estimate = 2, conf.low = 2, conf.high = 2),
-             escape = FALSE) %>% 
-  kable_styling(htmltable_class = "table-sm light-border",
-                font_size = ifelse(fmt_out == "latex", 8, NA)) %>% 
-  footnote(general = notes, footnote_as_chunk = FALSE, escape = FALSE) %>% 
-  column_spec(1:5, width = "0.18\\\\textwidth")
+if (fmt_out == "latex") {
+  modelsummary(models_tbl_h1,
+               estimate = "{estimate}",
+               statistic = "[{conf.low}, {conf.high}]",
+               coef_map = coef_map,
+               gof_map = gof_map,
+               output = "kableExtra",
+               fmt =  list(estimate = 2, conf.low = 2, conf.high = 2),
+               escape = FALSE) %>% 
+    kable_styling(htmltable_class = "table-sm light-border",
+                  font_size = ifelse(fmt_out == "latex", 8, NA)) %>% 
+    footnote(general = notes, footnote_as_chunk = FALSE, escape = FALSE) %>% 
+    column_spec(1:5, width = "0.18\\\\textwidth")
+} else {
+  modelsummary(models_tbl_h1,
+               estimate = "{estimate}",
+               statistic = "[{conf.low}, {conf.high}]",
+               coef_map = coef_map,
+               gof_map = gof_map,
+               output = "gt",
+               fmt =  list(estimate = 2, conf.low = 2, conf.high = 2),
+               escape = FALSE) %>% 
+    tab_footnote(footnote = notes) %>% 
+    tab_style(style = cell_text(weight = "bold"),
+              locations = cells_column_labels())
+}
 ```
 
 \newpage
@@ -660,18 +710,32 @@ modelsummary(models_tbl_h1,
 #| tbl-cap: Models showing relationship between derogations, civil society, and human rights (H~2~)
 #| include: true
 #| echo: false
-modelsummary(models_tbl_h2,
-             estimate = "{estimate}",
-             statistic = "[{conf.low}, {conf.high}]",
-             coef_map = coef_map,
-             gof_map = gof_map,
-             output = "kableExtra",
-             fmt =  list(estimate = 2, conf.low = 2, conf.high = 2),
-             escape = FALSE) %>% 
-  kable_styling(htmltable_class = "table-sm light-border",
-                font_size = ifelse(fmt_out == "latex", 8, NA)) %>% 
-  footnote(general = notes, footnote_as_chunk = FALSE, escape = FALSE) %>% 
-  column_spec(1:5, width = "0.18\\\\textwidth")
+if (fmt_out == "latex") {
+  modelsummary(models_tbl_h2,
+               estimate = "{estimate}",
+               statistic = "[{conf.low}, {conf.high}]",
+               coef_map = coef_map,
+               gof_map = gof_map,
+               output = "kableExtra",
+               fmt =  list(estimate = 2, conf.low = 2, conf.high = 2),
+               escape = FALSE) %>% 
+    kable_styling(htmltable_class = "table-sm light-border",
+                  font_size = ifelse(fmt_out == "latex", 8, NA)) %>% 
+    footnote(general = notes, footnote_as_chunk = FALSE, escape = FALSE) %>% 
+    column_spec(1:5, width = "0.18\\\\textwidth")
+} else {
+  modelsummary(models_tbl_h2,
+               estimate = "{estimate}",
+               statistic = "[{conf.low}, {conf.high}]",
+               coef_map = coef_map,
+               gof_map = gof_map,
+               output = "gt",
+               fmt =  list(estimate = 2, conf.low = 2, conf.high = 2),
+               escape = FALSE) %>% 
+    tab_footnote(footnote = notes) %>% 
+    tab_style(style = cell_text(weight = "bold"),
+              locations = cells_column_labels())
+}
 ```
 
 \clearpage

@@ -28,6 +28,7 @@ project:
     # But *do* place the outputs from the manuscript and presentation folders 
     # in the rendered site folder
     - "manuscript/output"
+    - "manuscript/output-ms"
     - "slides"
 
 # See https://quarto.org/docs/projects/code-execution.html#freeze
