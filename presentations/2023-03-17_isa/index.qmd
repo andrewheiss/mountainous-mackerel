@@ -7,8 +7,10 @@ abstract: |
   Annual conference of the International Studies Association (ISA); Montréal, Canada
 abstract-title: "Location"
 published-title: "Presented"
-# image: first-slide.png
+image: first-slide.png
 page-layout: full
 ---
 
-Slides here.
+<div class="ratio ratio-16x9">
+<iframe class="slide-deck" src="https://docs.google.com/presentation/d/e/2PACX-1vQl8N_xTO7QyJNFuEvJXrUDV77_DLbgnjZ4X6WFx0q3ScXPEa6Y-uvUanzHs2ds5Gt8E-5Px0Biqa3l/embed?start=false&loop=false&delayms=3000" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+</div>
