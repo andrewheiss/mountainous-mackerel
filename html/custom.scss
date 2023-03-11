@@ -1,3 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+/*-- scss:defaults --*/
+// Tiepolo colors
+// MetBrewer::met.brewer("Tiepolo")
+$white:    #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #6c757d !default;
+$gray-700: #495057 !default;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+$black:    #000 !default;
+
+$blue:    #17486f !default;
+$indigo:  #6610f2 !default;
+$purple:  #6f42c1 !default;
+$pink:    #d63384 !default;
+$red:     #802417 !default;
+$orange:  #c06636 !default;
+$yellow:  #e8b960 !default;
+$green:   #646e3b !default;
+$teal:    #2b5851 !default;
+$cyan:    #508ea2 !default;
+
+$primary:       $blue !default;
+$secondary:     $white !default;
+$success:       $green !default;
+$info:          $cyan !default;
+$warning:       $yellow !default;
+$danger:        $red !default;
+$light:         $gray-100 !default;
+$dark:          $gray-900 !default;
+
+$font-family-sans-serif:      Noto Sans, sans-serif !default;
+$font-family-serif:           Noto Sans, sans-serif !default;  /* Not actually a serif font but whatever */
+
+$font-size-base:              1rem !default;
+$headings-font-weight:        700 !default;
+
+
 /*-- scss:rules --*/
 
 // ul,
