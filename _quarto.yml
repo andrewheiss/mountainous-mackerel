@@ -19,17 +19,16 @@ project:
     # (which is doable since this whole build process is orchestrated by targets)
     - "!manuscript/"
     
-    # Don't render anything in the presentations folder because those are 
-    # designed to be frozen in time (i.e. we used to have an H3, and it was in 
-    # a presentation once, and now it's not)
-    - "!slides/"
+    # Don't render past presentations because those are designed to be frozen 
+    # in time (i.e. we used to have an H3, and it was in a presentation once, 
+    # and now it's not)
+    - "!presentations/2022-11-04_peace-science/slides/"
   
   resources:
-    # But *do* place the outputs from the manuscript and presentation folders 
-    # in the rendered site folder
+    # But *do* place the outputs from the manuscript folders in the 
+    # rendered site folder
     - "manuscript/output"
     - "manuscript/output-ms"
-    - "slides"
 
 # See https://quarto.org/docs/projects/code-execution.html#freeze
 execute:
@@ -53,7 +52,7 @@ website:
       - text: "Analysis"
         file: analysis/analysis.qmd
       - text: "Presentations"
-        file: analysis/presentations.qmd
+        file: analysis/presentations/index.qmd
       - text: "Manuscript"
         file: analysis/manuscript.qmd
     right:
@@ -84,11 +83,6 @@ website:
             - analysis/analysis_prelim.qmd
             - analysis/analysis_h1.qmd
             - analysis/analysis_h2.qmd
-
-    - title: "Presentations"
-      contents:
-        - analysis/presentations.qmd
-        - analysis/presentation_2022-11-04_peace-science.qmd
     
     - title: "Empty space lol"
 

@@ -23,7 +23,7 @@ _targets.yaml
 # knitr and caching stuff
 **/*_files/*
 **/*_cache/*
-!slides/**/*_files/*
+!presentations/**/*_files/*
 
 # Output
 # (ignore for now)

@@ -1,0 +1,18 @@
+---
+title: "Peace Science Society"
+date: 2022-11-04
+toc: false
+resources: slides
+abstract: |
+  Annual conference of the Peace Science Society; Denver, Colorado
+abstract-title: "Location"
+published-title: "Presented"
+image: first-slide.png
+page-layout: full
+---
+
+<a class="btn btn-success btn-lg" target="_blank" href="slides/2022-11-04_peace-science.html">{{< fa arrow-up-right-from-square >}} &ensp;View all slides in new window</a>
+
+<div class="ratio ratio-16x9">
+<iframe class="slide-deck" src="slides/2022-11-04_peace-science.html"></iframe>
+</div>
