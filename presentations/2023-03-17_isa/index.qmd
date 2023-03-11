@@ -1,0 +1,14 @@
+---
+title: "International Studies Association"
+date: 2023-03-17
+toc: false
+resources: slides
+abstract: |
+  Annual conference of the International Studies Association (ISA); Montréal, Canada
+abstract-title: "Location"
+published-title: "Presented"
+# image: first-slide.png
+page-layout: full
+---
+
+Slides here.
