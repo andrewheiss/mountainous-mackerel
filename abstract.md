@@ -1,7 +1,0 @@
-# Pandemic Pass? Treaty Derogations and Human Rights Practices During Covid-19
-
-- Suparna Chaudhry (Lewis & Clark College)
-- Audrey L. Comstock (Arizona State University)
-- Andrew Heiss (Georgia State University)
-
-In an effort to combat the Covid-19 pandemic, many countries declared states of emergency and derogated (temporarily suspended) from their international human rights treaty obligations. However, the abuse of emergency derogations by many governments raises concerns about the long-lasting impact of these sweeping measures on human rights. Does a robust civil society mitigate the adverse effects arising from international treaty derogations? Previous literature finds that an effective civil society response can mitigate the impact of natural disasters and crises and even increase political engagement in the long-run. Using data from the Varieties of Democracy PanDem dataset, the Oxford Covid-19 Government Response Tracker and the CoronaNet Covid-19 Government Response Event, we first assess the variation in human rights responses among governments during the pandemic. We then assess the role of civil society in keeping governments accountable and mitigating the effects of policies that violate human rights. Our results hold important implications for understanding government compliance with international treaties and shedding light on how states of emergency may directly and indirectly lead to democratic backsliding.
