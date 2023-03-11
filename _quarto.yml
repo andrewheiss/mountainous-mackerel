@@ -47,10 +47,8 @@ website:
     left:
       - text: "Data"
         file: analysis/data-final.qmd
-      - text: "Questions & methods"
-        file: analysis/hypotheses.qmd
       - text: "Analysis"
-        file: analysis/analysis.qmd
+        file: analysis/hypotheses.qmd
       - text: "Presentations"
         file: presentations/index.qmd
       - text: "Manuscript"
@@ -67,22 +65,22 @@ website:
       contents:
         - analysis/data-final.qmd
         - analysis/data-details.qmd
-        - analysis/targets.qmd
-
-    - title: "Questions & methods"
-      contents:
-        - analysis/hypotheses.qmd
-        - analysis/methods.qmd
 
     - title: "Analysis"
       contents:
-        - analysis/analysis.qmd
+        - section: "Questions"
+          contents:
+            - analysis/hypotheses.qmd
+            - analysis/methods.qmd
         - section: "Models"
           contents:
             - analysis/model-details.qmd
             - analysis/analysis_prelim.qmd
             - analysis/analysis_h1.qmd
             - analysis/analysis_h2.qmd
+        - section: "Pipeline"
+          contents:
+            - analysis/targets.qmd
     
     - title: "Empty space lol"
 

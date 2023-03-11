@@ -10,7 +10,7 @@ We test two sets of hypotheses:
 ## H~1~: Formal derogations and pandemic-related human rights violations
 
 - **H~1a~**: If states formally derogate from international treaty provisions, then they are less likely to use discriminatory policy measures during the pandemic.
-- **H~1b~**: If states formally derogate from international treaty provisions, then they are less likely to violate non-derogable rights
+- **H~1b~**: If states formally derogate from international treaty provisions, then they are less likely to violate non-derogable rights.
 - **H~1c~**: If states formally derogate from international treaty provisions, then they are less likely to impose measures with no time limits.
 
 ## H~2~: Civil society repression and pandemic-related human rights violations
@@ -18,4 +18,4 @@ We test two sets of hypotheses:
 - **H~2a~**: If states are repressive towards civil society organizations, then they are more likely to violate non-derogable rights.
 - **H~2b~**: If states are repressive towards civil society organizations, then they are more likely to use discriminatory policy measures during the pandemic.
 - **H~2c~**: If states are repressive towards civil society organizations, then they are more likely to engage in abusive enforcement of measures instated to deal with the pandemic.
-- **H~2d~**: If states are repressive towards civil society organizations, then they are more likely to impose limits on media freedom.
+- **H~2d~**: If states are repressive towards civil society organizations, then they are more likely to impose limits on media freedom during the pandemic.
