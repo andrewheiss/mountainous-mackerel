@@ -52,7 +52,7 @@ website:
       - text: "Analysis"
         file: analysis/analysis.qmd
       - text: "Presentations"
-        file: analysis/presentations/index.qmd
+        file: presentations/index.qmd
       - text: "Manuscript"
         file: analysis/manuscript.qmd
     right:
