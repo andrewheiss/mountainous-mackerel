@@ -52,14 +52,9 @@ list(
              here_rel("data", "raw_data", "ne_110m_admin_0_countries",
                       "ne_110m_admin_0_countries.shp"),
              format = "file"),
-  tar_target(civicus_raw_file,
-             here_rel("data", "raw_data", "Civicus", "civicus_2021-03-19.json"),
-             format = "file"),
   
   ## Process and clean data ----
   tar_target(world_map, load_world_map(naturalearth_raw_file)),
-  tar_target(civicus_clean, load_clean_civicus(civicus_raw_file)),
-  tar_target(civicus_map_data, create_civicus_map_data(civicus_clean, world_map)),
   
   tar_target(iccpr_who_clean, clean_iccpr_who(iccpr_who_raw_file)),
   tar_target(iccpr_action_clean, clean_iccpr_action(iccpr_treaty_action_file)),
