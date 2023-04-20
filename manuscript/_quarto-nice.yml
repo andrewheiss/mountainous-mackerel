@@ -9,6 +9,10 @@ format:
     theme: 
       - zephyr
       - html/custom.scss
+    citeproc: false
+    filters: 
+      - "_extensions/andrewheiss/wordcount/citeproc.lua"
+      - "_extensions/andrewheiss/wordcount/wordcount.lua"
     appendix-style: plain
     toc: true
     language: 
