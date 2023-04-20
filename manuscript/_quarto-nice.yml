@@ -15,8 +15,7 @@ format:
       - "_extensions/andrewheiss/wordcount/wordcount.lua"
     appendix-style: plain
     toc: true
-    language: 
-      title-block-published: "Latest version"
+    published-title: "Latest version"
     knitr:
       opts_chunk:
         dev: "ragg_png"
