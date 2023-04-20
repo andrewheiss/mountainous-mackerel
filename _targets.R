@@ -121,26 +121,23 @@ list(
              format = "file"),
   
   ## Models ----
-  tar_target(m_prelim_derog, f_prelim_derog(weekly_panel)),
-  tar_target(m_h1, f_h1(weekly_panel)),
-  tar_target(m_h2, f_h2(weekly_panel)),
+  tar_target(m_policies, f_policies(weekly_panel)),
+  tar_target(m_human_rights, f_human_rights(weekly_panel)),
 
   ## Model tables ----
   # Build tables here because they take a while
   tar_target(modelsummary_functions, lst(coef_map, gof_map)),
-  tar_target(models_tbl_prelim, build_modelsummary(m_prelim_derog)),
-  tar_target(models_tbl_h1, build_modelsummary(m_h1)),
-  tar_target(models_tbl_h2, build_modelsummary(m_h2)),
+  tar_target(models_tbl_policies, build_modelsummary(m_policies)),
+  tar_target(models_tbl_human_rights, build_modelsummary(m_human_rights)),
 
   ## Graphics ----
   tar_target(graphic_functions, lst(theme_pandem, set_annotation_fonts, clrs)),
   tar_target(diagnostic_functions, lst(plot_trace, plot_trank, plot_pp)),
   
   ## Plots ----
-  tar_target(prelim_plot_data, build_prelim_plot_data(m_prelim_derog, year_week_lookup)),
-  tar_target(h1_plot_data, build_h1_plot_data(m_h1, year_week_lookup)),
-  tar_target(h2_plot_data, build_h2_plot_data(m_h2)),
-  
+  tar_target(policies_plot_data, build_policies_plot_data(m_policies, year_week_lookup)),
+  tar_target(human_rights_plot_data, build_human_rights_plot_data(m_human_rights, year_week_lookup)),
+
   ## Manuscript and analysis notebook ----
   tar_quarto(manuscript_nice, path = "manuscript", quiet = FALSE, profile = "nice"),
   tar_quarto(manuscript_manuscripty, path = "manuscript", quiet = FALSE, profile = "ms"),

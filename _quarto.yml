@@ -75,9 +75,8 @@ website:
         - section: "Models"
           contents:
             - analysis/model-details.qmd
-            - analysis/analysis_prelim.qmd
-            - analysis/analysis_h1.qmd
-            - analysis/analysis_h2.qmd
+            - analysis/analysis_policies.qmd
+            - analysis/analysis_human-rights.qmd
         - section: "Pipeline"
           contents:
             - analysis/targets.qmd

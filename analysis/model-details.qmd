@@ -20,14 +20,12 @@ tar_config_set(store = here::here('_targets'),
                script = here::here('_targets.R'))
 
 # Models
-tar_load(c(m_prelim_derog, m_h1, m_h2))
+tar_load(c(m_policies, m_human_rights))
 ```
 
-
 ```{r calculate-model-times}
-model_times <- bind_rows(list("**Preliminary models: Derogations and emergency policies**" = m_prelim_derog, 
-                              "**H<sub>1</sub>: Derogations and human rights**" = m_h1, 
-                              "**H<sub>2</sub>: Derogations, civil society, and human rights**" = m_h2), 
+model_times <- bind_rows(list("**H<sub>1</sub>: Derogations and emergency policies**" = m_policies, 
+                              "**H<sub>2</sub>: Derogations and human rights**" = m_human_rights), 
                          .id = "hypothesis") %>%  
   mutate(family = case_when(
     family == "cumulative" ~ "Ordered logistic",

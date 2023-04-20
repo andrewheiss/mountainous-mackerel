@@ -1,5 +1,5 @@
 ---
-title: "H<sub>1</sub>: Derogations and human rights"
+title: "H<sub>2</sub>: Derogations and human rights"
 format:
   html:
     code-fold: true
@@ -50,9 +50,9 @@ tar_load(weekly_panel)
 tar_load(year_week_lookup)
 
 # Models
-tar_load(m_h1)
-tar_load(h1_plot_data)
-tar_load(models_tbl_h1)
+tar_load(m_human_rights)
+tar_load(human_rights_plot_data)
+tar_load(models_tbl_human_rights)
 
 # Plotting functions
 invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
@@ -121,7 +121,7 @@ ologit_priors <- c(prior(student_t(1, 0, 3), class = Intercept),
                    prior(student_t(1, 0, 3), class = b),
                    prior(cauchy(0, 1), class = sd, lb = 0))
 
-model_h1_prior_only <- brm(
+model_human_rights_prior_only <- brm(
   bf(pandem_nolimit ~ derogation_ineffect + 
        new_cases_z + cumulative_cases_z + 
        new_deaths_z + cumulative_deaths_z + 
@@ -135,14 +135,14 @@ model_h1_prior_only <- brm(
   chains = 4, seed = BAYES_SEED, iter = 5000, refresh = 0,
   threads = threading(2)  # Two CPUs per chain to speed things up
 )
-model_h1_prior_only
+model_human_rights_prior_only
 ```
 
 ```{r}
-datagrid(model = model_h1_prior_only,
+datagrid(model = model_human_rights_prior_only,
          year_week_num = 1:69,
          derogation_ineffect = 0:1) %>% 
-  add_epred_draws(model_h1_prior_only, ndraws = 100) %>% 
+  add_epred_draws(model_human_rights_prior_only, ndraws = 100) %>% 
   left_join(year_week_lookup, by = "year_week_num") %>% 
   mutate(derogation_ineffect = factor(derogation_ineffect, 
                                       levels = 0:1,
@@ -162,14 +162,14 @@ datagrid(model = model_h1_prior_only,
 
 # Posterior
 
-```{r tbl-h1, cache=TRUE, warning=FALSE}
+```{r tbl-human-rights, cache=TRUE, warning=FALSE}
 notes <- c(
   "Estimates are median posterior log odds from ordered logistic and binary logistic regression models; 95% credible intervals (highest density posterior interval, or HDPI) in brackets.", 
   "Total \\(R^2\\) considers the variance of both population and group effects;", 
   "marginal \\(R^2\\) only takes population effects into account."
 )
 
-modelsummary(models_tbl_h1,
+modelsummary(models_tbl_human_rights,
              estimate = "{estimate}",
              statistic = "[{conf.low}, {conf.high}]",
              coef_map = coef_map,
@@ -190,60 +190,60 @@ params_to_show <- c("b_derogation_ineffect", "b_year_week_num",
 
 ::: {.panel-tabset}
 
-### `r m_h1$nice[[1]]`
+### `r m_human_rights$nice[[1]]`
 
 ```{r}
-plot_trace(m_h1$model[[1]], params_to_show)
+plot_trace(m_human_rights$model[[1]], params_to_show)
 ```
 
 ```{r}
-plot_trank(m_h1$model[[1]], params_to_show)
+plot_trank(m_human_rights$model[[1]], params_to_show)
 ```
 
 ```{r}
-plot_pp(m_h1$model[[1]])
+plot_pp(m_human_rights$model[[1]])
 ```
 
-### `r m_h1$nice[[2]]`
+### `r m_human_rights$nice[[2]]`
 
 ```{r}
-plot_trace(m_h1$model[[2]], params_to_show)
-```
-
-```{r}
-plot_trank(m_h1$model[[2]], params_to_show)
+plot_trace(m_human_rights$model[[2]], params_to_show)
 ```
 
 ```{r}
-plot_pp(m_h1$model[[2]])
-```
-
-### `r m_h1$nice[[3]]`
-
-```{r}
-plot_trace(m_h1$model[[3]], params_to_show)
+plot_trank(m_human_rights$model[[2]], params_to_show)
 ```
 
 ```{r}
-plot_trank(m_h1$model[[3]], params_to_show)
+plot_pp(m_human_rights$model[[2]])
+```
+
+### `r m_human_rights$nice[[3]]`
+
+```{r}
+plot_trace(m_human_rights$model[[3]], params_to_show)
 ```
 
 ```{r}
-plot_pp(m_h1$model[[3]])
-```
-
-### `r m_h1$nice[[4]]`
-
-```{r}
-plot_trace(m_h1$model[[4]], params_to_show)
+plot_trank(m_human_rights$model[[3]], params_to_show)
 ```
 
 ```{r}
-plot_trank(m_h1$model[[4]], params_to_show)
+plot_pp(m_human_rights$model[[3]])
+```
+
+### `r m_human_rights$nice[[4]]`
+
+```{r}
+plot_trace(m_human_rights$model[[4]], params_to_show)
 ```
 
 ```{r}
-plot_pp(m_h1$model[[4]])
+plot_trank(m_human_rights$model[[4]], params_to_show)
+```
+
+```{r}
+plot_pp(m_human_rights$model[[4]])
 ```
 
 :::
@@ -256,7 +256,7 @@ plot_pp(m_h1$model[[4]])
 ::: {.column-page-right}
 
 ```{r fig.width=13, fig.height=6, out.width="100%"}
-h1_plots <- h1_plot_data %>% 
+human_rights_plots <- human_rights_plot_data %>% 
   # Predicted probabilities
   mutate(pred_plot = pmap(list(pred_data, nice, family), \(.data, .nice_name, .family) {
     if (.family == "cumulative") {
@@ -328,7 +328,7 @@ h1_plots <- h1_plot_data %>%
     }
   }))
 
-wrap_plots(h1_plots$pred_plot)
+wrap_plots(human_rights_plots$pred_plot)
 ```
 
 :::
@@ -338,7 +338,7 @@ wrap_plots(h1_plots$pred_plot)
 ## Marginal effects
 
 ```{r fig.width=13, fig.height=6, out.width="100%"}
-wrap_plots(h1_plots$mfx_plot)
+wrap_plots(human_rights_plots$mfx_plot)
 ```
 
 :::

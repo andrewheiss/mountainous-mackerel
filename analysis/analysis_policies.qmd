@@ -1,5 +1,5 @@
 ---
-title: "Derogations and emergency policies"
+title: "H<sub>1</sub>: Derogations and emergency policies"
 format:
   html:
     code-fold: true
@@ -52,9 +52,9 @@ tar_load(weekly_panel)
 tar_load(year_week_lookup)
 
 # Models
-tar_load(m_prelim_derog)
-tar_load(prelim_plot_data)
-tar_load(models_tbl_prelim)
+tar_load(m_policies)
+tar_load(policies_plot_data)
+tar_load(models_tbl_policies)
 
 # Plotting functions
 invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
@@ -121,7 +121,7 @@ logit_priors <- c(prior(student_t(1, 0, 3), class = Intercept),
                     prior(student_t(1, 0, 3), class = b),
                     prior(cauchy(0, 1), class = sd, lb = 0))
 
-model_prelim_prior_only <- brm(
+model_policies_prior_only <- brm(
   bf(c7_internal_movement_bin ~ derogation_ineffect + 
        new_cases_z + cumulative_cases_z + 
        new_deaths_z + cumulative_deaths_z + 
@@ -134,14 +134,14 @@ model_prelim_prior_only <- brm(
   chains = 4, seed = BAYES_SEED, iter = 5000, refresh = 0,
   threads = threading(2)  # Two CPUs per chain to speed things up
 )
-model_prelim_prior_only
+model_policies_prior_only
 ```
 
 ```{r}
-datagrid(model = model_prelim_prior_only,
+datagrid(model = model_policies_prior_only,
          year_week_num = 1:69,
          derogation_ineffect = 0:1) %>% 
-  add_epred_draws(model_prelim_prior_only, ndraws = 100) %>% 
+  add_epred_draws(model_policies_prior_only, ndraws = 100) %>% 
   left_join(year_week_lookup, by = "year_week_num") %>% 
   mutate(derogation_ineffect = factor(derogation_ineffect, 
                                       levels = 0:1,
@@ -161,14 +161,14 @@ datagrid(model = model_prelim_prior_only,
 
 # Posterior
 
-```{r tbl-prelim, cache=TRUE}
+```{r tbl-policies, cache=TRUE}
 notes <- c(
   "Estimates are median posterior log odds from ordered logistic and binary logistic regression models; 95% credible intervals (highest density posterior interval, or HDPI) in brackets.", 
   "Total \\(R^2\\) considers the variance of both population and group effects;", 
   "marginal \\(R^2\\) only takes population effects into account."
 )
 
-modelsummary(models_tbl_prelim,
+modelsummary(models_tbl_policies,
              estimate = "{estimate}",
              statistic = "[{conf.low}, {conf.high}]",
              coef_map = coef_map,
@@ -189,74 +189,74 @@ params_to_show <- c("b_Intercept", "b_derogation_ineffect",
 
 ::: {.panel-tabset}
 
-### `r m_prelim_derog$nice[[1]]`
+### `r m_policies$nice[[1]]`
 
 ```{r}
-plot_trace(m_prelim_derog$model[[1]], params_to_show)
+plot_trace(m_policies$model[[1]], params_to_show)
 ```
 
 ```{r}
-plot_trank(m_prelim_derog$model[[1]], params_to_show)
+plot_trank(m_policies$model[[1]], params_to_show)
 ```
 
 ```{r}
-plot_pp(m_prelim_derog$model[[1]])
+plot_pp(m_policies$model[[1]])
 ```
 
-### `r m_prelim_derog$nice[[2]]`
+### `r m_policies$nice[[2]]`
 
 ```{r}
-plot_trace(m_prelim_derog$model[[2]], params_to_show)
-```
-
-```{r}
-plot_trank(m_prelim_derog$model[[2]], params_to_show)
+plot_trace(m_policies$model[[2]], params_to_show)
 ```
 
 ```{r}
-plot_pp(m_prelim_derog$model[[2]])
-```
-
-### `r m_prelim_derog$nice[[3]]`
-
-```{r}
-plot_trace(m_prelim_derog$model[[3]], params_to_show)
+plot_trank(m_policies$model[[2]], params_to_show)
 ```
 
 ```{r}
-plot_trank(m_prelim_derog$model[[3]], params_to_show)
+plot_pp(m_policies$model[[2]])
+```
+
+### `r m_policies$nice[[3]]`
+
+```{r}
+plot_trace(m_policies$model[[3]], params_to_show)
 ```
 
 ```{r}
-plot_pp(m_prelim_derog$model[[3]])
-```
-
-### `r m_prelim_derog$nice[[4]]`
-
-```{r}
-plot_trace(m_prelim_derog$model[[4]], params_to_show)
+plot_trank(m_policies$model[[3]], params_to_show)
 ```
 
 ```{r}
-plot_trank(m_prelim_derog$model[[4]], params_to_show)
+plot_pp(m_policies$model[[3]])
+```
+
+### `r m_policies$nice[[4]]`
+
+```{r}
+plot_trace(m_policies$model[[4]], params_to_show)
 ```
 
 ```{r}
-plot_pp(m_prelim_derog$model[[4]])
-```
-
-### `r m_prelim_derog$nice[[5]]`
-
-```{r}
-plot_trace(m_prelim_derog$model[[5]], params_to_show)
+plot_trank(m_policies$model[[4]], params_to_show)
 ```
 
 ```{r}
-plot_trank(m_prelim_derog$model[[5]], params_to_show)
+plot_pp(m_policies$model[[4]])
+```
+
+### `r m_policies$nice[[5]]`
+
+```{r}
+plot_trace(m_policies$model[[5]], params_to_show)
 ```
 
 ```{r}
-plot_pp(m_prelim_derog$model[[5]])
+plot_trank(m_policies$model[[5]], params_to_show)
+```
+
+```{r}
+plot_pp(m_policies$model[[5]])
 ```
 
 :::
@@ -269,7 +269,7 @@ plot_pp(m_prelim_derog$model[[5]])
 ::: {.column-page-right}
 
 ```{r fig.width=12, fig.height=6, out.width="100%"}
-prelim_plots <- prelim_plot_data %>% 
+policies_plots <- policies_plot_data %>% 
   mutate(pred_plot = map2(pred_data, nice, ~{
     .x %>% 
       ggplot(aes(x = year_week_day, y = .epred, ymin = .lower, ymax = .upper,
@@ -297,7 +297,7 @@ prelim_plots <- prelim_plot_data %>%
       theme_pandem()
   }))
 
-wrap_plots(prelim_plots$pred_plot)
+wrap_plots(policies_plots$pred_plot)
 ```
 
 :::
@@ -307,7 +307,7 @@ wrap_plots(prelim_plots$pred_plot)
 ::: {.column-page-right}
 
 ```{r fig.width=12, fig.height=6, out.width="100%"}
-wrap_plots(prelim_plots$mfx_plot)
+wrap_plots(policies_plots$mfx_plot)
 ```
 
 :::

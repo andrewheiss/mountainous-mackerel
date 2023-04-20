@@ -73,8 +73,8 @@ set.seed(8511)
 weekly_panel <- tar_read(weekly_panel) %>% 
   mutate(year_week_day = ymd(year_week_day))
 
-tar_load(c(prelim_plot_data, h1_plot_data, h2_plot_data))
-tar_load(c(models_tbl_prelim, models_tbl_h1, models_tbl_h2))
+tar_load(c(policies_plot_data, human_rights_plot_data))
+tar_load(c(models_tbl_policies, models_tbl_human_rights))
 
 # Plotting and modelsummary functions
 invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
@@ -104,7 +104,7 @@ While legal critical assessments of derogations find importance in their use [@r
 
 These findings suggest that states may not be discerning the significance of derogable vs. non-derogable rights status during emergencies. This also raises the question of the extent to which this distinction is a valuable one during the pandemic. Most derogations to the ICCPR have been for internal conflict or natural disaster. Is a public health emergency different from other states of emergency? Overall, there is a general expectation that following derogations, we may observe some decline in respect for human rights. However, previous studies have not explored the relationship between derogations and public health emergencies. 
 
-## Derogations under COVID-19
+## Derogations during COVID-19
 
 A first question of interest before we examine the potential impact of derogations is the nature of states that are more likely to submit them in the first place. Little research has focused on derogations in political science, and research that does exist has mostly focused on the determinants of submitting derogations to the United Nations (UN) rather than the effects of these derogations. This literature tells us that states that are more democratic are more likely to issue derogations and other post-commitment actions such as reservations, understandings, and declarations [@Simmons2009; @comstock2019] and that most states facing an emergency do not, in fact, issue derogations [@HBHelferFariss]. The expectation is that states with strong democratic institutions need to convince domestic audiences of the legality and legitimacy of suspending rights during emergencies. Additionally, democratic states understand international law and international legal mechanisms to be more legitimate and recognize their importance more so than other states. Less democratic states, even though at times may be more likely to violate or evade international human rights law, are less likely to see nuanced pieces of treaty law as important. 
 
@@ -128,10 +128,9 @@ During the pandemic, as @helfer2021 notes, states have had “sharply divergent 
  We expect that states that derogate during COVID-19 with the intention to impose emergency policies will follow through. Our expectation comes from the specific, time-limited nature of derogations and the limited audience they speak to.  Critics of international law may expect states ratify treaties with the expectation of reputational and other benefits. However, derogations have no such public audience and are not signaling an increased commitment to human rights. There is no clear or expected connection with foreign aid, trade, or other theorized 'rewards' for larger legal actions. Instead, derogations are a very specific legal action that states voluntarily enter into after commitment has fully taken place.  Given this, we expect that derogating states took the legal action seriously and generally followed through with the derogations they submitted. 
  
 
-> **Hypothesis 1~a~**: If states issued COVID-19 derogations, then we expect that they will be more likely to impose relevant emergency polices such as canceling public events, restricting gatherings, closing public transit, and restricting domestic and international movement. 
+> **Hypothesis 1~a~**: If states issued COVID-19 derogations, then we expect that they will be more likely to impose relevant emergency polices such as canceling public events, restricting gatherings, closing public transit, and restricting domestic and international movement.
 >
-> **Hypothesis 1~b~**: If states did not issue COVID-19 derogations, we expect that they will be less likely to impose related emergency policies.  
->
+> **Hypothesis 1~b~**: If states did not issue COVID-19 derogations, we expect that they will be less likely to impose related emergency policies.
 
 
 ## Derogations and human rights
@@ -277,11 +276,11 @@ Because these models provide coefficients on the logged odds scale, and because 
 
 ## Derogations and emergency policies
 
-Before exploring whether COVID-induced derogations are associated with specific human rights abuses, we first explore our first set of hypotheses to examine how derogating and non-derogating states approached the implementation of their emergency public health measures. @fig-preds-mfx-prelim-1 shows the results of five logistic regression models as predicted probabilities of imposing specific emergency measures over the course of the first 15 months of the pandemic. In every case, throughout the early pandemic, countries with a formal derogation in effect are far more likely to have undertook each policy, and the difference in probabilities between derogating and non-derogating states is substantial (see @fig-preds-mfx-prelim-2 for the percentage-point differences between the predictions for the two groups of states).
+Before exploring whether COVID-induced derogations are associated with specific human rights abuses, we first explore our first set of hypotheses to examine how derogating and non-derogating states approached the implementation of their emergency public health measures. @fig-preds-mfx-policies-1 shows the results of five logistic regression models as predicted probabilities of imposing specific emergency measures over the course of the first 15 months of the pandemic. In every case, throughout the early pandemic, countries with a formal derogation in effect are far more likely to have undertook each policy, and the difference in probabilities between derogating and non-derogating states is substantial (see @fig-preds-mfx-policies-2 for the percentage-point differences between the predictions for the two groups of states).
 
 For instance, all countries were highly likely to cancel public events in March and April 2020, with greater than a 95% chance. Over time, countries that did not derogate became less likely to cancel events, with the probability dropping to just above 90% in June 2021. Countries that derogated, however, were essentially guaranteed to regularly cancel events throughout the entire period of study, with a nearly 100% probability. The difference in predicted probabilities between the two types of countries ranged from 3 to 8 percentage points ($p(\Delta > 0) = 1$). The differences in policy implementation are starker for other types of emergency measures. Derogating states had a nearly 100% probability of imposing restrictions on gathering across all 15 months, while non-derogating states ranged between 80% and 90%, representing a 15–18 percentage point difference ($p(\Delta > 0) = 1$). Derogating states were also far more likely to close public transit, beginning with a roughly 80% probability in March 2020 and ending in June 2021 with a 60% probability. Non-derogating states followed a similar downward trend over time, but 23–25 percentage points lower than their derogating counterparts ($p(\Delta > 0) = 1$). Restrictions on internal movement were practically guaranteed at the beginning of the pandemic for derogating states, with a nearly 100% probability, dropping to roughly 70% by June 2021. Non-derogating states, on the other hand, began the pandemic with a predicted 75% probability of limiting movement, dropping to only 25% by June 2021, representing a 20–40 percentage point difference ($p(\Delta > 0) = 1$). The only policy we observed where there was no sizable difference between the two types of states is restrictions on international travel. Both derogating and non-derogating states had a nearly 100% probability of limiting international movement across all 15 months.
 
-```{r fig-preds-mfx-prelim, fig.width=12, fig.height=6, out.width="100%", cache=FALSE}
+```{r fig-preds-mfx-policies, fig.width=12, fig.height=6, out.width="100%", cache=FALSE}
 #| include: true
 #| echo: false
 #| layout-ncol: 1
@@ -290,7 +289,7 @@ For instance, all countries were highly likely to cancel public events in March 
 #|   - "Predicted probabilities"
 #|   - "Contrasts between predicted probabilities"
 
-prelim_plots <- prelim_plot_data %>% 
+policies_plots <- policies_plot_data %>% 
   mutate(pred_plot = map2(pred_data, nice, ~{
     .x %>% 
       ggplot(aes(x = year_week_day, y = .epred, ymin = .lower, ymax = .upper,
@@ -318,17 +317,17 @@ prelim_plots <- prelim_plot_data %>%
       theme_pandem()
   }))
 
-wrap_plots(prelim_plots$pred_plot)
-wrap_plots(prelim_plots$mfx_plot)
+wrap_plots(policies_plots$pred_plot)
+wrap_plots(policies_plots$mfx_plot)
 ```
 
 These results reveal important insights into the motivations of derogating states. Countries that undertook emergency safety measures seem to have taken the time to follow international law and uphold their treaty obligations. International law thus appears to not just be an empty commitment—states that took the time to formally derogate were more likely to keep these emergency measures in place for longer and take their derogations seriously.
 
 ## Derogations and human rights
 
-The results of our models show that derogations have some protective effect against more bureaucratic forms of human rights abuses and less against practical abuses (see @fig-preds-mfx-h1). There is no substantial difference between derogating and non-derogating countries when considering the probability of imposing discriminatory policies or engaging in abusive enforcement. Both types of countries follow nearly identical trends over the first 15 months of the pandemic, with an 85% predicted probability of no discriminatory policy in March 2020 rising to nearly 100% by June 2021. The next most probable outcomes—minor and moderate levels of discriminatory policies—are equally likely regardless of derogation status. Moreover, countries that derogate were substantially less likely to engage in no abusive enforcement and instead turn to minor or moderate levels of abusive enforcement, particularly in the early months of the pandemic. Minor and moderate levels of excessive enforcement are each several percentage points more likely for derogating countries than for their non-derogating counterparts. 
+The results of our models show that derogations have some protective effect against more bureaucratic forms of human rights abuses and less against practical abuses (see @fig-preds-mfx-human-rights). There is no substantial difference between derogating and non-derogating countries when considering the probability of imposing discriminatory policies or engaging in abusive enforcement. Both types of countries follow nearly identical trends over the first 15 months of the pandemic, with an 85% predicted probability of no discriminatory policy in March 2020 rising to nearly 100% by June 2021. The next most probable outcomes—minor and moderate levels of discriminatory policies—are equally likely regardless of derogation status. Moreover, countries that derogate were substantially less likely to engage in no abusive enforcement and instead turn to minor or moderate levels of abusive enforcement, particularly in the early months of the pandemic. Minor and moderate levels of excessive enforcement are each several percentage points more likely for derogating countries than for their non-derogating counterparts. 
 
-```{r fig-preds-mfx-h1, fig.width=13, fig.height=6, out.width="100%"}
+```{r fig-preds-mfx-human-rights, fig.width=13, fig.height=6, out.width="100%"}
 #| include: true
 #| echo: false
 #| layout-ncol: 1
@@ -337,7 +336,7 @@ The results of our models show that derogations have some protective effect agai
 #|   - "Predicted probabilities"
 #|   - "Contrasts between predicted probabilities"
 
-h1_plots <- h1_plot_data %>% 
+human_rights_plots <- human_rights_plot_data %>% 
   # Predicted probabilities
   mutate(pred_plot = pmap(list(pred_data, nice, family), \(.data, .nice_name, .family) {
     if (.family == "cumulative") {
@@ -409,8 +408,8 @@ h1_plots <- h1_plot_data %>%
     }
   }))
 
-wrap_plots(h1_plots$pred_plot)
-wrap_plots(h1_plots$mfx_plot)
+wrap_plots(human_rights_plots$pred_plot)
+wrap_plots(human_rights_plots$mfx_plot)
 ```
 
 The mechanisms behind this seeming reversal—where countries that follow correct human rights procedures end up enforcing emergency policies in a more abusive way may be attributable to principal-agent problems. While elites or diplomats are the ones submitting derogations and committing to complying with international law, they are not the actors implementing emergency measures. During the pandemic, there may be immense variation in states' abilities to enforce these policies as intended, especially when it relates to human rights. Lower-level officials such as those in the police, state security forces and regional bureaucrats are often the ones enforcing emergency measures. Unlike their principals (elites), these agents neither have training in international law nor incentives to comply with derogations. Further, as previous research shows, during high levels of stress and fear, decisionmaking is more likely to be driven by agents who discounts principals' (dis)incentives [@HooverGreen:2016]. As such, these differences in incentives and training between elites and local officials may explain the incidences of abusive enforcement even when states submit derogations and claim that emergency measures will be implemented proportional to the threat at hand. 
