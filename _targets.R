@@ -141,24 +141,10 @@ list(
   tar_target(h1_plot_data, build_h1_plot_data(m_h1, year_week_lookup)),
   tar_target(h2_plot_data, build_h2_plot_data(m_h2)),
   
-  ## Analysis notebook ----
-  tar_quarto(manuscript_nice, path = "manuscript", quiet = FALSE),
-  
-  # Temporary target here to switch profiles. Eventually this can be removed
-  # once quarto::quarto_render() adds support for profiles
-  # (https://github.com/quarto-dev/quarto-r/issues/95) and
-  # tarchetypes::tar_quarto() gets expanded to use that support
-  # (https://github.com/ropensci/tarchetypes/issues/139)
-  tar_target(manuscript_manuscripty, {
-    manuscript_nice  # Force a dependency
-    
-    # Render manuscript-y output with the ms profile
-    withr::with_envvar(new = c("QUARTO_PROFILE" = "ms"), {
-      quarto::quarto_render("manuscript", quiet = FALSE)
-      return(unlist(tarchetypes::tar_quarto_files("manuscript")))
-    })
-  }, format = "file"),
-  
+  ## Manuscript and analysis notebook ----
+  tar_quarto(manuscript_nice, path = "manuscript", quiet = FALSE, profile = "nice"),
+  tar_quarto(manuscript_manuscripty, path = "manuscript", quiet = FALSE, profile = "ms"),
+
   tar_quarto(website, path = ".", quiet = FALSE),
   tar_target(deploy_script, here_rel("deploy.sh"), format = "file"),
   tar_target(deploy, {
