@@ -126,6 +126,7 @@ model_policies_prior_only <- brm(
        new_cases_z + cumulative_cases_z + 
        new_deaths_z + cumulative_deaths_z + 
        prior_iccpr_derogations + prior_iccpr_other_action + 
+       v2x_rule + v2x_civlib + v2xcs_ccsi +
        year_week_num + (1 | country_name)), 
   data = filter(weekly_panel, c7_internal_movement_never == 0),
   family = "bernoulli",

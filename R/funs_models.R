@@ -49,7 +49,6 @@ coef_map <- c(
   "b_cumulative_deaths_z" = "Cumulative deaths (standardized)",
   "b_prior_iccpr_derogationsTRUE" = "Past ICCPR derogation",
   "b_prior_iccpr_other_actionTRUE" = "Past ICCPR action",
-  "b_year_week_num" = "Year-week",
   "b_v2x_rule" = "Rule of law",
   "b_v2x_civlib" = "Civil liberties",
   "b_v2xcs_ccsi" = "Core civil society index",
@@ -57,6 +56,7 @@ coef_map <- c(
   "b_Intercept[1]" = "Cut 1",
   "b_Intercept[2]" = "Cut 2",
   "b_Intercept[3]" = "Cut 3",
+  "b_year_week_num" = "Year-week",
   "sd_country_name__Intercept" = "Country random effects σ",
   "sd_who_region__Intercept" = "Region random effects σ"
 )
@@ -85,6 +85,7 @@ f_policies <- function(panel) {
     form <- glue::glue(y, " ~ derogation_ineffect + new_cases_z + cumulative_cases_z + ",
                        "new_deaths_z + cumulative_deaths_z + ",
                        "prior_iccpr_derogations + prior_iccpr_other_action + ",
+                       "v2x_rule + v2x_civlib + v2xcs_ccsi + ",
                        "year_week_num + (1 | country_name)") %>% 
       as.formula()
     
