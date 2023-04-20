@@ -108,7 +108,7 @@ These findings suggest that states may not be discerning the significance of der
 
 A first question of interest before we examine the potential impact of derogations is the nature of states that are more likely to submit them in the first place. Little research has focused on derogations in political science, and research that does exist has mostly focused on the determinants of submitting derogations to the United Nations (UN) rather than the effects of these derogations. This literature tells us that states that are more democratic are more likely to issue derogations and other post-commitment actions such as reservations, understandings, and declarations [@Simmons2009; @comstock2019] and that most states facing an emergency do not, in fact, issue derogations [@HBHelferFariss]. The expectation is that states with strong democratic institutions need to convince domestic audiences of the legality and legitimacy of suspending rights during emergencies. Additionally, democratic states understand international law and international legal mechanisms to be more legitimate and recognize their importance more so than other states. Less democratic states, even though at times may be more likely to violate or evade international human rights law, are less likely to see nuanced pieces of treaty law as important. 
 
-AUDREY: Talk about the map of countries that derogated. The figure will go here-ish, I think
+Between January 2020 and June 2021, 23 states issued a total of 114 ICCPR derogations. [ INSERT MAP ABOUT HERE ] Of derogations that detailed specific obligation suspension lengths, the average length was 41 days. Descriptively, we see states across multiple regions derogated with notable concentration in South America, which has a robust history of engaging with human rights law. We also note that it is not necessarily the 'usual suspects' of strong democracies derogating.  Notably, Nordic states, which typically are very active in human rights law engagement did not issue any derogations during this period.  
  
 ## Derogations from the ICCPR
 
@@ -123,13 +123,14 @@ Recognizing that public health exigencies would require states to curb civil and
 
 ## Derogations and emergency policies
 
-During the pandemic, as @helfer2021 notes, states have had “sharply divergent responses” to international human rights law even when they are parties to the same treaty and confronting similar threats (21).
+During the pandemic, as @helfer2021 notes, states have had “sharply divergent responses” to international human rights law even when they are parties to the same treaty and confronting similar threats (21). As our descriptive data shows, not all states issued derogations. Derogating states were in the minority of states during the pandemic. 
 
-AUDREY: write expectations about what how derogating and non-derogating states differed in their likelihood of imposing emergency policies - canceling public events, gathering restrictions, closing public transit, movement and international travel
+ We expect that states that derogate during COVID-19 with the intention to impose emergency policies will follow through. Our expectation comes from the specific, time-limited nature of derogations and the limited audience they speak to.  Critics of international law may expect states ratify treaties with the expectation of reputational and other benefits. However, derogations have no such public audience and are not signaling an increased commitment to human rights. There is no clear or expected connection with foreign aid, trade, or other theorized 'rewards' for larger legal actions. Instead, derogations are a very specific legal action that states voluntarily enter into after commitment has fully taken place.  Given this, we expect that derogating states took the legal action seriously and generally followed through with the derogations they submitted. 
+ 
 
-> **Hypothesis 1~a~**: If states blah, then blah.
+> **Hypothesis 1~a~**: If states issued COVID-19 derogations, then we expect that they will be more likely to impose relevant emergency polices such as canceling public events, restricting gatherings, closing public transit, and restricting domestic and international movement. 
 >
-> **Hypothesis 2~b~**: If states blah, then blah.
+> **Hypothesis 1~b~**: If states did not issue COVID-19 derogations, we expect that they will be less likely to impose related emergency policies.  
 >
 
 
