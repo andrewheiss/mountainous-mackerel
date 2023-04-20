@@ -2,9 +2,7 @@
   "hash": "f5c1376523138fb78566bedd2628ce55",
   "result": {
     "markdown": "---\ntitle: Manuscript\ntoc: false\npage-layout: full\n---\n\n\n\n```{=html}\n<p class=\"text-center\">\n  <a class=\"btn btn-success btn-sm mb-1\" href=\"/manuscript/output/manuscript.html\" target=\"manuscript\">\n  <i class=\"fa-solid fa-file-lines\"></i> &ensp;HTML\n  </a> \n  \n  <a class=\"btn btn-success btn-sm mb-1\" href=\"/manuscript/output/manuscript.html\" target=\"_blank\">\n  <i class=\"fa-solid fa-arrow-up-right-from-square\"></i>&ensp;HTML <small>(new window)</small>\n  </a>\n\n  <a class=\"btn btn-danger btn-sm mb-1\" href=\"/manuscript/output/manuscript.pdf\" target=\"manuscript\">\n  <i class=\"fa-solid fa-file-pdf\"></i>&ensp;PDF\n  </a> \n  \n  <a class=\"btn btn-danger btn-sm mb-1\" target=\"_blank\" href=\"/manuscript/output/manuscript.pdf\">\n  <i class=\"fa-solid fa-file-arrow-down\"></i>&ensp;PDF <small>(download)</small>\n  </a>\n  \n  <a class=\"btn btn-warning btn-sm mb-1\" href=\"/manuscript/output-ms/manuscript-ms.pdf\" target=\"manuscript\">\n  <i class=\"fa-solid fa-file-pdf\"></i>&ensp;Manuscripty PDF\n  </a> \n  \n  <a class=\"btn btn-warning btn-sm mb-1\" target=\"_blank\" href=\"/manuscript/output-ms/manuscript-ms.pdf\">\n  <i class=\"fa-solid fa-file-arrow-down\"></i>&ensp;Manuscripty PDF <small>(download)</small>\n  </a>\n</p>\n\n<iframe src=\"/manuscript/output/manuscript.html\" frameborder=\"0\" style=\"overflow:hidden;height:90%;width:100%;border:2px solid #ccc;\" height=\"90%\" width=\"100%\" name=\"manuscript\"></iframe>\n```\n",
-    "supporting": [
-      "manuscript_files"
-    ],
+    "supporting": [],
     "filters": [
       "rmarkdown/pagebreak.lua"
     ],
