@@ -13,6 +13,8 @@ format:
     filters: 
       - "_extensions/andrewheiss/wordcount/citeproc.lua"
       - "_extensions/andrewheiss/wordcount/wordcount.lua"
+    template-partials: 
+      - "html/title-metadata.html"
     appendix-style: plain
     toc: true
     published-title: "Latest version"
