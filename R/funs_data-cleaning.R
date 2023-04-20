@@ -268,6 +268,30 @@ load_world_map <- function(path) {
   return(world_map)
 }
 
+make_derogation_count <- function(weekly_panel) {
+  new_derogations <- weekly_panel %>% 
+    group_by(iso3) %>% 
+    summarize(derogations = sum(iccpr_derogation_filed))
+  
+  return(new_derogations)
+}
+
+make_derogation_map_data <- function(derogation_count, map) {
+  map_with_derogations <- map %>%
+    # Fix some Natural Earth ISO weirdness
+    mutate(ISO_A3 = ifelse(ISO_A3 == "-99", as.character(ISO_A3_EH), as.character(ISO_A3))) %>%
+    mutate(ISO_A3 = case_when(
+      .$ISO_A3 == "GRL" ~ "DNK",
+      .$NAME == "Norway" ~ "NOR",
+      .$NAME == "Kosovo" ~ "XKK",
+      TRUE ~ ISO_A3
+    )) %>%
+    left_join(derogation_count, by = join_by(ISO_A3 == iso3)) %>% 
+    mutate(derogations_1plus = ifelse(derogations == 0, NA, derogations))
+  
+  return(map_with_derogations)
+}
+
 # When using a file-based target, {targets} requires that the function that
 # saves the file returns a path to the file. write_csv() and write_dta() both
 # invisibly return the data frame being written, and saveRDS() returns NULL, so

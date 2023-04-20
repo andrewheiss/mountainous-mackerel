@@ -54,8 +54,6 @@ list(
              format = "file"),
   
   ## Process and clean data ----
-  tar_target(world_map, load_world_map(naturalearth_raw_file)),
-  
   tar_target(iccpr_who_clean, clean_iccpr_who(iccpr_who_raw_file)),
   tar_target(iccpr_action_clean, clean_iccpr_action(iccpr_treaty_action_file)),
   tar_target(oxford_clean, clean_oxford(oxford_raw_file)),
@@ -73,6 +71,11 @@ list(
   tar_target(weekly_panel, make_weekly_data(daily_panel)),
   
   tar_target(year_week_lookup, make_year_week_lookup(weekly_panel)),
+  
+  tar_target(world_map, load_world_map(naturalearth_raw_file)),
+  tar_target(derogation_count, make_derogation_count(weekly_panel)),
+  tar_target(derogation_map_data, make_derogation_map_data(derogation_count, world_map)),
+
   
   ## Save data ----
   ### Daily ----

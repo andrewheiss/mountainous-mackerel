@@ -19,6 +19,7 @@ options(digits = 3, width = 120,
 ```{r load-libraries, warning=FALSE, message=FALSE}
 library(tidyverse)
 library(targets)
+library(sf)
 library(DT)
 library(kableExtra)
 library(lubridate)
@@ -31,11 +32,12 @@ matrix_from_vector <- function(x, ncol) {
 # Generated via random.org
 set.seed(2385)
 
-# Load data 
-withr::with_dir(here::here(), {
-  # Final data
-  tar_load(daily_panel)
-})
+# Load targets stuff
+tar_config_set(store = here::here('_targets'),
+               script = here::here('_targets.R'))
+
+invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
+tar_load(c(daily_panel, derogation_map_data))
 ```
 
 ```{r extract-details}
@@ -122,6 +124,25 @@ daily_panel %>%
   select(country_name, iso3, day, iccpr_derogation_filed,
          derogation_start, derogation_ineffect, derogation_end) %>% 
   datatable()
+```
+
+And here's a map of all the countries that derogated between January 2020 and June 2021:
+
+```{r derogations-map, fig.width=6.5, fig.height=3.5}
+ggplot() +
+  geom_sf(data = derogation_map_data, aes(fill = derogations_1plus),
+          linewidth = 0.1, color = "white") +
+  coord_sf(crs = st_crs("+proj=robin"), datum = NA) +
+  scale_fill_binned(low = colorspace::lighten(clrs[1], amount = 0.8), 
+                    high = clrs[1], na.value = "grey85",
+                    breaks = c(1, 4, 8, 12, 16),
+                    name = "Derogations filed: ",
+                    guide = guide_colorsteps(barwidth = 7, barheight = 0.4,
+                                             title.vjust = 1)) +
+  theme_pandem() +
+  theme(panel.border = element_blank(),
+        legend.title = element_text(face = "bold"),
+        legend.justification = "center")
 ```
 
 
