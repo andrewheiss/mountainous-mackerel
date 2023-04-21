@@ -73,7 +73,7 @@ list(
   tar_target(year_week_lookup, make_year_week_lookup(weekly_panel)),
   
   tar_target(world_map, load_world_map(naturalearth_raw_file)),
-  tar_target(derogation_count, make_derogation_count(weekly_panel)),
+  tar_target(derogation_count, make_derogation_count(iccpr_who_clean)),
   tar_target(derogation_map_data, make_derogation_map_data(derogation_count, world_map)),
 
   

@@ -53,6 +53,7 @@ options(digits = 3, width = 120,
 ```{r libraries-data}
 library(tidyverse)
 library(scales)
+library(sf)
 library(lubridate)
 library(tidybayes)
 library(marginaleffects)
@@ -75,10 +76,25 @@ weekly_panel <- tar_read(weekly_panel) %>%
 
 tar_load(c(policies_plot_data, human_rights_plot_data))
 tar_load(c(models_tbl_policies, models_tbl_human_rights))
+tar_load(c(derogation_map_data, derogation_count))
 
 # Plotting and modelsummary functions
 invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
 invisible(list2env(tar_read(modelsummary_functions), .GlobalEnv))
+```
+
+```{r make-var-lists-and-tbls}
+derog_detail <- derogation_count %>% 
+  filter(derogations > 0) %>% 
+  summarize(countries = n(),
+            total = sum(derogations)) %>% 
+  as.list()
+
+map_data_nice <- derogation_count %>% 
+  filter(derogations > 0) %>% 
+  arrange(desc(derogations)) %>% 
+  mutate(Country = countrycode::countrycode(iso3, "iso3c", "country.name")) %>% 
+  select(Country, Derogations = derogations)
 ```
 
 What is the impact of escape clauses or emergency provisions in international law on human rights? Combating a deadly virus like SARS-CoV-2 required extraordinary public health measures. In an effort to fight the COVID-19 pandemic, governments across the world imposed restrictions on the freedom of movement, association, assembly and privacy. While countries were ostensibly free to instate these policies within their own borders, the imposition of these restrictions raised important questions about states' commitments to international human rights law. Some human rights treaties recognize states' needs for emergency measures during public health concerns and contain escape clauses that establish safeguards to prevent the permanent erosion of these rights during emergencies. The temporary suspension of state compliance with its international treaty obligations occurs through a legal action known as derogation. However, the potential abuse of emergency measures during derogations raises concerns about their impact on human rights. Under emergency decrees, states often impose restrictions that are temporary in theory but difficult to roll back or contain in practice [@Stasavage2020; @LuhrmannRooney2021].
@@ -108,7 +124,41 @@ These findings suggest that states may not be discerning the significance of der
 
 A first question of interest before we examine the potential impact of derogations is the nature of states that are more likely to submit them in the first place. Little research has focused on derogations in political science, and research that does exist has mostly focused on the determinants of submitting derogations to the United Nations (UN) rather than the effects of these derogations. This literature tells us that states that are more democratic are more likely to issue derogations and other post-commitment actions such as reservations, understandings, and declarations [@Simmons2009; @comstock2019] and that most states facing an emergency do not, in fact, issue derogations [@HBHelferFariss]. The expectation is that states with strong democratic institutions need to convince domestic audiences of the legality and legitimacy of suspending rights during emergencies. Additionally, democratic states understand international law and international legal mechanisms to be more legitimate and recognize their importance more so than other states. Less democratic states, even though at times may be more likely to violate or evade international human rights law, are less likely to see nuanced pieces of treaty law as important. 
 
-Between January 2020 and June 2021, 23 states issued a total of 114 ICCPR derogations. [ INSERT MAP ABOUT HERE ] Of derogations that detailed specific obligation suspension lengths, the average length was 41 days. Descriptively, we see states across multiple regions derogated with notable concentration in South America, which has a robust history of engaging with human rights law. We also note that it is not necessarily the 'usual suspects' of strong democracies derogating.  Notably, Nordic states, which typically are very active in human rights law engagement did not issue any derogations during this period.  
+```{r fig-derogation-map, fig.width=6.5, fig.height=3.5}
+#| include: true
+#| echo: false
+#| fig-cap: "Countries that derogated from the ICCPR in order to undertake pandemic-related emergency measures"
+ggplot() +
+  geom_sf(data = derogation_map_data, aes(fill = derogations_1plus),
+          linewidth = 0.1, color = "white") +
+  coord_sf(crs = st_crs("+proj=robin"), datum = NA) +
+  scale_fill_binned(low = colorspace::lighten(clrs[1], amount = 0.8), 
+                    high = clrs[1], na.value = "grey85",
+                    breaks = c(1, 5, 10, 15, 20),
+                    limits = c(1, 20),
+                    name = "Derogations filed: ",
+                    guide = guide_colorsteps(barwidth = 7, barheight = 0.4,
+                                             title.vjust = 1)) +
+  theme_pandem() +
+  theme(panel.border = element_blank(),
+        legend.title = element_text(face = "bold"),
+        legend.text = element_text(size = rel(0.6)),
+        legend.justification = "center")
+```
+
+```{r tbl-derogation-countries}
+#| tbl-cap: Countries that derogated from the ICCPR in order to undertake pandemic-related emergency measures 
+#| include: true
+#| echo: false
+bind_cols(dplyr::slice(map_data_nice, 1:12),
+          add_row(dplyr::slice(map_data_nice, 13:n()))) %>% 
+  kbl(booktabs = TRUE, linesep = "\\addlinespace[0.5em]",
+      col.names = rep(c("Country", "Derogations"), 2)) %>% 
+  kable_styling(font_size = ifelse(fmt_out == "latex", 8.5, NA))
+```
+
+
+Between January 2020 and June 2021, `r derog_detail$countries` states issued a total of `r derog_detail$total` ICCPR derogations (see @fig-derogation-map and @tbl-derogation-countries). Of derogations that detailed specific obligation suspension lengths, the average length was 41 days. Descriptively, we see states across multiple regions derogated with notable concentration in South America, which has a robust history of engaging with human rights law. We also note that it is not necessarily the "usual suspects" of strong democracies that derogate. Notably, Nordic states—which typically are very active in human rights law engagement—did not issue any derogations during this period.
  
 ## Derogations from the ICCPR
 
@@ -267,7 +317,7 @@ $$
 
 :::
 
-In all model specifications, we include new and cumulative COVID-19 cases and deaths as controls. In our second hypothesis, we add controls for previous ICCPR derogations or other actions, along with V-Dem indices for the respect of rule of law, civil liberties, and civil society.
+In all model specifications, we include new and cumulative COVID-19 cases along with indicators for ICCPR derogations or other actions, and V-Dem indices for the respect of rule of law, civil liberties, and civil society.
 
 Because these models provide coefficients on the logged odds scale, and because the ordered logistic models require the incorporation of coefficients for each threshold to correctly interpret, we do not discuss the results of the models using raw model estimates (though we include complete regression tables in the appendix). Instead we rely on probability-scale predictions and marginal effects whenever possible. To do so, we calculate predicted probabilities holding all explanatory variables at their typical values (median or mode). For logistic models, we estimate the probability of having a specific policy or violating a specific human right; for ordered models, we estimate the probability of each possible level of severity. To determine the effect of derogations, we calculate the contrast in predicted probabilities when derogation is set to true vs. when it is set to false (e.g., in ordered logistic models we compare the probability of major discrimination under derogation with the probability of major discrimination without derogation). We use median values from our models' posterior distributions as point estimates and provide credible intervals using the 95% highest posterior density. For hypothesis testing, we report the posterior probability that the between-level predicted differences are above or below zero.
 

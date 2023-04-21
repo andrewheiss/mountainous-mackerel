@@ -268,8 +268,8 @@ load_world_map <- function(path) {
   return(world_map)
 }
 
-make_derogation_count <- function(weekly_panel) {
-  new_derogations <- weekly_panel %>% 
+make_derogation_count <- function(data) {
+  new_derogations <- data %>% 
     group_by(iso3) %>% 
     summarize(derogations = sum(iccpr_derogation_filed))
   
