@@ -25,10 +25,9 @@ plot_trank <- function(model, params) {
 }
 
 plot_pp <- function(model) {
-  bayesplot::pp_check(model, ndraws = 100, type = "bars")
+  bayesplot::pp_check(model, ndraws = 100, type = "bars") +
+    theme_pandem()
 }
-
-
 
 
 # Storing ggplot objects as rds files is BAD 
