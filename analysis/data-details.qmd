@@ -20,7 +20,7 @@ options(digits = 3, width = 120,
 library(tidyverse)
 library(targets)
 library(sf)
-library(DT)
+library(gt)
 library(kableExtra)
 library(lubridate)
 
@@ -28,6 +28,8 @@ matrix_from_vector <- function(x, ncol) {
   n_balanced <- ceiling(length(x) / ncol) * ncol
   matrix(c(x, rep(NA, n_balanced - length(x))), ncol = ncol)
 }
+
+clrs_light <- MetBrewer::met.brewer("Tiepolo") %>% colorspace::lighten(0.8)
 
 # Generated via random.org
 set.seed(2385)
@@ -119,11 +121,18 @@ daily_panel %>%
 And here's an extract of the data from June 11, 2020, the day that Argentina filed a derogation notice:
 
 ```{r show-iccpr}
+#| column: page-right
 daily_panel %>%
   filter(day == ymd("2020-06-11")) %>%
   select(country_name, iso3, day, iccpr_derogation_filed,
          derogation_start, derogation_ineffect, derogation_end) %>% 
-  datatable()
+  gt() %>% 
+  cols_width(country_name ~ px(250),
+             iso3 ~ px(60)) %>% 
+  data_color(columns = contains("derogation"),
+             fn = scales::col_factor(c(clrs_light[1], clrs_light[8]), 
+                                     domain = c(FALSE, TRUE))) %>% 
+  opt_interactive(use_compact_mode = TRUE, use_highlight = TRUE)
 ```
 
 And here's a map of all the countries that derogated between January 2020 and June 2021:
@@ -135,7 +144,8 @@ ggplot() +
   coord_sf(crs = st_crs("+proj=robin"), datum = NA) +
   scale_fill_binned(low = colorspace::lighten(clrs[1], amount = 0.8), 
                     high = clrs[1], na.value = "grey85",
-                    breaks = c(1, 4, 8, 12, 16),
+                    breaks = c(1, 5, 10, 15, 20),
+                    limits = c(1, 20),
                     name = "Derogations filed: ",
                     guide = guide_colorsteps(barwidth = 7, barheight = 0.4,
                                              title.vjust = 1)) +
@@ -249,13 +259,18 @@ daily_panel %>%
 And here's an extract of the data from June 11, 2020:
 
 ```{r show-oxford}
+#| column: page-right
 daily_panel %>%
   filter(day == ymd("2020-06-11")) %>%
   select(country_name, iso3, day, stringency_index, c3_cancel_events,
          c4_gatherings, c5_public_transport,
          c6_stay_at_home, c7_internal_movement,
          c8_intl_travel, e1_income_support, e2_debt_relief) %>% 
-  datatable()
+  gt() %>% 
+  cols_width(country_name ~ px(250),
+             iso3 ~ px(60),
+             day ~ px(150)) %>% 
+  opt_interactive(use_compact_mode = TRUE, use_highlight = TRUE)
 ```
 
 
