@@ -75,7 +75,10 @@ build_policies_plot_data <- function(model_df, year_week_lookup) {
         posteriordraws() %>% 
         left_join(year_week_lookup, by = "year_week_num") %>% 
         group_by(year_week_day) %>% 
-        tidybayes::median_qi(draw, .width = c(0.5, 0.8, 0.95))
+        reframe(post_medians = tidybayes::median_qi(draw, .width = c(0.5, 0.8, 0.95)),
+                p_gt_0 = sum(draw > 0) / n()) %>% 
+        unnest(post_medians) %>% 
+        rename(draw = y, .lower = ymin, .upper = ymax)
     }))
   
   return(model_df_preds_mfx)
@@ -123,11 +126,17 @@ build_human_rights_plot_data <- function(model_df, year_week_lookup) {
         mfx <- mfx %>% 
           mutate(group = factor(group, levels = levels(.model$data[[.y]]), ordered = TRUE)) %>% 
           group_by(year_week_day, group) %>% 
-          tidybayes::median_qi(draw, .width = c(0.5, 0.8, 0.95))
+          reframe(post_medians = tidybayes::median_qi(draw, .width = c(0.5, 0.8, 0.95)),
+                  p_gt_0 = sum(draw > 0) / n()) %>% 
+          unnest(post_medians) %>% 
+          rename(draw = y, .lower = ymin, .upper = ymax)
       } else {
         mfx <- mfx %>% 
           group_by(year_week_day) %>% 
-          tidybayes::median_qi(draw, .width = c(0.5, 0.8, 0.95))
+          reframe(post_medians = tidybayes::median_qi(draw, .width = c(0.5, 0.8, 0.95)),
+                  p_gt_0 = sum(draw > 0) / n()) %>% 
+          unnest(post_medians) %>% 
+          rename(draw = y, .lower = ymin, .upper = ymax)
       }
       
       mfx
