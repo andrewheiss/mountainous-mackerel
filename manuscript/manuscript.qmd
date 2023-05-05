@@ -59,7 +59,6 @@ library(tidybayes)
 library(marginaleffects)
 library(patchwork)
 library(colorspace)
-library(modelsummary)
 library(kableExtra)
 library(gt)
 library(targets)
@@ -75,7 +74,6 @@ weekly_panel <- tar_read(weekly_panel) %>%
   mutate(year_week_day = ymd(year_week_day))
 
 tar_load(c(policies_plot_data, human_rights_plot_data))
-tar_load(c(models_tbl_policies, models_tbl_human_rights))
 tar_load(c(derogation_map_data, derogation_count))
 
 # Plotting and modelsummary functions
@@ -96,47 +94,10 @@ map_data_nice <- derogation_count %>%
   mutate(Country = countrycode::countrycode(iso3, "iso3c", "country.name")) %>% 
   select(Country, Derogations = derogations)
 
-fmt_p_inline <- function(x, direction) {
-  x <- round(x, 2)
-  
-  if (direction == "gt") {
-    out <- glue::glue(r"[$p(\Delta > 0) = {x}$]")
-  } else {
-    out <- glue::glue(r"[$p(\Delta < 0) = {x}$]")
-  }
-  
-  return(out)
-}
-
-policies_pred <- policies_plot_data %>% 
-  unnest(pred_data) %>% 
-  filter(.width == 0.95) %>% 
-  select(nice, year_week_day, derogation_ineffect, .epred, .lower, .upper) %>% 
-  group_by(nice, derogation_ineffect) %>% 
-  mutate(rank = dense_rank(.epred)) %>% 
-  filter(rank == 1 | rank == max(rank)) %>% 
-  mutate(rank = ifelse(rank == 1, "min", "max")) %>% 
-  group_by(rank, derogation_ineffect) %>% 
-  mutate(outcome = janitor::make_clean_names(nice)) %>%
-  rename(draw = .epred, min = .lower, max = .upper) %>% 
-  mutate(across(c(draw, min, max), list(nice = ~round(. * 100, 0)))) %>% 
+policies_pred <- policies_table_data$policies_pred_tbl %>% 
   split(~outcome + derogation_ineffect + rank)
 
-policies_mfx <- policies_plot_data %>% 
-  unnest(mfx_data) %>% 
-  filter(.width == 0.95) %>% 
-  select(nice, year_week_day, draw, .lower, .upper, p_gt_0, .width) %>% 
-  group_by(nice) %>% 
-  mutate(rank = dense_rank(draw)) %>% 
-  filter(rank == 1 | rank == max(rank)) %>% 
-  mutate(rank = ifelse(rank == 1, "min", "max")) %>% 
-  group_by(rank) %>% 
-  mutate(outcome = janitor::make_clean_names(nice)) %>%
-  rename(min = .lower, max = .upper) %>% 
-  mutate(across(c(draw, min, max), list(nice = ~round(. * 100, 0))),
-         p_lt_0 = p_gt_0 - 1) %>% 
-  mutate(p_gt = fmt_p_inline(p_gt_0, "gt"),
-         p_lt = fmt_p_inline(p_lt_0, "lt")) %>% 
+policies_mfx <- policies_table_data$policies_mfx_tbl %>% 
   split(~outcome + rank)
 ```
 
@@ -166,7 +127,6 @@ These findings suggest that states may not be discerning the significance of der
 ## Derogations during COVID-19
 
 A first question of interest is the nature of states that are more likely to submit them in the first place. Little research has focused on derogations in political science, and research that does exist has mostly focused on the determinants of submitting derogations to the UN rather than the effects of these derogations. This literature tells us that states that are more democratic are more likely to issue derogations and other post-commitment actions such as reservations, understandings, and declarations [@Simmons2009; @comstock2019] and that most states facing an emergency do not, in fact, issue derogations [@HBHelferFariss]. The expectation is that states with strong democratic institutions need to convince domestic audiences of the legality and legitimacy of suspending rights during emergencies. Additionally, democratic states understand international law and international legal mechanisms to be more legitimate and recognize the importance of them more so than other states. Less democratic states, even though at times may be more likely to violate or evade international human rights law, are less likely to see nuanced pieces of treaty law as important to engage with. Scholars were split on expectations about COVID-era derogations. @Lebret:2020 argued that derogations are the best legal mechanism for states to notify the global community of their inability to comply with human rights standards during the COVID-19 pandemic. However, @richardson2020 see derogations as a less clear path for states during COVID-19, describing the actions, their conditions, and human rights as a "tangled morass" (p. 106). 
-
 
 ```{r fig-derogation-map, fig.width=6.5, fig.height=3.5}
 #| include: true
@@ -372,7 +332,7 @@ Because these models provide coefficients on the logged odds scale, and because 
 
 We begin by exploring our first set of hypotheses to examine how derogating and non-derogating states approached the implementation of their emergency public health measures. @fig-preds-mfx-policies-1 shows the results of five logistic regression models as predicted probabilities of imposing specific emergency measures over the course of the first 15 months of the pandemic. In every case, throughout the early pandemic, countries with a formal derogation in effect are far more likely to have undertook each policy, and the difference in probabilities between derogating and non-derogating states is substantial (see @fig-preds-mfx-policies-2 for the percentage-point differences between the predictions for the two groups of states).
 
-For instance, all countries were highly likely to cancel public events in March and April 2020, with a greater than a 95% chance. Over time, countries that did not derogate became less likely to cancel events, with the probability dropping to just above 90% in June 2021. Countries that derogated, however, were essentially guaranteed to regularly cancel events throughout the entire period of study, with a nearly 100% probability. The difference in predicted probabilities between the two types of countries ranged from `r policies_mfx$cancel_public_events.min$draw_nice` to `r policies_mfx$cancel_public_events.max$draw_nice` percentage points (`r policies_mfx$cancel_public_events.max$p_gt`). The differences in policy implementation are starker for other types of emergency measures. Derogating states had a nearly 100% probability of imposing restrictions on gathering across all 15 months, while non-derogating states ranged between `r policies_pred$gathering_restrictions.No.min$draw_nice`% and `r policies_pred$gathering_restrictions.No.max$draw_nice`%, representing a `r policies_mfx$gathering_restrictions.min$draw_nice`–`r policies_mfx$gathering_restrictions.max$draw_nice` percentage point difference (`r policies_mfx$gathering_restrictions.max$p_gt`). Derogating states were also far more likely to close public transit, beginning with a `r policies_pred$close_public_transit.Yes.max$draw_nice`% probability in March 2020 and ending in June 2021 with a `r policies_pred$close_public_transit.Yes.min$draw_nice`% probability. Non-derogating states followed a similar downward trend over time, but `r policies_mfx$close_public_transit.min$draw_nice`–`r policies_mfx$close_public_transit.max$draw_nice` percentage points lower than their derogating counterparts (`r policies_mfx$close_public_transit.max$p_gt`). Restrictions on internal movement were practically guaranteed at the beginning of the pandemic for derogating states, with a nearly 100% probability, dropping to `r policies_pred$movement.Yes.min$draw_nice`% by June 2021. Non-derogating states, on the other hand, began the pandemic with a predicted `r policies_pred$movement.No.max$draw_nice`% probability of limiting movement, dropping to only `r policies_pred$movement.No.min$draw_nice`% by June 2021, representing a `r policies_mfx$movement.min$draw_nice`–`r policies_mfx$movement.max$draw_nice` percentage point difference (`r policies_mfx$movement.max$p_gt`). The only policy we observed where there was no sizable difference between the two types of states is restrictions on international travel. Both derogating and non-derogating states had a nearly 100% probability of limiting international movement across all 15 months.
+For instance, all countries were highly likely to cancel public events in March and April 2020, with a greater than a 95% chance. Over time, countries that did not derogate became less likely to cancel events, with the probability dropping to just above 90% in June 2021. Countries that derogated, however, were essentially guaranteed to regularly cancel events throughout the entire period of study, with a nearly 100% probability. The difference in predicted probabilities between the two types of countries ranged from `r policies_mfx$cancel_public_events.min$draw_nice`–`r policies_mfx$cancel_public_events.max$draw_nice` percentage points (`r policies_mfx$cancel_public_events.max$p_gt`) between March 2020 and June 2021. The differences in policy implementation are starker for other types of emergency measures. Derogating states had a nearly 100% probability of imposing restrictions on gathering across all 15 months, while non-derogating states ranged between `r policies_pred$gathering_restrictions.No.min$draw_nice`% and `r policies_pred$gathering_restrictions.No.max$draw_nice`%, representing a `r policies_mfx$gathering_restrictions.min$draw_nice`–`r policies_mfx$gathering_restrictions.max$draw_nice` percentage point difference (`r policies_mfx$gathering_restrictions.max$p_gt`). Derogating states were also far more likely to close public transit, beginning with a `r policies_pred$close_public_transit.Yes.max$draw_nice`% probability in March 2020 and ending in June 2021 with a `r policies_pred$close_public_transit.Yes.min$draw_nice`% probability. Non-derogating states followed a similar downward trend over time, but `r policies_mfx$close_public_transit.min$draw_nice`–`r policies_mfx$close_public_transit.max$draw_nice` percentage points lower than their derogating counterparts (`r policies_mfx$close_public_transit.max$p_gt`). Restrictions on internal movement were practically guaranteed at the beginning of the pandemic for derogating states, with a nearly 100% probability, dropping to `r policies_pred$movement.Yes.min$draw_nice`% by June 2021. Non-derogating states, on the other hand, began the pandemic with a predicted `r policies_pred$movement.No.max$draw_nice`% probability of limiting movement, dropping to only `r policies_pred$movement.No.min$draw_nice`% by June 2021, representing a `r policies_mfx$movement.min$draw_nice`–`r policies_mfx$movement.max$draw_nice` percentage point difference (`r policies_mfx$movement.max$p_gt`). The only policy we observed where there was no sizable difference between the two types of states is restrictions on international travel. Both derogating and non-derogating states had a nearly 100% probability of limiting international movement across all 15 months.
 
 ```{r fig-preds-mfx-policies, fig.width=12, fig.height=6, out.width="100%", cache=FALSE}
 #| include: true
@@ -521,7 +481,6 @@ With the caveat that our results are not causal—we have not attempted to use a
 
 We suggest that future research examine different incentives facing state officials during crisis. There may be key differences in enforcement between local level bureaucrats and higher-level elites. While elites submit derogations and may be more cautious about international law, local level enforcement may not be as concerned about international legal aspects such as time limits and derogable vs. non-derogable rights. This distinction may explain some variation in policy and discrimination practices during the pandemic. We also recommend that future research analyze the impact of other factors that can mitigate the adverse impacts of emergency measures. In the absence of adequate review from the international community and treaty monitoring bodies during crises, certain domestic-level factors, such as a robust civil society and media, may be necessary to mitigate the adverse effects of emergency measures.
 
-Overall, we find that states used derogations as they were intended during the COVID-19 pandemic and no large-scale misuse of the legal action took place. It can be an important signal for states to submit derogations, both to international and domestic communities, about intentions to mitigate the spread of disease through the temporary suspension of human rights. 
-
+Overall, we find that states used derogations as they were intended during the COVID-19 pandemic and no large-scale misuse of the legal action took place. It can be an important signal for states to submit derogations, both to international and domestic communities, about intentions to mitigate the spread of disease through the temporary suspension of human rights.
 
 # References

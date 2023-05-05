@@ -132,8 +132,9 @@ list(
   tar_target(graphic_functions, lst(theme_pandem, set_annotation_fonts, clrs)),
   tar_target(diagnostic_functions, lst(plot_trace, plot_trank, plot_pp)),
   
-  ## Plots ----
+  ## Plots and tables ----
   tar_target(policies_plot_data, build_policies_plot_data(m_policies, year_week_lookup)),
+  tar_target(policies_table_data, build_policies_table_data(policies_plot_data)),
   tar_target(human_rights_plot_data, build_human_rights_plot_data(m_human_rights, year_week_lookup)),
 
   ## Manuscript and analysis notebook ----

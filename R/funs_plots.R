@@ -29,6 +29,18 @@ plot_pp <- function(model) {
     theme_pandem()
 }
 
+fmt_p_inline <- function(x, direction) {
+  x <- round(x, 2)
+  
+  if (direction == "gt") {
+    out <- glue::glue(r"[$p(\Delta > 0) = {x}$]")
+  } else {
+    out <- glue::glue(r"[$p(\Delta < 0) = {x}$]")
+  }
+  
+  return(out)
+}
+
 
 # Storing ggplot objects as rds files is BAD 
 #   (https://github.com/hadley/ggplot2-book/issues/344)
@@ -143,4 +155,39 @@ build_human_rights_plot_data <- function(model_df, year_week_lookup) {
     }))
   
   return(model_df_preds_mfx)
+}
+
+build_policies_table_data <- function(model_df) {
+  policies_pred_tbl <- model_df %>% 
+    unnest(pred_data) %>% 
+    filter(.width == 0.95) %>% 
+    select(nice, year_week_day, derogation_ineffect, .epred, .lower, .upper) %>% 
+    group_by(nice, derogation_ineffect) %>% 
+    mutate(rank = dense_rank(.epred)) %>% 
+    filter(rank == 1 | rank == max(rank)) %>% 
+    mutate(rank = ifelse(rank == 1, "min", "max")) %>% 
+    group_by(rank, derogation_ineffect) %>% 
+    mutate(outcome = janitor::make_clean_names(nice)) %>%
+    rename(draw = .epred, min = .lower, max = .upper) %>% 
+    mutate(across(c(draw, min, max), list(nice = ~round(. * 100, 0)))) %>% 
+    ungroup()
+
+  policies_mfx_tbl <- model_df %>% 
+    unnest(mfx_data) %>% 
+    filter(.width == 0.95) %>% 
+    select(nice, year_week_day, draw, .lower, .upper, p_gt_0, .width) %>% 
+    group_by(nice) %>% 
+    mutate(rank = dense_rank(draw)) %>% 
+    filter(rank == 1 | rank == max(rank)) %>% 
+    mutate(rank = ifelse(rank == 1, "min", "max")) %>% 
+    group_by(rank) %>% 
+    mutate(outcome = janitor::make_clean_names(nice)) %>%
+    rename(min = .lower, max = .upper) %>% 
+    mutate(across(c(draw, min, max), list(nice = ~round(. * 100, 0))),
+           p_lt_0 = p_gt_0 - 1) %>% 
+    mutate(p_gt = fmt_p_inline(p_gt_0, "gt"),
+           p_lt = fmt_p_inline(p_lt_0, "lt")) %>% 
+    ungroup()
+  
+  return(lst(policies_pred_tbl, policies_mfx_tbl))
 }
