@@ -79,7 +79,7 @@ add_breaks <- function(x, fmt) {
 
 We use Stan `r cmdstanr::cmdstan_version()` [@stan] through R `r paste0(version$major, ".", version$minor)` [@r-project] and {brms} `r packageVersion("brms")` [@brms-jss] to estimate our models. We generate 4 MCMC chains for each model with 2,000 iterations in each chain, 1,000 of which are used for warmup. All chains converge; we assess convergence with visual inspection.
 
-Complete results from all the models, along with posterior predictive checks, goodness-of-fit measures, and prediction diagnostics are all available at a companion statistical analysis compendium at <https://doi.org/10.17605/OSF.IO/AQVNK>. Our general modeling approach can be summarized as follows:
+Complete results from all the models, along with posterior predictive checks, goodness-of-fit measures, and prediction diagnostics are all available at a companion statistical analysis compendium at <https://doi.org/10.17605/OSF.IO/ANONYMIZED-FOR-NOW>. Our general modeling approach can be summarized as follows:
 
 ## Model definitions
 
