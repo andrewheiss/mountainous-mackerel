@@ -51,8 +51,8 @@ website:
         file: analysis/hypotheses.qmd
       - text: "Presentations"
         file: presentations/index.qmd
-      - text: "Manuscript"
-        file: analysis/manuscript.qmd
+      - text: "Paper"
+        file: analysis/paper.qmd
       - text: "Appendix"
         file: analysis/appendix.qmd
     right:
