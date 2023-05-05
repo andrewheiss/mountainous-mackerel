@@ -1,0 +1,14 @@
+{
+  "hash": "0affefd2d10b8d577b61c3353daa6345",
+  "result": {
+    "markdown": "---\ntitle: \"Download final data\"\nformat:\n  html:\n    code-tools: false\n---\n\n\n\n\n\n<table class=\"table\">\n  <thead>\n    <tr>\n      <th scope=\"col\">Program</th>\n      <th scope=\"col\">File</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>CSV file for any program</td>\n      <td><a class=\"btn btn-primary\" target=\"_blank\" href=\"data/daily_panel.csv\">{{< fa table >}} &ensp;<span class=\"font-monospace\">daily_panel.csv</span></a></td>\n    </tr>\n    <tr>\n      <td><span class=\"font-monospace\">.rds</span> file for R<br><span class=\"small\">(load with `df <- readRDS(\"daily_panel.rds\")`)</small></td>\n      <td><a class=\"btn btn-primary\" target=\"_blank\" href=\"data/daily_panel.rds\">{{< fa brands r-project >}} &ensp;<span class=\"font-monospace\">daily_panel.rds</span></a></td>\n    </tr>\n    <tr>\n      <td><span class=\"font-monospace\">.dta</span> file for Stata<br><span class=\"small\">(load with `use \"daily_panel.dta\"`)</small></td>\n      <td><a class=\"btn btn-primary\" target=\"_blank\" href=\"data/daily_panel.dta\">{{< fa table-cells >}} &ensp;<span class=\"font-monospace\">daily_panel.dta</span></a></td>\n    </tr>\n  </tbody>\n</table>\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
