@@ -16,6 +16,7 @@ Here are the details of the R environment we used when running this analysis:
 # Injecting Stan info into the platform info adapted from TJ Mahr:
 # https://github.com/tjmahr/tjmahr.github.io/commit/b8be089
 session_info <- sessioninfo::session_info()
+session_info$platform$`quarto` <- as.character(quarto::quarto_version())
 session_info$platform$`stan (cmdstanr)` <- cmdstanr::cmdstan_version()
 
 session_info$platform
