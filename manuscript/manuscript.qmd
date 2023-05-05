@@ -95,6 +95,49 @@ map_data_nice <- derogation_count %>%
   arrange(desc(derogations)) %>% 
   mutate(Country = countrycode::countrycode(iso3, "iso3c", "country.name")) %>% 
   select(Country, Derogations = derogations)
+
+fmt_p_inline <- function(x, direction) {
+  x <- round(x, 2)
+  
+  if (direction == "gt") {
+    out <- glue::glue(r"[$p(\Delta > 0) = {x}$]")
+  } else {
+    out <- glue::glue(r"[$p(\Delta < 0) = {x}$]")
+  }
+  
+  return(out)
+}
+
+policies_pred <- policies_plot_data %>% 
+  unnest(pred_data) %>% 
+  filter(.width == 0.95) %>% 
+  select(nice, year_week_day, derogation_ineffect, .epred, .lower, .upper) %>% 
+  group_by(nice, derogation_ineffect) %>% 
+  mutate(rank = dense_rank(.epred)) %>% 
+  filter(rank == 1 | rank == max(rank)) %>% 
+  mutate(rank = ifelse(rank == 1, "min", "max")) %>% 
+  group_by(rank, derogation_ineffect) %>% 
+  mutate(outcome = janitor::make_clean_names(nice)) %>%
+  rename(draw = .epred, min = .lower, max = .upper) %>% 
+  mutate(across(c(draw, min, max), list(nice = ~round(. * 100, 0)))) %>% 
+  split(~outcome + derogation_ineffect + rank)
+
+policies_mfx <- policies_plot_data %>% 
+  unnest(mfx_data) %>% 
+  filter(.width == 0.95) %>% 
+  select(nice, year_week_day, draw, .lower, .upper, p_gt_0, .width) %>% 
+  group_by(nice) %>% 
+  mutate(rank = dense_rank(draw)) %>% 
+  filter(rank == 1 | rank == max(rank)) %>% 
+  mutate(rank = ifelse(rank == 1, "min", "max")) %>% 
+  group_by(rank) %>% 
+  mutate(outcome = janitor::make_clean_names(nice)) %>%
+  rename(min = .lower, max = .upper) %>% 
+  mutate(across(c(draw, min, max), list(nice = ~round(. * 100, 0))),
+         p_lt_0 = p_gt_0 - 1) %>% 
+  mutate(p_gt = fmt_p_inline(p_gt_0, "gt"),
+         p_lt = fmt_p_inline(p_lt_0, "lt")) %>% 
+  split(~outcome + rank)
 ```
 
 What is the impact of international legal emergency provisions on human rights? Combating a deadly virus like COVID-19 required extraordinary public health measures. In an effort to fight the COVID-19 pandemic, governments across the world introduced restrictions on the freedom of movement, association, and assembly. While countries were legally able to introduce these policies within their borders, the restrictions raised important questions about states’ commitments to international human rights law. Some human rights treaties recognize states’ ability to use emergency measures during times of crises, and contain "escape clauses" that safeguard the permanent erosion of human rights during and following emergencies. The temporary suspension of state compliance from international treaty obligations occurs through a legal action called derogation. However, the potential abuse of emergency measures during derogations raises concerns about their impact on human rights. Under emergency decrees, states often impose restrictions that are temporary in theory but difficult to roll back or contain in practice  [@Stasavage2020; @LuhrmannRooney2021]. Did states use pandemic era derogations how they were intended or were they used as a "pandemic pass" to justify violating human rights?
@@ -320,7 +363,7 @@ $$
 
 In all model specifications, we include new and cumulative COVID-19 cases along with indicators for ICCPR derogations or other actions, and V-Dem indices for the respect of rule of law, civil liberties, and civil society.
 
-Because these models provide coefficients on the logged odds scale, and because the ordered logistic models require the incorporation of coefficients for each threshold to correctly interpret, we do not discuss the results of the models using raw model estimates (though we include complete regression tables in the appendix). Instead, we rely on probability-scale predictions and marginal effects whenever possible. To do so, we calculate predicted probabilities holding all explanatory variables at their typical values (median or mode). For logistic models, we estimate the probability of having a specific policy or violating a specific human right; for ordered models, we estimate the probability of each possible level of severity. To determine the effect of derogations, we calculate the contrast in predicted probabilities when derogation is set to true vs. when it is set to false (e.g., in ordered logistic models we compare the probability of major discrimination under derogation with the probability of major discrimination without derogation). We use median values from our models' posterior distributions as point estimates and provide credible intervals using the 95% highest posterior density. For hypothesis testing, we report the posterior probability that the between-level predicted differences are above or below zero.
+Because these models provide coefficients on the logged odds scale, and because the ordered logistic models require the incorporation of coefficients for each threshold to correctly interpret, we do not discuss the results of the models using raw model estimates (though we include complete regression tables in the appendix). Instead, we rely on probability-scale predictions and marginal effects whenever possible. To do so, we calculate conditional predicted probabilities holding all explanatory variables at their typical values (median or mode), and setting all region-specific random offsets ($b_{0_j}$) to 0, meaning that the predicted values refer to the effect of derogations in a typical region. For logistic models, we estimate the probability of having a specific policy or violating a specific human right; for ordered models, we estimate the probability of each possible level of severity. To determine the effect of derogations, we calculate the contrast in predicted probabilities when derogation is set to true vs. when it is set to false (e.g., in ordered logistic models we compare the probability of major discrimination under derogation with the probability of major discrimination without derogation). We use median values from our models' posterior distributions as point estimates and provide credible intervals using the 95% highest posterior density. For hypothesis testing, we report the posterior probability that the between-level predicted differences are above or below zero.
 
 
 # Analysis
@@ -329,7 +372,7 @@ Because these models provide coefficients on the logged odds scale, and because 
 
 We begin by exploring our first set of hypotheses to examine how derogating and non-derogating states approached the implementation of their emergency public health measures. @fig-preds-mfx-policies-1 shows the results of five logistic regression models as predicted probabilities of imposing specific emergency measures over the course of the first 15 months of the pandemic. In every case, throughout the early pandemic, countries with a formal derogation in effect are far more likely to have undertook each policy, and the difference in probabilities between derogating and non-derogating states is substantial (see @fig-preds-mfx-policies-2 for the percentage-point differences between the predictions for the two groups of states).
 
-For instance, all countries were highly likely to cancel public events in March and April 2020, with a greater than a 95% chance. Over time, countries that did not derogate became less likely to cancel events, with the probability dropping to just above 90% in June 2021. Countries that derogated, however, were essentially guaranteed to regularly cancel events throughout the entire period of study, with a nearly 100% probability. The difference in predicted probabilities between the two types of countries ranged from 3 to 8 percentage points ($p(\Delta > 0) = 1$). The differences in policy implementation are starker for other types of emergency measures. Derogating states had a nearly 100% probability of imposing restrictions on gathering across all 15 months, while non-derogating states ranged between 80% and 90%, representing a 15–18 percentage point difference ($p(\Delta > 0) = 1$). Derogating states were also far more likely to close public transit, beginning with a roughly 80% probability in March 2020 and ending in June 2021 with a 60% probability. Non-derogating states followed a similar downward trend over time, but 23–25 percentage points lower than their derogating counterparts ($p(\Delta > 0) = 1$). Restrictions on internal movement were practically guaranteed at the beginning of the pandemic for derogating states, with a nearly 100% probability, dropping to roughly 70% by June 2021. Non-derogating states, on the other hand, began the pandemic with a predicted 75% probability of limiting movement, dropping to only 25% by June 2021, representing a 20–40 percentage point difference ($p(\Delta > 0) = 1$). The only policy we observed where there was no sizable difference between the two types of states is restrictions on international travel. Both derogating and non-derogating states had a nearly 100% probability of limiting international movement across all 15 months.
+For instance, all countries were highly likely to cancel public events in March and April 2020, with a greater than a 95% chance. Over time, countries that did not derogate became less likely to cancel events, with the probability dropping to just above 90% in June 2021. Countries that derogated, however, were essentially guaranteed to regularly cancel events throughout the entire period of study, with a nearly 100% probability. The difference in predicted probabilities between the two types of countries ranged from `r policies_mfx$cancel_public_events.min$draw_nice` to `r policies_mfx$cancel_public_events.max$draw_nice` percentage points (`r policies_mfx$cancel_public_events.max$p_gt`). The differences in policy implementation are starker for other types of emergency measures. Derogating states had a nearly 100% probability of imposing restrictions on gathering across all 15 months, while non-derogating states ranged between `r policies_pred$gathering_restrictions.No.min$draw_nice`% and `r policies_pred$gathering_restrictions.No.max$draw_nice`%, representing a `r policies_mfx$gathering_restrictions.min$draw_nice`–`r policies_mfx$gathering_restrictions.max$draw_nice` percentage point difference (`r policies_mfx$gathering_restrictions.max$p_gt`). Derogating states were also far more likely to close public transit, beginning with a `r policies_pred$close_public_transit.Yes.max$draw_nice`% probability in March 2020 and ending in June 2021 with a `r policies_pred$close_public_transit.Yes.min$draw_nice`% probability. Non-derogating states followed a similar downward trend over time, but `r policies_mfx$close_public_transit.min$draw_nice`–`r policies_mfx$close_public_transit.max$draw_nice` percentage points lower than their derogating counterparts (`r policies_mfx$close_public_transit.max$p_gt`). Restrictions on internal movement were practically guaranteed at the beginning of the pandemic for derogating states, with a nearly 100% probability, dropping to `r policies_pred$movement.Yes.min$draw_nice`% by June 2021. Non-derogating states, on the other hand, began the pandemic with a predicted `r policies_pred$movement.No.max$draw_nice`% probability of limiting movement, dropping to only `r policies_pred$movement.No.min$draw_nice`% by June 2021, representing a `r policies_mfx$movement.min$draw_nice`–`r policies_mfx$movement.max$draw_nice` percentage point difference (`r policies_mfx$movement.max$p_gt`). The only policy we observed where there was no sizable difference between the two types of states is restrictions on international travel. Both derogating and non-derogating states had a nearly 100% probability of limiting international movement across all 15 months.
 
 ```{r fig-preds-mfx-policies, fig.width=12, fig.height=6, out.width="100%", cache=FALSE}
 #| include: true
