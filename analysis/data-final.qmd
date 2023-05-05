@@ -5,6 +5,16 @@ format:
     code-tools: false
 ---
 
+```{r include=FALSE}
+# Add these final data files as targets dependencies
+library(targets)
+tar_load(c(data_daily_stata, data_daily_csv, data_daily_rds,
+           data_weekly_stata, data_weekly_csv, data_weekly_rds))
+tar_load(c(data_daily_stata_website, data_daily_csv_website, data_daily_rds_website,
+           data_weekly_stata_website, data_weekly_csv_website, data_weekly_rds_website))
+```
+
+
 <table class="table">
   <thead>
     <tr>
