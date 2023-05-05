@@ -25,6 +25,11 @@ link-citations: true
 crossref: 
   tbl-title: Appendix Table
   fig-title: Appendix Figure
+# Quarto struggles with adding the support CSS/JS files to this when rendering 
+# all the .qmd files in the manuscript folder, so we embed them in this file
+format:
+  html:
+    embed-resources: true
 ---
 
 ```{r setup, include=FALSE}

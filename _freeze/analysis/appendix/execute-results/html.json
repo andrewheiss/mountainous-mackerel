@@ -1,0 +1,16 @@
+{
+  "hash": "27d19f91be10e593b846a1a0335614a9",
+  "result": {
+    "markdown": "---\ntitle: Appendix\ntoc: false\npage-layout: full\n---\n\n\n\n```{=html}\n<p class=\"text-center\">\n  <a class=\"btn btn-success btn-sm mb-1\" href=\"/manuscript/output/appendix.html\" target=\"appendix\">\n  <i class=\"fa-solid fa-file-lines\"></i> &ensp;HTML\n  </a> \n  \n  <a class=\"btn btn-success btn-sm mb-1\" href=\"/manuscript/output/appendix.html\" target=\"_blank\">\n  <i class=\"fa-solid fa-arrow-up-right-from-square\"></i>&ensp;HTML <small>(new window)</small>\n  </a>\n\n  <a class=\"btn btn-danger btn-sm mb-1\" href=\"/manuscript/output/appendix.pdf\" target=\"appendix\">\n  <i class=\"fa-solid fa-file-pdf\"></i>&ensp;PDF\n  </a> \n  \n  <a class=\"btn btn-danger btn-sm mb-1\" target=\"_blank\" href=\"/manuscript/output/appendix.pdf\">\n  <i class=\"fa-solid fa-file-arrow-down\"></i>&ensp;PDF <small>(download)</small>\n  </a>\n  \n  <a class=\"btn btn-warning btn-sm mb-1\" href=\"/manuscript/output-ms/appendix.pdf\" target=\"appendix\">\n  <i class=\"fa-solid fa-file-pdf\"></i>&ensp;Manuscripty PDF\n  </a> \n  \n  <a class=\"btn btn-warning btn-sm mb-1\" target=\"_blank\" href=\"/manuscript/output-ms/appendix.pdf\">\n  <i class=\"fa-solid fa-file-arrow-down\"></i>&ensp;Manuscripty PDF <small>(download)</small>\n  </a>\n</p>\n\n<iframe src=\"/manuscript/output/appendix.html\" frameborder=\"0\" style=\"overflow:hidden;height:90%;width:100%;border:2px solid #ccc;\" height=\"90%\" width=\"100%\" name=\"appendix\"></iframe>\n```\n",
+    "supporting": [
+      "appendix_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

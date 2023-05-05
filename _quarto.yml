@@ -53,6 +53,8 @@ website:
         file: presentations/index.qmd
       - text: "Manuscript"
         file: analysis/manuscript.qmd
+      - text: "Appendix"
+        file: analysis/appendix.qmd
     right:
       - icon: github
         aria-label: github

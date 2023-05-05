@@ -4,7 +4,6 @@ project:
 format:
   # Manuscript-y PDF output
   hikmah-manuscript-pdf:
-    output-file: "manuscript-ms.pdf"
     # Custom fonts
     mainfont: "Linux Libertine O"
     mainfontoptions:
@@ -25,7 +24,6 @@ format:
 
   # Manuscript-y Word output
   hikmah-manuscript-odt:
-    output-file: "manuscript-ms.odt"
     prefer-html: true
     
     knitr:

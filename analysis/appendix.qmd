@@ -1,0 +1,40 @@
+---
+title: Appendix
+toc: false
+page-layout: full
+---
+
+```{r include=FALSE}
+# Add the manuscript target as a dependency to the overall website
+targets::tar_load(c(manuscript_nice, manuscript_manuscripty))
+```
+
+```{=html}
+<p class="text-center">
+  <a class="btn btn-success btn-sm mb-1" href="/manuscript/output/appendix.html" target="appendix">
+  <i class="fa-solid fa-file-lines"></i> &ensp;HTML
+  </a> 
+  
+  <a class="btn btn-success btn-sm mb-1" href="/manuscript/output/appendix.html" target="_blank">
+  <i class="fa-solid fa-arrow-up-right-from-square"></i>&ensp;HTML <small>(new window)</small>
+  </a>
+
+  <a class="btn btn-danger btn-sm mb-1" href="/manuscript/output/appendix.pdf" target="appendix">
+  <i class="fa-solid fa-file-pdf"></i>&ensp;PDF
+  </a> 
+  
+  <a class="btn btn-danger btn-sm mb-1" target="_blank" href="/manuscript/output/appendix.pdf">
+  <i class="fa-solid fa-file-arrow-down"></i>&ensp;PDF <small>(download)</small>
+  </a>
+  
+  <a class="btn btn-warning btn-sm mb-1" href="/manuscript/output-ms/appendix.pdf" target="appendix">
+  <i class="fa-solid fa-file-pdf"></i>&ensp;Manuscripty PDF
+  </a> 
+  
+  <a class="btn btn-warning btn-sm mb-1" target="_blank" href="/manuscript/output-ms/appendix.pdf">
+  <i class="fa-solid fa-file-arrow-down"></i>&ensp;Manuscripty PDF <small>(download)</small>
+  </a>
+</p>
+
+<iframe src="/manuscript/output/appendix.html" frameborder="0" style="overflow:hidden;height:90%;width:100%;border:2px solid #ccc;" height="90%" width="100%" name="appendix"></iframe>
+```

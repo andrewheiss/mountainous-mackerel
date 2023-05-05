@@ -27,11 +27,11 @@ targets::tar_load(c(manuscript_nice, manuscript_manuscripty))
   <i class="fa-solid fa-file-arrow-down"></i>&ensp;PDF <small>(download)</small>
   </a>
   
-  <a class="btn btn-warning btn-sm mb-1" href="/manuscript/output-ms/manuscript-ms.pdf" target="manuscript">
+  <a class="btn btn-warning btn-sm mb-1" href="/manuscript/output-ms/manuscript.pdf" target="manuscript">
   <i class="fa-solid fa-file-pdf"></i>&ensp;Manuscripty PDF
   </a> 
   
-  <a class="btn btn-warning btn-sm mb-1" target="_blank" href="/manuscript/output-ms/manuscript-ms.pdf">
+  <a class="btn btn-warning btn-sm mb-1" target="_blank" href="/manuscript/output-ms/manuscript.pdf">
   <i class="fa-solid fa-file-arrow-down"></i>&ensp;Manuscripty PDF <small>(download)</small>
   </a>
 </p>
