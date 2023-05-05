@@ -77,9 +77,10 @@ website:
             - analysis/model-details.qmd
             - analysis/analysis_policies.qmd
             - analysis/analysis_human-rights.qmd
-        - section: "Pipeline"
+        - section: "Other details"
           contents:
             - analysis/targets.qmd
+            - analysis/environment.qmd
     
     - title: "Empty space lol"
 

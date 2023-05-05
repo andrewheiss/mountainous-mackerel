@@ -1,0 +1,56 @@
+---
+title: "Computing environment"
+---
+
+```{r load-libraries, warning=FALSE, message=FALSE}
+library(tidyverse)
+```
+
+
+## Platform
+
+Here are the details of the R environment we used when running this analysis:
+
+```{r get-session-info}
+#| class-output: text
+# Injecting Stan info into the platform info adapted from TJ Mahr:
+# https://github.com/tjmahr/tjmahr.github.io/commit/b8be089
+session_info <- sessioninfo::session_info()
+session_info$platform$`stan (cmdstanr)` <- cmdstanr::cmdstan_version()
+
+session_info$platform
+```
+
+
+## Packages
+
+We use the [{renv} package](https://rstudio.github.io/renv/) to create a stable version-specific library of packages. The official list of packages is included in [`renv.lock`](https://github.com/andrewheiss/mountainous-mackerel/blob/main/renv.lock) and running this from the root of this project should install everything:
+
+```r
+renv::restore()
+```
+
+Here's the full list of packages in a less JSON-y format:
+
+```{r get-package-info}
+#| class-output: text
+packages_raw <- jsonlite::read_json(here::here("renv.lock"))$Packages %>% 
+  enframe()
+
+packages_in_project <- sessioninfo::package_info(packages_raw$name) %>% 
+  as_tibble()
+
+packages_in_project %>%
+  select(package, ondiskversion, date, source) %>% 
+  print(n = Inf)
+```
+
+
+## Makevars
+
+Because {brms} generates Stan code that is then compiled and run as binary executable programs, knowing about the compilation environment is helpful. Here are all the things that influence compiling (different paths, flags, external libraries, etc.) that are included in `~/.R/Makevars`:
+
+```{r}
+#| class-output: sh
+writeLines(readLines(file.path(Sys.getenv("HOME"), ".R/Makevars")))
+```
