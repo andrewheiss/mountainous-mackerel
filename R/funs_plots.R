@@ -148,7 +148,8 @@ build_human_rights_plot_data <- function(model_df, year_week_lookup) {
           reframe(post_medians = tidybayes::median_qi(draw, .width = c(0.5, 0.8, 0.95)),
                   p_gt_0 = sum(draw > 0) / n()) %>% 
           unnest(post_medians) %>% 
-          rename(draw = y, .lower = ymin, .upper = ymax)
+          rename(draw = y, .lower = ymin, .upper = ymax) %>% 
+          mutate(group = "Logit")
       }
       
       mfx
@@ -190,4 +191,51 @@ build_policies_table_data <- function(model_df) {
     ungroup()
   
   return(lst(policies_pred_tbl, policies_mfx_tbl))
+}
+
+build_hr_table_data <- function(model_df) {
+  hr_pred_tbl <- model_df %>% 
+    mutate(pred_data = map(pred_data, ~{
+      .x %>% 
+        mutate(derogation_ineffect = as.character(derogation_ineffect),
+               derogation_ineffect = recode(derogation_ineffect,
+                                            "No derogation" = "No",
+                                            "Derogation in effect" = "Yes"))
+    })) %>% 
+    unnest(pred_data) %>% 
+    filter(.width == 0.95) %>% 
+    select(nice, year_week_day, derogation_ineffect, .category, .epred, .lower, .upper) %>% 
+    group_by(nice, derogation_ineffect, .category) %>% 
+    mutate(rank = dense_rank(.epred)) %>% 
+    filter(rank == 1 | rank == max(rank)) %>% 
+    mutate(rank = ifelse(rank == 1, "min", "max")) %>% 
+    group_by(rank, derogation_ineffect, .category) %>% 
+    mutate(outcome = janitor::make_clean_names(nice)) %>%
+    rename(draw = .epred, min = .lower, max = .upper) %>% 
+    mutate(across(c(draw, min, max), list(nice = ~round(. * 100, 0)))) %>% 
+    ungroup() %>% 
+    mutate(category = ifelse(is.na(.category), "NA", as.character(.category)))
+  
+  hr_mfx_tbl <- model_df %>% 
+    mutate(mfx_data = map(mfx_data, ~{
+      .x %>% 
+        mutate(group = as.character(group))
+    })) %>% 
+    unnest(mfx_data) %>% 
+    filter(.width == 0.95) %>% 
+    select(nice, year_week_day, group, draw, .lower, .upper, p_gt_0, .width) %>% 
+    group_by(nice, group) %>% 
+    mutate(rank = dense_rank(draw)) %>% 
+    filter(rank == 1 | rank == max(rank)) %>% 
+    mutate(rank = ifelse(rank == 1, "min", "max")) %>% 
+    group_by(rank, group) %>% 
+    mutate(outcome = janitor::make_clean_names(nice)) %>%
+    rename(min = .lower, max = .upper) %>% 
+    mutate(across(c(draw, min, max), list(nice = ~round(. * 100, 0))),
+           p_lt_0 = 1 - p_gt_0) %>% 
+    mutate(p_gt = fmt_p_inline(p_gt_0, "gt"),
+           p_lt = fmt_p_inline(p_lt_0, "lt")) %>% 
+    ungroup()
+  
+  return(lst(hr_pred_tbl, hr_mfx_tbl))
 }

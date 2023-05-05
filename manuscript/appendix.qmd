@@ -60,7 +60,7 @@ tar_config_set(store = here::here('_targets'),
 # Generated via random.org
 set.seed(8511)
 
-tar_load(c(policies_table_data))
+tar_load(c(policies_table_data, hr_table_data))
 tar_load(c(models_tbl_policies, models_tbl_human_rights))
 
 # modelsummary functions
@@ -129,7 +129,7 @@ $$
 ## Predicted probabilities and group contrasts
 
 ```{r tbl-policies-summary}
-#| tbl-cap: Summary of predicted probabilities and minimum and maximum contrasts between derogating and non-derogating countries
+#| tbl-cap: Summary of predicted probabilities and minimum and maximum contrasts between derogating and non-derogating countries for emergency policy models
 #| include: true
 #| echo: false
 tbl_part1 <- policies_table_data$policies_pred_tbl %>% 
@@ -217,6 +217,45 @@ if (fmt_out == "latex") {
 # H~2~: Derogations and human rights
 
 ## Predicted probabilities and group contrasts
+
+```{r tbl-hr-summary}
+#| tbl-cap: Summary of predicted probabilities and minimum and maximum contrasts between derogating and non-derogating countries for human rights models
+#| include: true
+#| echo: false
+tbl_part1 <- hr_table_data$hr_pred_tbl %>% 
+  mutate(across(c(draw, min, max), list(nice = ~label_number(accuracy = 0.01)(.)))) %>% 
+  mutate(time = ifelse(year_week_day == "2020-03-09", "March 2020", "June 2021")) %>% 
+  mutate(num = glue::glue("{draw_nice}\n({min_nice}–{max_nice})")) %>% 
+  select(nice, time, group = category, derogation_ineffect, num) %>% 
+  pivot_wider(names_from = "time", values_from = "num") %>% 
+  mutate(group = recode(group, "NA" = "—"))
+
+tbl_part2 <- hr_table_data$hr_mfx_tbl %>% 
+  mutate(across(c(draw, min, max, p_gt_0), list(nice = ~label_number(accuracy = 0.01)(.)))) %>% 
+  mutate(group = recode(group, "Logit" = "—")) %>% 
+  mutate(diff_type = ifelse(rank == "min", "Smallest difference", "Largest difference")) %>% 
+  mutate(num = glue::glue("{draw_nice}\n({min_nice}–{max_nice})")) %>% 
+  select(nice, year_week_day, group, diff_type, num, p_gt_0) %>% 
+  pivot_wider(names_from = "diff_type", values_from = c("num", "p_gt_0", "year_week_day")) %>% 
+  mutate(derogation_ineffect = "No")
+
+tbl_part1 %>% 
+  left_join(tbl_part2, by = join_by(nice, derogation_ineffect, group)) %>% 
+  mutate(across(where(is.character), ~add_breaks(., fmt = fmt_out))) %>% 
+  select(derogation_ineffect, group, `March 2020`, `June 2021`,
+         `year_week_day_Smallest difference`, `num_Smallest difference`, `p_gt_0_Smallest difference`,
+         `year_week_day_Largest difference`, `num_Largest difference`, `p_gt_0_Largest difference`) %>% 
+  kbl(col.names = c("Derogation", "Level", "March 2020", "June 2021",
+                    "Week", "Difference", "p > 0", "Week", "Difference", "p > 0"),
+      align = "lcccccccc",
+      booktabs = TRUE, linesep = "",
+      escape = FALSE) %>% 
+  kable_styling(font_size = ifelse(fmt_out == "latex", 8, NA)) %>% 
+  column_spec(4, border_right = T) %>% 
+  pack_rows(index = table(fct_inorder(tbl_part1$nice))) %>%
+  add_header_above(c(" " = 2, "Predicted probabilities" = 2, 
+                     "Smallest difference" = 3, "Largest difference" = 3))
+```
 
 ## Complete model results
 
