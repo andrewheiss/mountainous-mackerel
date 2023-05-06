@@ -1,14 +1,13 @@
 project:
-  output-dir: output
+  output-dir: output-appendix
   render:
-    - manuscript.qmd
+    - appendix.qmd
 
 format:
   # Nice HTML output
   html:
     format-links: false
     shift-heading-level-by: 1
-    resource-path: ["blah"]
     theme: 
       - zephyr
       - html/custom.scss

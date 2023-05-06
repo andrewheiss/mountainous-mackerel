@@ -1,7 +1,7 @@
 project:
   output-dir: output-ms
   render:
-    - manuscript.qmd
+    - appendix.qmd
 
 format:
   # Manuscript-y PDF output
