@@ -1,5 +1,5 @@
 project:
-  output-dir: output-appendix
+  output-dir: output
   render:
     - appendix.qmd
 
@@ -8,6 +8,7 @@ format:
   html:
     format-links: false
     shift-heading-level-by: 1
+    embed-resources: true
     theme: 
       - zephyr
       - html/custom.scss
