@@ -271,6 +271,12 @@ We examine the relationship between formal treaty derogations and different poli
 
 \begingroup\footnotesize
 
+\renewcommand*{\arraystretch}{1.75}
+
+::: {.content-visible when-profile="ms"}
+\singlespacing
+:::
+
 | General question                           | Outcomes                                                                                                                                  | Main explanatory variable  | Other explanatory variables                                                                                                                                              |
 |-----------------|-----------------|-----------------|---------------------|
 | Derogations and emergency measures (H~1~)  | Cancelling public events, Gathering restrictions, Close public transit, Restrictions on internal movement, Limits on international travel | ICCPR derogation in effect | New and cumulative COVID cases, new and cumulative COVID deaths, prior ICCPR derogations and actions                                                                     |
