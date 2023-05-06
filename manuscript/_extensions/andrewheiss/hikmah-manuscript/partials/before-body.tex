@@ -69,7 +69,7 @@ $endif$
 \end{titlepage}
 
 \doublespacing
-
+$if(abstract)$
 \begin{abstract}
 \noindent $abstract$
 \end{abstract}
@@ -81,6 +81,7 @@ $for(keywords)$$keywords$$sep$, $endfor$%
 }$endif$
 
 \newpage
+$endif$
 
 \begin{center}
 \singlespacing
