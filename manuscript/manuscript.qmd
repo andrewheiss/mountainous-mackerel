@@ -269,8 +269,6 @@ We examine the relationship between formal treaty derogations and different poli
 
 Next, to test our second set of hypotheses, we explore the relationship between formal treaty derogations on four different human rights and policy outcomes from V-Dem's PanDem project [@vdem-pandem]: (1) whether pandemic-related emergency measures violated the ICCPR's principle of non-discrimination, (2) whether countries derogated from non-derogable ICCPR rights, (3) whether emergency measures failed to state a time limit, and (4) whether state security forces violated physical integrity rights while enforcing emergency measures. Similar to the Oxford data, each of these outcomes is an ordered category measuring the severity of the outcomes, including no, minor, moderate, and major violations. We do not collapse these variables into binary indicators and instead work with them as ordered categories. Importantly, since these PanDem variables are all measured quarterly, while our main data is recorded weekly, these variables act more like country-level fixed effects in our models, capturing the overall level of the severity of pandemic response each week.
 
-\newpage
-
 ## Explanatory variables
 
 ### Key explanatory variable
@@ -287,44 +285,42 @@ Since formally derogating from treaties can serve as a signal that countries tak
 
 Our data is structured as a balanced time series cross-sectional (TSCS) panel that has a natural hierarchical structure, with `r info$n_weeks` weekly observations nested within `r info$n_countries` countries. Accordingly, we model our outcome variables with multilevel or hierarchical models, with region-specific random offsets for each intercept and a fixed global year trend. When working with binary outcomes like the declaration of general emergency measures or the violation of non-derogable rights, we use logistic regression models; when working ordered categorical outcomes like the degree of discriminatory policy or abusive enforcement, we use ordered logistic regression models. We take a Bayesian approach to better model and explore the uncertainty inherent in measuring the effect of derogations on these broad policies. 
 
-We include complete formal specifications of all our models, likelihoods, and priors in the appendix. Here we include two simplified model specifications to help demonstrate the intuition behind these multilevel TSCS models. For binary outcomes, we use a logistic model with country-specific offsets:
+We include complete formal specifications of all our models, likelihoods, and priors in the appendix. Here we include two simplified model specifications to help demonstrate the intuition behind these multilevel TSCS models. For binary outcomes, we use a logistic model with region-specific offsets (see @eq-logit), while for ordered outcomes, we use ordered logistic regression with region-specific offsets (see @eq-ordered-logit).
 
 ::: {.column-page-inset-right}
 
 $$
 \begin{aligned}
-&\ \mathrlap{\textbf{Binary outcome $i$ across week $t$ within each country $j$}} \\
+&\ \textbf{Binary outcome $i$ across week $t$ within country $j$} \\
 \text{Outcome}_{it_j} \sim&\ \operatorname{Bernoulli}(\pi_{it_j}) \\[0.75em]
 &\ \textbf{Distribution parameters} \\
 \pi_{it_j} =&\ (\beta_0 + b_{0_j}) + \beta_1 \text{Derogation in effect}_{it} + & \text{Probability of outcome} \\
 &\ \beta_{2 \dots n-1}\ \text{Other controls}_{it}\ + \beta_{n}\ \text{Week number}_{it} \\
 b_{0_j} \sim&\ \mathcal{N}(0, \sigma_0) & \text{Random region offsets} \\[0.75em]
 &\ \textbf{Priors} \\
-\beta_{0 \dots n} \sim&\ \operatorname{Student\,t}(\nu = 1, \mu = 0, \sigma = 3) & \text{Prior for global averages and effects} \\
-\sigma_0 \sim&\ \operatorname{Cauchy}(x = 0, \gamma = 1) \text{, lower bound} = 0 & \text{Prior for between-region variability,}
+\beta_{0 \dots n} \sim&\ \operatorname{Student\,t}(\nu = 1, \mu = 0, \sigma = 3) & \text{Global averages and effects} \\
+\sigma_0 \sim&\ \operatorname{Cauchy}(x = 0, \gamma = 1) \text{, lower bound} = 0 & \text{Between-region variability}
 \end{aligned}
-$$
+$$ {#eq-logit}
 
 :::
-
-\noindent while for ordered outcomes, we use ordered logistic regression with country-specific offsets:
 
 ::: {.column-page-inset-right}
 
 $$
 \begin{aligned}
-&\ \mathrlap{\textbf{Outcome level $i$ across week $t$ within each country $j$}} \\
+&\ \textbf{Outcome level $i$ across week $t$ within country $j$} \\
 \text{Outcome}_{it_j} \sim&\ \operatorname{Ordered\ logit}(\phi_{it_j}, \alpha_k) \\[0.75em]
 &\ \textbf{Distribution parameters} \\
 \phi_{it_j} =&\ (\beta_0 + b_{0_j}) + \beta_1 \text{Derogation in effect}_{it} + & \text{Cumulative probability of outcome} \\
 &\ \beta_{2 \dots n-1}\ \text{Other controls}_{it}\ + \beta_{n}\ \text{Week number}_{it} \\
 b_{0_j} \sim&\ \mathcal{N}(0, \sigma_0) & \text{Random region offsets} \\[0.75em]
 &\ \textbf{Priors} \\
-\beta_{0 \dots n} \sim&\ \operatorname{Student\,t}(\nu = 1, \mu = 0, \sigma = 3) & \text{Prior for global averages and effects} \\
-\sigma_0 \sim&\ \operatorname{Cauchy}(x = 0, \gamma = 1) \text{, lower bound} = 0 & \text{Prior for between-region variability} \\
+\beta_{0 \dots n} \sim&\ \operatorname{Student\,t}(\nu = 1, \mu = 0, \sigma = 3) & \text{Global averages and effects} \\
+\sigma_0 \sim&\ \operatorname{Cauchy}(x = 0, \gamma = 1) \text{, lower bound} = 0 & \text{Between-region variability} \\
 \alpha_k \sim&\ \mathcal{N}(0, 1) & \text{Boundaries between thresholds}
 \end{aligned}
-$$
+$$ {#eq-ordered-logit}
 
 :::
 
