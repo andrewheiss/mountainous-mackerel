@@ -31,6 +31,7 @@ analysis/output/
 manuscript/output/
 manuscript/output-ms/
 manuscript/output-appendix/
+manuscript/submissions/
 
 # Miscellaneous
 *.~lock.*
