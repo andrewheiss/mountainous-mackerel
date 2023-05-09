@@ -6,7 +6,7 @@ page-layout: full
 
 ```{r include=FALSE}
 # Add the manuscript target as a dependency to the overall website
-targets::tar_load(c(manuscript_nice, manuscript_manuscripty))
+targets::tar_load(c(appendix_nice, appendix_manuscripty))
 ```
 
 ```{=html}
