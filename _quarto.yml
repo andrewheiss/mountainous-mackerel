@@ -22,13 +22,17 @@ project:
     # Don't render past presentations because those are designed to be frozen 
     # in time (i.e. we used to have an H3, and it was in a presentation once, 
     # and now it's not)
-    - "!presentations/2022-11-04_peace-science/slides/"
+    - "!presentations/2022-11-04_peace-science/slides/2022-11-04_peace-science.qmd"
   
   resources:
     # But *do* place the outputs from the manuscript folders in the 
     # rendered site folder
     - "manuscript/output"
     - "manuscript/output-ms"
+    - "presentations/2022-11-04_peace-science/slides/2022-11-04_peace-science.html"
+    - "presentations/2022-11-04_peace-science/slides/2022-11-04_peace-science_files"
+    - "presentations/2022-11-04_peace-science/slides/site_libs"
+    - "presentations/2022-11-04_peace-science/slides/img"
 
 # See https://quarto.org/docs/projects/code-execution.html#freeze
 execute:

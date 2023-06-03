@@ -2,7 +2,6 @@
 title: "Peace Science Society"
 date: 2022-11-04
 toc: false
-resources: slides
 abstract: |
   Annual conference of the Peace Science Society; Denver, Colorado
 abstract-title: "Location"
