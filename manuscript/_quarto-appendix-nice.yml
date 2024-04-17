@@ -29,6 +29,8 @@ format:
 
   # Nice PDF output
   hikmah-pdf: 
+    cite-method: citeproc
+
     # Custom fonts
     mainfont: "Linux Libertine O"
     mainfontoptions: 
