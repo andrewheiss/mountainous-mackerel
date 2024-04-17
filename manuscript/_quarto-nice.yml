@@ -6,21 +6,26 @@ project:
 format:
   # Nice HTML output
   html:
-    format-links: false
+    toc: true
+    include-in-header:
+      - text: |
+          <style type="text/css">
+          h2.hide {
+            display: none;
+          }
+          </style>
+    language: 
+      title-block-published: "Latest version"
     shift-heading-level-by: 1
-    resource-path: ["blah"]
     theme: 
       - zephyr
       - html/custom.scss
     citeproc: false
     filters: 
-      - "_extensions/andrewheiss/wordcount/citeproc.lua"
-      - "_extensions/andrewheiss/wordcount/wordcount.lua"
-    template-partials: 
-      - "html/title-metadata.html"
-    appendix-style: plain
-    toc: true
-    published-title: "Latest version"
+      - at: pre-render
+        path: "_extensions/andrewheiss/wordcount/citeproc.lua"
+      - at: pre-render
+        path: "_extensions/andrewheiss/wordcount/wordcount.lua"
     knitr:
       opts_chunk:
         dev: "ragg_png"
@@ -28,22 +33,24 @@ format:
 
 
   # Nice PDF output
-  hikmah-pdf: 
+  hikmah-pdf:
+    cite-method: citeproc
+
     # Custom fonts
     mainfont: "Linux Libertine O"
-    mainfontoptions: 
+    mainfontoptions:
       - "Numbers=Proportional"
       - "Numbers=OldStyle"
     sansfont: "Noto Sans"
     mathfont: "Libertinus Math"
     # linestretch: 1.05
-    
-    include-in-header: 
+
+    include-in-header:
       # The \everydisplay thing makes all math blocks use \small font
       text: |
         \usepackage{mathtools}
         \everydisplay\expandafter{\the\everydisplay\small }
-    
+
     knitr:
       opts_chunk:
         dev: "cairo_pdf"

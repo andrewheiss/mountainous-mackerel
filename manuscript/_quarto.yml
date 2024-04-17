@@ -1,8 +1,9 @@
 project:
   title: "Manuscript"
-# 
-#   render: 
-#     - "*.qmd"
+
+  render:
+    # - "*.qmd"
+    - "!submissions/*.qmd"
 
 profile: 
   default: nice

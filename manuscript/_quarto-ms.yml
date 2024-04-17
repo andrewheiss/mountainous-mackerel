@@ -1,11 +1,16 @@
 project:
   output-dir: output-ms
-  render:
+  render: 
     - manuscript.qmd
 
 format:
   # Manuscript-y PDF output
   hikmah-manuscript-pdf:
+    cite-method: citeproc
+    output-file: "manuscript-ms.pdf"
+    left-aligned: true
+    endnotes: false
+
     # Custom fonts
     mainfont: "Linux Libertine O"
     mainfontoptions:
@@ -24,11 +29,12 @@ format:
         dev: "cairo_pdf"
 
 
-  # Manuscript-y Word output
-  hikmah-manuscript-odt:
-    prefer-html: true
-    
-    knitr:
-      opts_chunk:
-        dev: "ragg_png"
-        dpi: 300
+  # # Manuscript-y Word output
+  # hikmah-manuscript-odt:
+  #   output-file: "manuscript-ms.odt"
+  #   prefer-html: true
+  # 
+  #   knitr:
+  #     opts_chunk:
+  #       dev: "ragg_png"
+  #       dpi: 300

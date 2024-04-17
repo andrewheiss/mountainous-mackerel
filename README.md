@@ -1,4 +1,5 @@
 
+
 <!-- README.md is generated from README.qmd. Please edit that file -->
 
 # Pandemic Pass? Treaty Derogations and Human Rights Practices During COVID-19
@@ -39,7 +40,7 @@ mechanisms to cover abusive behavior.
 ## How to download and replicate
 
 You can either [download the compendium as a ZIP
-file](/archive/main.zip) or use GitHub to clone or fork the compendium
+file](./archive/main.zip) or use GitHub to clone or fork the compendium
 repository (see the green “Clone or download” button at the top of the
 GitHub page).
 
