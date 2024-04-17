@@ -6,6 +6,8 @@ project:
 format:
   # Manuscript-y PDF output
   hikmah-manuscript-pdf:
+    cite-method: citeproc
+
     # Custom fonts
     mainfont: "Linux Libertine O"
     mainfontoptions:
