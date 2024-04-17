@@ -72,8 +72,8 @@ library(tidybayes)
 library(marginaleffects)
 library(patchwork)
 library(colorspace)
+library(tinytable)
 library(kableExtra)
-library(gt)
 library(targets)
 
 tar_config_set(store = here::here('_targets'),
@@ -174,13 +174,19 @@ ggplot() +
 #| tbl-cap: Countries that derogated from the ICCPR in order to undertake pandemic-related emergency measures 
 #| include: true
 #| echo: false
-bind_cols(dplyr::slice(map_data_nice, 1:12),
-          add_row(dplyr::slice(map_data_nice, 13:n()))) %>% 
-  kbl(booktabs = TRUE, linesep = "\\addlinespace[0.5em]",
-      col.names = rep(c("Country", "Derogations"), 2)) %>% 
-  kable_styling(font_size = ifelse(fmt_out == "latex", 8.5, NA))
-```
+#| message: false
 
+bind_cols(dplyr::slice(map_data_nice, 1:12),
+          add_row(dplyr::slice(map_data_nice, 13:n()))) %>%
+  set_names(c("Country", "Derogations", "Country", "Derogations")) %>% 
+  tt(width = c(0.35, 0.15, 0.35, 0.15) * 0.9) %>% 
+  format_tt() %>% 
+  style_tt(j = 1:4, align = "lrlr") %>% 
+  style_tt(
+    bootstrap_class = "table table-sm table-striped",
+    tabularray_inner = "rowsep=1pt, cells={font=\\footnotesize}"
+  )
+```
 
 Between January 2020 and June 2021, `r derog_detail$countries` states issued `r derog_detail$total` ICCPR derogations (see @fig-derogation-map and @tbl-derogation-countries). The average length of a derogation was 41 days. States across multiple regions derogated, with notable concentration in South America, which has a robust history of engaging with human rights law. Notably, Nordic states—which typically are very active in human rights law engagement—did not issue any derogations during this period.
 

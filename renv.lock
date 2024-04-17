@@ -9,6 +9,10 @@
       {
         "Name": "Stan",
         "URL": "https://mc-stan.org/r-packages"
+      },
+      {
+        "Name": "Vincent",
+        "URL": "https://vincentarelbundock.r-universe.dev"
       }
     ]
   },
@@ -2876,14 +2880,14 @@
     },
     "tinytable": {
       "Package": "tinytable",
-      "Version": "0.2.1",
+      "Version": "0.2.1.11",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "Vincent",
       "Requirements": [
         "R",
         "methods"
       ],
-      "Hash": "c26b47eef331be647a33bc028cb7da10"
+      "Hash": "70de5d4208cf489b7362d4f2c3a6e849"
     },
     "tinytex": {
       "Package": "tinytex",
