@@ -1,5 +1,5 @@
-REMOTE_HOST="cloud"
-REMOTE_DIR="~/sites/stats/public_html/mountainous-mackerel"
+REMOTE_HOST="ath-cloud"
+REMOTE_DIR="~/sites/stats.andrewheiss.com/public_html/mountainous-mackerel"
 REMOTE_DEST=$REMOTE_HOST:$REMOTE_DIR
 
 echo "Uploading new changes to remote server..."
