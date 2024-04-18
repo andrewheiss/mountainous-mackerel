@@ -29,9 +29,10 @@ _targets.yaml
 # (ignore for now)
 analysis/output/
 manuscript/output/
-manuscript/output-ms/
-manuscript/output-appendix/
 manuscript/submissions/
+manuscript/*_files/
+manuscript/*.html.md
+manuscript/*.pdf.md
 
 # Miscellaneous
 *.~lock.*

@@ -1,9 +1,96 @@
 project:
   title: "Manuscript"
+  output-dir: output
 
   render:
-    # - "*.qmd"
+    - "*.qmd"
     - "!submissions/*.qmd"
 
-profile: 
-  default: nice
+# This is necessary to keep intermediate files/folders hanging around when 
+# rendering to the same output format (like two different PDFs)
+# https://github.com/quarto-dev/quarto-cli/issues/8373#issuecomment-1979245883
+keep-md: true
+
+format:
+  # Nice HTML output
+  html:
+    toc: true
+    include-in-header:
+      - text: |
+          <style type="text/css">
+          h2.hide {
+            display: none;
+          }
+          </style>
+    language: 
+      title-block-published: "Latest version"
+    shift-heading-level-by: 1
+    theme: 
+      - zephyr
+      - html/custom.scss
+    citeproc: false
+    filters: 
+      - at: pre-render
+        path: "_extensions/andrewheiss/wordcount/citeproc.lua"
+      - at: pre-render
+        path: "_extensions/andrewheiss/wordcount/wordcount.lua"
+    knitr:
+      opts_chunk:
+        dev: "ragg_png"
+        dpi: 300
+
+
+  # Nice PDF output
+  hikmah-pdf:
+    cite-method: citeproc
+
+    # Custom fonts
+    mainfont: "Linux Libertine O"
+    mainfontoptions:
+      - "Numbers=Proportional"
+      - "Numbers=OldStyle"
+    sansfont: "Noto Sans"
+    mathfont: "Libertinus Math"
+    # linestretch: 1.05
+
+    include-in-header:
+      # The \everydisplay thing makes all math blocks use \small font
+      text: |
+        \usepackage{mathtools}
+        \everydisplay\expandafter{\the\everydisplay\small }
+
+    knitr:
+      opts_chunk:
+        dev: "cairo_pdf"
+  
+  # Manuscript-y PDF output
+  hikmah-manuscript-pdf+ms:
+    cite-method: citeproc
+    left-aligned: true
+    endnotes: false
+
+    # Custom fonts
+    mainfont: "Linux Libertine O"
+    mainfontoptions:
+      - "Numbers=Proportional"
+      - "Numbers=OldStyle"
+    mathfont: "Libertinus Math"
+
+    include-in-header:
+      # The \everydisplay thing makes all math blocks use \small font
+      text: |
+        \usepackage{mathtools}
+        \everydisplay\expandafter{\the\everydisplay\small }
+
+    knitr:
+      opts_chunk:
+        dev: "cairo_pdf"
+
+  # Manuscript-y Word output
+  # hikmah-manuscript-odt:
+  #   prefer-html: true
+  # 
+  #   knitr:
+  #     opts_chunk:
+  #       dev: "ragg_png"
+  #       dpi: 300

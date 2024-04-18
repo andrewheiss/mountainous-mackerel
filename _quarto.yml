@@ -28,7 +28,6 @@ project:
     # But *do* place the outputs from the manuscript folders in the 
     # rendered site folder
     - "manuscript/output"
-    - "manuscript/output-ms"
     - "presentations/2022-11-04_peace-science/slides/2022-11-04_peace-science.html"
     - "presentations/2022-11-04_peace-science/slides/2022-11-04_peace-science_files"
     - "presentations/2022-11-04_peace-science/slides/site_libs"

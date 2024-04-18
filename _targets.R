@@ -147,10 +147,7 @@ list(
   tar_target(hr_table_data, build_hr_table_data(human_rights_plot_data)),
 
   ## Manuscript and analysis notebook ----
-  tar_quarto(manuscript_nice, path = "manuscript", quiet = FALSE, profile = "nice"),
-  tar_quarto(appendix_nice, path = "manuscript", quiet = FALSE, profile = "appendix-nice"),
-  tar_quarto(manuscript_manuscripty, path = "manuscript", quiet = FALSE, profile = "ms"),
-  tar_quarto(appendix_manuscripty, path = "manuscript", quiet = FALSE, profile = "appendix-ms"),
+  tar_quarto(manuscript, path = "manuscript", quiet = FALSE),
 
   tar_quarto(website, path = ".", quiet = FALSE),
   tar_target(deploy_script, here_rel("deploy.sh"), format = "file"),

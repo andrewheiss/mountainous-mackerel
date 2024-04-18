@@ -89,7 +89,7 @@ Running `targets::tar_make()` will create several helpful outputs:
 1.  All project data in `data/`
 2.  An analysis notebook website in `_site/`
 3.  PDF, HTML, and Word versions of the manuscript in
-    `manuscript/output/` and `manuscript/output-ms`
+    `manuscript/output/`
 
 ## 🏔️🐟: Note on “mountainous mackerel” project name
 

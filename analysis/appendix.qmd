@@ -6,7 +6,7 @@ page-layout: full
 
 ```{r include=FALSE}
 # Add the manuscript target as a dependency to the overall website
-targets::tar_load(c(appendix_nice, appendix_manuscripty))
+targets::tar_load(c(manuscript))
 ```
 
 ```{=html}
@@ -27,11 +27,11 @@ targets::tar_load(c(appendix_nice, appendix_manuscripty))
   <i class="fa-solid fa-file-arrow-down"></i>&ensp;PDF <small>(download)</small>
   </a>
   
-  <a class="btn btn-warning btn-sm mb-1" href="/manuscript/output-ms/appendix.pdf" target="appendix">
+  <a class="btn btn-warning btn-sm mb-1" href="/manuscript/output/appendix+ms.pdf" target="appendix">
   <i class="fa-solid fa-file-pdf"></i>&ensp;Manuscripty PDF
   </a> 
   
-  <a class="btn btn-warning btn-sm mb-1" target="_blank" href="/manuscript/output-ms/appendix.pdf">
+  <a class="btn btn-warning btn-sm mb-1" target="_blank" href="/manuscript/output/appendix+ms.pdf">
   <i class="fa-solid fa-file-arrow-down"></i>&ensp;Manuscripty PDF <small>(download)</small>
   </a>
 </p>
