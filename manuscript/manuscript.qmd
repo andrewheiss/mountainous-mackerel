@@ -248,7 +248,7 @@ We use global data to examine the relationship between treaty derogations, human
 #| include: true
 #| echo: false
 tribble(
-  ~`Outcome variables`,                        ~Description,                                                        ~Frequency,  ~Source,
+  ~`Variable`,                                 ~Description,                                                        ~Frequency,  ~Source,
   "Emergency public health measures",          "Binary indicator",                                                  "Weekly",    "Oxford COVID-19 Government Response Tracker",
   "Human rights and policy outcomes",          "Ordered categories for the severity of abuses",                     "Quarterly", "Varieties of Democracy PanDem",
   "ICCPR derogation",                          "Binary indicator",                                                  "Weekly",    "UN Treaty Collection",
@@ -258,12 +258,18 @@ tribble(
   "Civil liberties index",                     "0–1; higher values represent greater respect for civil liberties",  "Annual",    "Varieties of Democracy",
   "Core civil society index",                  "0–1; higher values represent better environment for civil society", "Annual",    "Varieties of Democracy"
 ) %>% 
-  kbl(booktabs = TRUE, linesep = "\\addlinespace[0.5em]") %>% 
-  kable_styling(font_size = ifelse(fmt_out == "latex", 8.5, NA)) %>% 
-  pack_rows(index = c(" " = 2, "Primary explanatory variable" = 1, "Secondary explanatory variables" = 5),
-            indent = FALSE) %>% 
-  column_spec(c(1, 2, 4), width = "0.25\\\\textwidth") %>% 
-  column_spec(3, width = "0.1\\\\textwidth")
+  tt(width = c(0.3, 0.3, 0.1, 0.3)) %>% 
+  group_tt(i = list(
+    "Outcome variables" = 1,
+    "Primary explanatory variable" = 3,
+    "Secondary explanatory variables" = 4
+  ), indent = 0) %>% 
+  style_tt(j = 1:4, align = "l") %>% 
+  style_tt(i = c(1, 4, 6), bold = TRUE, background = "#e6e6e6", align = "c") %>% 
+  style_tt(
+    bootstrap_class = "table table-sm table-striped",
+    tabularray_inner = "rowsep=1pt, cells={font=\\footnotesize}, row{4,6}={belowsep+=2em}"
+  )
 ```
 
 ## Outcome variables
@@ -272,22 +278,36 @@ We examine the relationship between derogations and policy and human rights outc
 
 [^severity]: Importantly, the Oxford Government Response Tracker measures the *stringency* or strictness of policy enforcement, not the *quality* of policies, so the values do not necessarily reflect how well countries implemented these emergency measures.
 
-\begingroup\footnotesize
-
-\renewcommand*{\arraystretch}{1.75}
-
-::: {.content-visible when-profile="ms"}
-\singlespacing
-:::
-
-| General question                           | Outcomes                                                                                                                                  | Main explanatory variable  | Other explanatory variables                                                                                                                                              |
-|-----------------|-----------------|-----------------|---------------------|
-| Derogations and emergency measures (H~1~)  | Cancelling public events, Gathering restrictions, Close public transit, Restrictions on internal movement, Limits on international travel | ICCPR derogation in effect | New and cumulative COVID cases, new and cumulative COVID deaths, prior ICCPR derogations and actions                                                                     |
-| Derogations and human rights (H~2~)        | Discriminatory policy, Violations of non-derogable rights, No time limit measures, Abusive enforcement                                    | ICCPR derogation in effect | New and cumulative COVID cases, new and cumulative COVID deaths, prior ICCPR derogations and actions, rule of law index, civil liberties index, core civil society index |
-
-: Overview of outcomes and explanatory variables included in models {#tbl-vars}
-
-\endgroup
+```{r tbl-vars}
+#| tbl-cap: Overview of outcomes and explanatory variables included in models
+#| include: true
+#| echo: false
+tibble(
+  `General question` = c(
+    "Derogations and emergency measures (H~1~)",
+    "Derogations and human rights (H~2~)"
+  ),
+  Outcomes = c(
+    "Cancelling public events; Gathering restrictions; Close public transit; Restrictions on internal movement; Limits on international travel",
+    "Discriminatory policy; Violations of non-derogable rights; No time limit measures; Abusive enforcement"
+  ),
+  `Main explanatory variable` = c(
+    "ICCPR derogation in effect", 
+    "ICCPR derogation in effect"
+  ),
+  `Other explanatory variables` = c(
+    "New and cumulative COVID cases; New and cumulative COVID deaths; Prior ICCPR derogations and actions",
+    "New and cumulative COVID cases; New and cumulative COVID deaths; Prior ICCPR derogations and actions; Rule of law index; Civil liberties index; Core civil society index"
+  )
+) %>% 
+  tt(width = c(0.2, 0.3, 0.2, 0.3)) %>% 
+  style_tt(j = 1:4, align = "l") %>% 
+  format_tt(j = 1:2, markdown = TRUE) %>% 
+  style_tt(
+    bootstrap_class = "table table-sm table-striped",
+    tabularray_inner = "rowsep=1pt, cells={font=\\footnotesize}, row{1}={valign=b}"
+  )
+```
 
 Next, we explore the relationship between formal treaty derogations on four different human rights and policy outcomes from V-Dem's PanDem project [@vdem-pandem]: (1) whether pandemic-related emergency measures violated the ICCPR's principle of non-discrimination, (2) whether countries derogated from non-derogable ICCPR rights, (3) whether emergency measures failed to state a time limit, and (4) whether state security forces violated physical integrity rights while enforcing emergency measures. Similar to the Oxford data, each of these outcomes is an ordered category measuring the severity of the outcomes, including no, minor, moderate, and major violations. We do not collapse these variables into binary indicators and instead work with them as ordered categories. Importantly, since these PanDem variables are all measured quarterly, while our main data is recorded weekly, these variables act more like country-level fixed effects in our models, capturing the overall level of the severity of pandemic response each week.
 
