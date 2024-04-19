@@ -2880,7 +2880,7 @@
     },
     "tinytable": {
       "Package": "tinytable",
-      "Version": "0.2.1.12",
+      "Version": "0.2.1.13",
       "Source": "Repository",
       "Repository": "Vincent",
       "Requirements": [
