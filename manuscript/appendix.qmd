@@ -18,13 +18,13 @@ author:
   orcid: 0000-0002-3948-3914
   url: https://www.andrewheiss.com
   email: aheiss@gsu.edu
-date: May 6, 2023
+date: April 18, 2024
 code-repo: "Access the code, data, and analysis at <https://github.com/andrewheiss/mountainous-mackerel>"
 bibliography: bib.bib
 link-citations: true
 crossref: 
-  tbl-title: Appendix Table
-  fig-title: Appendix Figure
+  tbl-title: "Table&nbsp;A"
+  fig-title: "Figure&nbsp;A"
 ---
 
 ```{r setup, include=FALSE}
@@ -52,6 +52,7 @@ library(modelsummary)
 library(scales)
 library(kableExtra)
 library(gt)
+library(tinytable)
 library(targets)
 
 tar_config_set(store = here::here('_targets'),
@@ -67,11 +68,22 @@ tar_load(c(models_tbl_policies, models_tbl_human_rights))
 invisible(list2env(tar_read(modelsummary_functions), .GlobalEnv))
 
 add_breaks <- function(x, fmt) {
-  if (fmt == "latex") {
-    kableExtra::linebreak(x, align = "c")
-  } else (
-    str_replace(x, "\\n", "<br>")
-  )
+  sapply(x, \(text) {
+    if (is.na(text)) {
+      return(NA)
+    }
+
+    if (fmt == "latex") {
+      text <- str_replace_all(text, c("\\[" = "{[}", "\\]" = "{]}"))
+      if (str_detect(text, "\\n")) {
+        str_c("{", str_replace(text, "\\n", r"{ \\\\ }"), "}")
+      } else {
+        text
+      }
+    } else {
+      str_replace(text, "\\n", "<br>")
+    }
+  }) %>% unname()
 }
 ```
 
@@ -124,108 +136,147 @@ b_{0_j} \sim&\ \mathcal{N}(0, \sigma_0) \\[0.75em]
 \end{aligned}
 $$
 
+::: {.content-visible when-format="html"}
 # H~1~: Derogations and emergency policies
 
 ## Predicted probabilities and group contrasts
+:::
+
+\blandscape
 
 ```{r tbl-policies-summary}
 #| tbl-cap: Summary of predicted probabilities and minimum and maximum contrasts between derogating and non-derogating countries for emergency policy models
 #| include: true
 #| echo: false
+
 tbl_part1 <- policies_table_data$policies_pred_tbl %>% 
   mutate(across(c(draw, min, max), list(nice = ~label_number(accuracy = 0.01)(.)))) %>% 
   mutate(time = ifelse(year_week_day == "2020-03-09", "March 2020", "June 2021")) %>% 
-  mutate(num = glue::glue("{draw_nice}\n({min_nice}–{max_nice})")) %>% 
+  mutate(num = glue::glue("{draw_nice}\n[{min_nice}–{max_nice}]")) %>% 
   select(nice, time, derogation_ineffect, num) %>% 
   pivot_wider(names_from = "time", values_from = "num")
 
 tbl_part2 <- policies_table_data$policies_mfx_tbl %>% 
   mutate(across(c(draw, min, max, p_gt_0), list(nice = ~label_number(accuracy = 0.01)(.)))) %>% 
   mutate(diff_type = ifelse(rank == "min", "Smallest difference", "Largest difference")) %>% 
-  mutate(num = glue::glue("{draw_nice}\n({min_nice}–{max_nice})")) %>% 
+  mutate(num = glue::glue("{draw_nice}\n[{min_nice}–{max_nice}]")) %>% 
   select(nice, year_week_day, diff_type, num, p_gt_0) %>% 
   pivot_wider(names_from = "diff_type", values_from = c("num", "p_gt_0", "year_week_day")) %>% 
   mutate(derogation_ineffect = "No")
 
-tbl_part1 %>% 
-  left_join(tbl_part2, by = join_by(nice, derogation_ineffect)) %>% 
+tbl_groups <- tbl_part1 %>%
+  select(nice) %>% 
+  mutate(row = 1:n()) %>%
+  distinct(nice, .keep_all = TRUE) %>% 
+  mutate(row_cumulative = row + row_number() - 1)
+
+tbl_part1 %>%
+  left_join(tbl_part2, by = join_by(nice, derogation_ineffect)) %>%
   mutate(across(where(is.character), ~add_breaks(., fmt = fmt_out))) %>% 
-  select(derogation_ineffect, `March 2020`, `June 2021`,
-         `year_week_day_Smallest difference`, `num_Smallest difference`, `p_gt_0_Smallest difference`,
-         `year_week_day_Largest difference`, `num_Largest difference`, `p_gt_0_Largest difference`) %>% 
-  kbl(col.names = c("Derogation", "March 2020", "June 2021",
-                    "Week", "Difference", "p > 0", "Week", "Difference", "p > 0"),
-      align = "lcccccccc",
-      booktabs = TRUE, linesep = "",
-      escape = FALSE) %>% 
-  kable_styling(font_size = ifelse(fmt_out == "latex", 8, NA)) %>% 
-  column_spec(3, border_right = T) %>% 
-  pack_rows(index = table(fct_inorder(tbl_part1$nice))) %>% 
-  add_header_above(c(" " = 1, "Predicted probabilities" = 2, 
-                     "Smallest difference" = 3, "Largest difference" = 3))
+  select(
+    derogation_ineffect, `March 2020`, `June 2021`,
+    `year_week_day_Smallest difference`, `num_Smallest difference`, `p_gt_0_Smallest difference`,
+    `year_week_day_Largest difference`, `num_Largest difference`, `p_gt_0_Largest difference`
+  ) %>%
+  set_names(
+    c(
+      "Derogation", "March 2020", "June 2021",
+      "Week", "$\\Delta$", "p > 0", "Week", "$\\Delta$", "p > 0"
+    )
+  ) %>%
+  tt(width = c(0.7, 1, 1, 1, 0.8, 0.5, 1, 0.8, 0.5) |> {\(x) x / sum(x)}()) %>%
+  format_tt() %>%
+  style_tt(j = 1:9, align = "lcccccccc") %>%
+  style_tt(i = 1:20, j = 3, line = "r", line_width = 0.1, line_color = "#000000") %>%
+  group_tt(
+    i = pull(tbl_groups, row, name = nice) %>% as.list(),
+    j = list(
+      "Predicted probabilities" = 2:3, 
+      "Smallest difference" = 4:6, 
+      "Largest difference" = 7:9),
+    indent = 0) %>% 
+  style_tt(
+    i = tbl_groups$row_cumulative, 
+    bold = TRUE, background = "#e6e6e6", align = "l"
+  ) %>% 
+  style_tt(
+    bootstrap_class = "table table-sm",
+    tabularray_inner = "rowsep=1pt, cells={font=\\scriptsize}, row{2}={valign=b}"
+  )
 ```
 
+\elandscape
+
+::: {.content-visible when-format="html"}
 ## Complete model results
+:::
 
 ```{r tbl-results-full-policies}
-#| tbl-cap: Results from models showing relationship between derogations and emergency policies
+#| tbl-cap: Complete results from models showing relationship between derogations and emergency policies (H~1~)
 #| include: true
 #| echo: false
-notes <- c(
-  "Estimates are median posterior log odds from ordered logistic and binary logistic regression models;",
+
+notes <- paste(
+  "Note: Estimates are median posterior log odds from ordered logistic and binary logistic regression models;",
   "95% credible intervals (highest density posterior interval, or HDPI) in brackets.",
   "Total \\(R^2\\) considers the variance of both population and group effects;",
   "marginal \\(R^2\\) only takes population effects into account."
 )
 
 if (fmt_out == "latex") {
-  notes <- notes %>% 
-    str_replace_all(r"[\\]", r"[\\\\]") %>% 
-    str_replace_all("%", r"(\\\\%)")
-} else {
-  notes <- paste(notes, collapse = " ")
+  notes <- str_replace_all(notes, "%", r"(\\%)")
 }
 
-if (fmt_out == "latex") { 
-  modelsummary(models_tbl_policies,
-               estimate = "{estimate}",
-               statistic = "[{conf.low}, {conf.high}]",
-               coef_map = coef_map,
-               gof_map = gof_map,
-               output = "kableExtra",
-               fmt = fmt_significant(2),
-               escape = FALSE) %>% 
-    kable_styling(htmltable_class = "table-sm light-border",
-                  font_size = ifelse(fmt_out == "latex", 8, NA)) %>% 
-    footnote(general = notes, footnote_as_chunk = FALSE, escape = FALSE) %>% 
-    column_spec(1:6, width = "0.16\\\\textwidth")
-} else {
-  modelsummary(models_tbl_policies,
-               estimate = "{estimate}",
-               statistic = "[{conf.low}, {conf.high}]",
-               coef_map = coef_map,
-               gof_map = gof_map,
-               output = "gt",
-               fmt = fmt_significant(2)) %>% 
-    tab_footnote(footnote = notes) %>% 
-    tab_style(style = cell_text(weight = "bold"),
-              locations = cells_column_labels())
+inner <- "
+row{odd[3-27]}={abovesep=0pt, belowsep=6pt},
+row{even[2-26]}={rowsep=0pt},
+cells={font=\\scriptsize}, row{1}={valign=b}
+"
+
+css <- "
+.coef-table-1 tbody tr:not(:nth-child(n+26)):nth-child(odd) td {
+    padding-bottom: 0;
 }
+.coef-table-1 tbody tr:not(:nth-child(n+27)):nth-child(even) td {
+    padding-top: 0;
+}
+"
+
+modelsummary(models_tbl_policies,
+  estimate = "{estimate}",
+  statistic = "[{conf.low}, {conf.high}]",
+  coef_map = coef_map,
+  gof_map = gof_map,
+  output = "tinytable",
+  fmt = fmt_significant(2),
+  notes = notes,
+  width = c(0.2, rep(0.16, 5)),  
+) %>% 
+  style_tt(i = seq(1, 25, 2), j = 1, rowspan = 2, alignv = "t") %>% 
+  style_tt(
+    bootstrap_class = "table table-sm coef-table-1",
+    bootstrap_css_rule = css,
+    tabularray_inner = inner
+  )
 ```
 
-
+::: {.content-visible when-format="html"}
 # H~2~: Derogations and human rights
 
 ## Predicted probabilities and group contrasts
+:::
 
-```{r tbl-hr-summary}
-#| tbl-cap: Summary of predicted probabilities and minimum and maximum contrasts between derogating and non-derogating countries for human rights models
+\blandscape
+
+```{r tb-hr-summary}
+#| tbl-cap: "Summary of predicted probabilities and minimum and maximum contrasts between derogating and non-derogating countries for human rights models"
 #| include: true
 #| echo: false
+
 tbl_part1 <- hr_table_data$hr_pred_tbl %>% 
   mutate(across(c(draw, min, max), list(nice = ~label_number(accuracy = 0.01)(.)))) %>% 
   mutate(time = ifelse(year_week_day == "2020-03-09", "March 2020", "June 2021")) %>% 
-  mutate(num = glue::glue("{draw_nice}\n({min_nice}–{max_nice})")) %>% 
+  mutate(num = glue::glue("{draw_nice}\n[{min_nice}–{max_nice}]")) %>% 
   select(nice, time, group = category, derogation_ineffect, num) %>% 
   pivot_wider(names_from = "time", values_from = "num") %>% 
   mutate(group = recode(group, "NA" = "—"))
@@ -234,61 +285,100 @@ tbl_part2 <- hr_table_data$hr_mfx_tbl %>%
   mutate(across(c(draw, min, max, p_gt_0), list(nice = ~label_number(accuracy = 0.01)(.)))) %>% 
   mutate(group = recode(group, "Logit" = "—")) %>% 
   mutate(diff_type = ifelse(rank == "min", "Smallest difference", "Largest difference")) %>% 
-  mutate(num = glue::glue("{draw_nice}\n({min_nice}–{max_nice})")) %>% 
+  mutate(num = glue::glue("{draw_nice}\n[{min_nice}–{max_nice}]")) %>% 
   select(nice, year_week_day, group, diff_type, num, p_gt_0) %>% 
   pivot_wider(names_from = "diff_type", values_from = c("num", "p_gt_0", "year_week_day")) %>% 
   mutate(derogation_ineffect = "No")
 
-tbl_part1 %>% 
-  left_join(tbl_part2, by = join_by(nice, derogation_ineffect, group)) %>% 
+tbl_groups <- tbl_part1 %>%
+  select(nice) %>% 
+  mutate(row = 1:n()) %>%
+  distinct(nice, .keep_all = TRUE) %>% 
+  mutate(row_cumulative = row + row_number() - 1)
+
+tbl_part1 %>%
+  left_join(tbl_part2, by = join_by(nice, derogation_ineffect, group)) %>%
   mutate(across(where(is.character), ~add_breaks(., fmt = fmt_out))) %>% 
-  select(derogation_ineffect, group, `March 2020`, `June 2021`,
-         `year_week_day_Smallest difference`, `num_Smallest difference`, `p_gt_0_Smallest difference`,
-         `year_week_day_Largest difference`, `num_Largest difference`, `p_gt_0_Largest difference`) %>% 
-  kbl(col.names = c("Derogation", "Level", "March 2020", "June 2021",
-                    "Week", "Difference", "p > 0", "Week", "Difference", "p > 0"),
-      align = "lcccccccc",
-      booktabs = TRUE, linesep = "",
-      escape = FALSE) %>% 
-  kable_styling(font_size = ifelse(fmt_out == "latex", 8, NA)) %>% 
-  column_spec(4, border_right = T) %>% 
-  pack_rows(index = table(fct_inorder(tbl_part1$nice))) %>%
-  add_header_above(c(" " = 2, "Predicted probabilities" = 2, 
-                     "Smallest difference" = 3, "Largest difference" = 3))
+  select(
+    derogation_ineffect, group, `March 2020`, `June 2021`,
+    `year_week_day_Smallest difference`, `num_Smallest difference`, `p_gt_0_Smallest difference`,
+    `year_week_day_Largest difference`, `num_Largest difference`, `p_gt_0_Largest difference`
+  ) %>%
+  set_names(
+    c(
+      "Derogation", "Level", "March 2020", "June 2021",
+      "Week", "$\\Delta$", "p > 0", "Week", "$\\Delta$", "p > 0"
+    )
+  ) %>% 
+  tt(
+    width = c(0.7, 0.7, 1, 1, 1, 0.8, 0.5, 1, 0.8, 0.5) |> {\(x) x / sum(x)}(),
+    caption = "Summary of predicted probabilities and minimum and maximum contrasts between derogating and non-derogating countries for human rights models \\label{tbl-hr-summary}") %>%
+  format_tt() %>%
+  style_tt(j = 1:10, align = "lccccccccc") %>%
+  style_tt(i = 1:30, j = 4, line = "r", line_width = 0.1, line_color = "#000000") %>%
+  group_tt(
+    i = pull(tbl_groups, row, name = nice) %>% as.list(),
+    j = list(
+      "Predicted probabilities" = 3:4, 
+      "Smallest difference" = 5:7, 
+      "Largest difference" = 8:10),
+    indent = 0) %>% 
+  style_tt(
+    i = tbl_groups$row_cumulative, 
+    bold = TRUE, background = "#e6e6e6", align = "l"
+  ) %>% 
+  style_tt(
+    bootstrap_class = "table table-sm",
+    tabularray_outer = "theme=long",
+    tabularray_inner = "rowsep=1pt, cells={font=\\scriptsize}, row{2}={valign=b}"
+  ) %>% 
+  theme_tt("multipage", rowhead = 2)
 ```
 
+\elandscape
+
+::: {.content-visible when-format="html"}
 ## Complete model results
+:::
 
 ```{r tbl-results-full-human-rights}
-#| tbl-cap: Complete results from models showing relationship between derogations and human rights (H~1~)
+#| tbl-cap: Complete results from models showing relationship between derogations and human rights (H~2~)
 #| include: true
 #| echo: false
-if (fmt_out == "latex") {
-  modelsummary(models_tbl_human_rights,
-               estimate = "{estimate}",
-               statistic = "[{conf.low}, {conf.high}]",
-               coef_map = coef_map,
-               gof_map = gof_map,
-               output = "kableExtra",
-               fmt = fmt_significant(2),
-               escape = FALSE) %>% 
-    kable_styling(htmltable_class = "table-sm light-border",
-                  font_size = ifelse(fmt_out == "latex", 8, NA)) %>% 
-    footnote(general = notes, footnote_as_chunk = FALSE, escape = FALSE) %>% 
-    column_spec(1:5, width = "0.18\\\\textwidth")
-} else {
-  modelsummary(models_tbl_human_rights,
-               estimate = "{estimate}",
-               statistic = "[{conf.low}, {conf.high}]",
-               coef_map = coef_map,
-               gof_map = gof_map,
-               output = "gt",
-               fmt = fmt_significant(2),
-               escape = FALSE) %>% 
-    tab_footnote(footnote = notes) %>% 
-    tab_style(style = cell_text(weight = "bold"),
-              locations = cells_column_labels())
+
+inner <- "
+row{odd[3-33]}={abovesep=0pt, belowsep=2pt},
+row{even[2-34]}={abovesep=0pt, belowsep=0pt},
+cells={font=\\scriptsize}, row{1}={valign=b}
+"
+
+css <- "
+.coef-table-2 tbody tr:not(:nth-child(n+32)):nth-child(odd) td {
+    padding-bottom: 0;
 }
+.coef-table-2 tbody tr:not(:nth-child(n+33)):nth-child(even) td {
+    padding-top: 0;
+}
+"
+
+modelsummary(models_tbl_human_rights,
+  estimate = "{estimate}",
+  statistic = "[{conf.low}, {conf.high}]",
+  coef_map = coef_map,
+  gof_map = gof_map,
+  output = "tinytable",
+  fmt = fmt_significant(2),
+  notes = notes,
+  width = rep(0.2, 5),  
+) %>% 
+  style_tt(i = seq(1, 25, 2), j = 1, rowspan = 2, alignv = "t") %>% 
+  style_tt(
+    bootstrap_class = "table table-sm coef-table-2",
+    bootstrap_css_rule = css,
+    tabularray_inner = inner
+  )
 ```
+
+\clearpage
 
 # References

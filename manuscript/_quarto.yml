@@ -59,6 +59,17 @@ format:
         \usepackage{mathtools}
         \everydisplay\expandafter{\the\everydisplay\small }
 
+        \SetTblrStyle{foot}{font=\footnotesize}
+
+        \NewTblrTheme{long}{
+          \SetTblrStyle{caption}{hang=0pt}
+          \SetTblrStyle{capcont}{hang=0pt}
+          \SetTblrStyle{caption-tag}{font=\small\sffamily\bfseries}
+          \SetTblrStyle{caption-text}{font=\small\sffamily}
+          \SetTblrStyle{conthead-text}{font=\small\sffamily}
+          \SetTblrStyle{contfoot}{font=\small\sffamily}
+        }
+
     knitr:
       opts_chunk:
         dev: "cairo_pdf"
@@ -81,6 +92,19 @@ format:
       text: |
         \usepackage{mathtools}
         \everydisplay\expandafter{\the\everydisplay\small }
+
+        \SetTblrStyle{foot}{font=\footnotesize}
+        
+        \AtBeginEnvironment{longtblr}{\setlength{\RaggedRightParindent}{0pt}\singlespacing}
+
+        \NewTblrTheme{long}{
+          \SetTblrStyle{caption}{hang=0pt}
+          \SetTblrStyle{capcont}{hang=0pt}
+          \SetTblrStyle{caption-tag}{font=\small}
+          \SetTblrStyle{caption-text}{font=\small}
+          \SetTblrStyle{conthead-text}{font=\small}
+          \SetTblrStyle{contfoot}{font=\small}
+        }
 
     knitr:
       opts_chunk:
