@@ -11,7 +11,7 @@ contributes:
         opts_chunk:
           dev: "ragg_png"
           dpi: 300
-          out-width: "80%"
+          out.width: "80%"
     odt:
       template: "templates/odt-manuscript.odt"
       reference-doc: "styles/reference.odt"
@@ -19,7 +19,7 @@ contributes:
         opts_chunk:
           dev: "ragg_png"
           dpi: 300
-          out-width: "80%"
+          out.width: "80%"
     pdf:
       documentclass: article
       papersize: letter
