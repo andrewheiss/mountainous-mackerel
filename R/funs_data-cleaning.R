@@ -5,7 +5,7 @@ library(countrycode)
 library(jsonlite)
 suppressPackageStartupMessages(library(sf))
 
-clean_iccpr_who <- function(path) {
+clean_iccpr_who <- function(path, subregions_path) {
   who_regions <- tribble(
     ~who_region, ~who_region_long,
     "AFRO", "Regional Office for Africa",
@@ -15,6 +15,48 @@ clean_iccpr_who <- function(path) {
     "EMRO", "Regional Office for the Eastern Mediterranean",
     "WPRO", "Regional Office for the Western Pacific"
   )
+  
+  who_subregions_manual <- tribble(
+    ~member_states, ~region_abbr, ~stratum, ~subregion_imputed,
+    "American Samoa", "WPR", "B", TRUE,
+    "Anguilla", "AMR", "B", TRUE,
+    "Aruba", "AMR", "B", TRUE,
+    "Bermuda", "AMR", "B", TRUE,
+    "British Virgin Islands", "AMR", "B", TRUE,
+    "Cayman Islands", "AMR", "B", TRUE,
+    "Curaçao", "AMR", "B", TRUE,
+    "French Guiana", "AMR", "B", TRUE,
+    "French Polynesia", "WPR", "B", TRUE,
+    "Kosovo", "EUR", "B", TRUE,
+    "Liechtenstein", "EUR", "A", TRUE,
+    "Palestinian Territories", "EMR", "B", TRUE,
+    "St. Barthélemy", "AMR", "B", TRUE,
+    "St. Helena", "AFR", "E", TRUE,
+    "St. Martin (French part)", "AMR", "B", TRUE,
+    "Sint Maarten", "AMR", "B", TRUE,
+    "Turks & Caicos Islands", "AMR", "B", TRUE
+  )
+  
+  who_subregions <- read_excel(subregions_path) %>% 
+    set_names(c("subregions", "member_states")) %>% 
+    separate(subregions, into = c("region_abbr", "stratum"), sep = " ") %>% 
+    mutate(member_states = str_split(member_states, "; ")) %>% 
+    unnest(member_states) %>% 
+    bind_rows(who_subregions_manual) %>% 
+    mutate(
+      who_region = paste0(region_abbr, "O"),
+      who_subregion = paste0(region_abbr, stratum)
+    ) %>% 
+    replace_na(list(subregion_imputed = FALSE)) %>% 
+    mutate(
+      country_name = countrycode(
+        member_states, origin = "country.name", destination = "country.name",
+        custom_match = c("Turkey" = "Türkiye")),
+      iso3 = countrycode(
+        country_name, origin = "country.name", destination = "iso3c",
+        custom_match = c("Kosovo" = "XKX"))
+    ) %>% 
+    select(iso3, who_subregion, subregion_imputed)
   
   x <- read_excel(path) %>% 
     janitor::clean_names() %>% 
@@ -36,9 +78,11 @@ clean_iccpr_who <- function(path) {
       )
     ) %>% 
     left_join(who_regions, by = "who_region") %>% 
+    left_join(who_subregions, by = "iso3") %>% 
     # Final column order
     select(-c(country_code, country, cow_code)) %>% 
     select(country_name, iso3, who_region, who_region_long,
+           who_subregion, subregion_imputed,
            day = date_reported, everything())
   
   return(x)
@@ -127,8 +171,7 @@ clean_pandem <- function(path) {
   pandem_levels <- c("None" = "0", "Minor" = "1", "Moderate" = "2", "Major" = "3")
   
   pandem_clean <- pandem_raw %>% 
-    mutate(quarter_numeric = parse_number(quarter) / 10) %>% 
-    mutate(year_quarter = year + quarter_numeric) %>% 
+    mutate(year_quarter = paste0(year, "-", quarter)) %>% 
     mutate(iso3 = countrycode(country_name, 
                               origin = "country.name", 
                               destination = "iso3c"),
@@ -208,17 +251,22 @@ create_daily_skeleton <- function(iccpr_who, oxford, pandem, vdem) {
            year_quarter = quarter(day, type = "year.quarter"),
            day_num = as.numeric(day) - as.numeric(ymd("2020-03-10")),
            year_week = calendar_narrow(as_iso_year_week_day(day), "week"),
-           year_week_day = as_year_month_day(calendar_narrow(set_day(year_week, 1), "day"))) %>% 
+           year_week_day = as_year_month_day(calendar_narrow(set_day(year_week, 1), "day")),
+           year_quarter = calendar_narrow(as_year_quarter_day(day), "quarter"),
+           year_quarter_day = as_year_month_day(calendar_narrow(set_day(year_quarter, 1), "day"))) %>% 
     # Force the year_week column to be text since it's a weird {clock} class
     mutate(year_week = as.character(year_week),
-           year_week_day = as.character(year_week_day)) %>% 
+           year_week_day = as.character(year_week_day),
+           year_quarter = as.character(year_quarter),
+           year_quarter_day = as.character(year_quarter_day)) %>% 
     # Pandem starts Q2 2020 on March 11 instead of April 1
-    mutate(year_quarter = ifelse(year_quarter == 2020.1, 2020.2, year_quarter)) %>% 
+    mutate(year_quarter = ifelse(year_quarter == "2020-Q1", "2020-Q2", year_quarter)) %>% 
     mutate(country_name = countrycode(
       iso3, origin = "iso3c", destination = "country.name",
       custom_match = c("XKX" = "Kosovo", "TUR" = "Türkiye")
     )) %>% 
-    select(country_name, iso3, day, day_num, year, year_quarter, year_week, year_week_day)
+    select(country_name, iso3, day, day_num, year, 
+           year_quarter, year_quarter_day, year_week, year_week_day)
   
   return(daily_skeleton)
 }
@@ -237,7 +285,7 @@ make_final_data <- function(skeleton, iccpr_who, iccpr_action, oxford, pandem, v
 make_weekly_data <- function(daily_final) {
   weekly_final <- daily_final %>% 
     group_by(year_week, year_week_day, country_name, iso3, who_region, who_region_long, 
-             prior_iccpr_derogations, prior_iccpr_other_action) %>% 
+             who_subregion, prior_iccpr_derogations, prior_iccpr_other_action) %>% 
     summarize(across(c(new_cases, new_deaths), ~sum(., na.rm = TRUE)),
               across(c(iccpr_derogation_filed, derogation_start, 
                        derogation_ineffect, derogation_end), ~max(., na.rm = TRUE)),
@@ -253,12 +301,39 @@ make_weekly_data <- function(daily_final) {
   return(weekly_final)
 }
 
+make_quarterly_data <- function(daily_final) {
+  quarterly_final <- daily_final %>% 
+    group_by(year_quarter, year_quarter_day, country_name, iso3, who_region, who_region_long, 
+      who_subregion, prior_iccpr_derogations, prior_iccpr_other_action) %>% 
+    summarize(across(c(new_cases, new_deaths), ~sum(., na.rm = TRUE)),
+      across(c(iccpr_derogation_filed, derogation_start, 
+        derogation_ineffect, derogation_end), ~max(., na.rm = TRUE)),
+      across(matches("[ce]\\d_"), ~max(., na.rm = TRUE)),
+      across(c(pandem, panback, starts_with("pandem_"), starts_with("v2")), ~max(., na.rm = TRUE))) %>% 
+    group_by(country_name) %>% 
+    mutate(cumulative_cases = cumsum(new_cases),
+      cumulative_deaths = cumsum(new_deaths)) %>% 
+    mutate(year_quarter_num = 1:n(), .after = "year_quarter") %>%
+    ungroup() %>% 
+    arrange(country_name)
+  
+  return(quarterly_final)
+}
+
 make_year_week_lookup <- function(weekly_final) {
   year_week_lookup <- weekly_final %>% 
     distinct(year_week, year_week_num, year_week_day) %>% 
     mutate(year_week_day = ymd(year_week_day))
   
   return(year_week_lookup)
+}
+
+make_year_quarter_lookup <- function(quarterly_final) {
+  year_quarter_lookup <- quarterly_final %>% 
+    distinct(year_quarter, year_quarter_num, year_quarter_day) %>% 
+    mutate(year_quarter_day = ymd(year_quarter_day))
+  
+  return(year_quarter_lookup)
 }
 
 load_world_map <- function(path) {

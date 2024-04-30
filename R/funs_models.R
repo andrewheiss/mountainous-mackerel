@@ -139,15 +139,14 @@ f_human_rights <- function(panel) {
   # (1 | country_name) is included, the model predicts a 100% chance of 
   # pandem_discrim == 1 and a 0% chance of pandem_discrim == 0, which is
   # annoying (and it takes 45 minutes to run, ugh)
-  
-  # So instead we use region random effects instead? That only takes 10 minutes.
-  # Or no random effects at all?
+  #
+  # So instead we use region random effects
   human_rights_model <- function(y, family, prior) {
     form <- glue::glue(y, " ~ derogation_ineffect + new_cases_z + cumulative_cases_z + ",
                        "new_deaths_z + cumulative_deaths_z + ", 
                        "prior_iccpr_derogations + prior_iccpr_other_action + ",
                        "v2x_rule + v2x_civlib + v2xcs_ccsi + ",
-                       "year_week_num + (1 | who_region)") %>% 
+                       "year_quarter_num + (1 | who_region)") %>% 
       as.formula()
     
     # Use rlang::inject() to evaluate the formula object before running the model

@@ -84,7 +84,7 @@ build_policies_plot_data <- function(model_df, year_week_lookup) {
         comparisons(newdata = datagrid(year_week_num = 1:69),
                     variables = "derogation_ineffect",
                     type = "response")  %>%  
-        posteriordraws() %>% 
+        posterior_draws() %>% 
         left_join(year_week_lookup, by = "year_week_num") %>% 
         group_by(year_week_day) %>% 
         reframe(post_medians = tidybayes::median_qi(draw, .width = c(0.5, 0.8, 0.95)),
@@ -97,54 +97,54 @@ build_policies_plot_data <- function(model_df, year_week_lookup) {
 }
 
 
-build_human_rights_plot_data <- function(model_df, year_week_lookup) {
+build_human_rights_plot_data <- function(model_df, year_quarter_lookup) {
   model_df_preds_mfx <- model_df %>% 
     mutate(pred_data = map2(model, family, ~{
       if (.y == "cumulative") {
         df <- datagrid(model = .x,
-                       year_week_num = 1:69,
+                       year_quarter_num = 1:6,
                        derogation_ineffect = 0:1) %>% 
           tidybayes::add_epred_draws(.x) %>% 
-          left_join(year_week_lookup, by = "year_week_num") %>% 
+          left_join(year_quarter_lookup, by = "year_quarter_num") %>% 
           mutate(derogation_ineffect = factor(derogation_ineffect, 
                                               levels = 0:1,
                                               labels = c("No derogation", "Derogation in effect"),
                                               ordered = TRUE)) %>% 
-          group_by(year_week_day, .category, derogation_ineffect) %>% 
+          group_by(year_quarter_day, year_quarter, .category, derogation_ineffect) %>% 
           tidybayes::median_qi(.epred, .width = c(0.5, 0.8, 0.95))
       } else {
         df <- datagrid(model = .x,
-                       year_week_num = 1:69,
+                       year_quarter_num = 1:6,
                        derogation_ineffect = 0:1) %>% 
           tidybayes::add_epred_draws(.x) %>% 
-          left_join(year_week_lookup, by = "year_week_num") %>% 
+          left_join(year_quarter_lookup, by = "year_quarter_num") %>% 
           mutate(derogation_ineffect = factor(derogation_ineffect, 
                                               levels = 0:1,
                                               labels = c("No", "Yes"),
                                               ordered = TRUE)) %>% 
-          group_by(year_week_day, derogation_ineffect) %>% 
+          group_by(year_quarter_day, year_quarter, derogation_ineffect) %>% 
           tidybayes::median_qi(.epred, .width = c(0.5, 0.8, 0.95))
       }
     })) %>% 
     mutate(mfx_data = pmap(list(model, family, y), \(.model, .family, .y) {
       mfx <- .model %>% 
-        comparisons(newdata = datagrid(year_week_num = 1:69),
+        comparisons(newdata = datagrid(year_quarter_num = 1:6),
                     variables = "derogation_ineffect",
                     type = "response")  %>%  
-        posteriordraws() %>% 
-        left_join(year_week_lookup, by = "year_week_num") 
+        posterior_draws() %>% 
+        left_join(year_quarter_lookup, by = "year_quarter_num")
       
       if (.family == "cumulative") {
         mfx <- mfx %>% 
           mutate(group = factor(group, levels = levels(.model$data[[.y]]), ordered = TRUE)) %>% 
-          group_by(year_week_day, group) %>% 
+          group_by(year_quarter_day, year_quarter, group) %>% 
           reframe(post_medians = tidybayes::median_qi(draw, .width = c(0.5, 0.8, 0.95)),
                   p_gt_0 = sum(draw > 0) / n()) %>% 
           unnest(post_medians) %>% 
           rename(draw = y, .lower = ymin, .upper = ymax)
       } else {
         mfx <- mfx %>% 
-          group_by(year_week_day) %>% 
+          group_by(year_quarter_day, year_quarter) %>% 
           reframe(post_medians = tidybayes::median_qi(draw, .width = c(0.5, 0.8, 0.95)),
                   p_gt_0 = sum(draw > 0) / n()) %>% 
           unnest(post_medians) %>% 
@@ -204,7 +204,7 @@ build_hr_table_data <- function(model_df) {
     })) %>% 
     unnest(pred_data) %>% 
     filter(.width == 0.95) %>% 
-    select(nice, year_week_day, derogation_ineffect, .category, .epred, .lower, .upper) %>% 
+    select(nice, year_quarter_day, derogation_ineffect, .category, .epred, .lower, .upper) %>% 
     group_by(nice, derogation_ineffect, .category) %>% 
     mutate(rank = dense_rank(.epred)) %>% 
     filter(rank == 1 | rank == max(rank)) %>% 
@@ -223,7 +223,7 @@ build_hr_table_data <- function(model_df) {
     })) %>% 
     unnest(mfx_data) %>% 
     filter(.width == 0.95) %>% 
-    select(nice, year_week_day, group, draw, .lower, .upper, p_gt_0, .width) %>% 
+    select(nice, year_quarter_day, group, draw, .lower, .upper, p_gt_0, .width) %>% 
     group_by(nice, group) %>% 
     mutate(rank = dense_rank(draw)) %>% 
     filter(rank == 1 | rank == max(rank)) %>% 

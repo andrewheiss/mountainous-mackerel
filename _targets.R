@@ -43,6 +43,11 @@ list(
   tar_target(iccpr_who_raw_file,
              here_rel("data", "raw_data", "ICCPR Derogation and WHO case data 1 3 2020 to 6 30 2021.xlsx"),
              format = "file"),
+  # https://doi.org/10.1371/journal.pmed.1001923
+  # https://plos.figshare.com/articles/dataset/World_Health_Organization_WHO_Member_States_by_subregion_/2579569
+  tar_target(who_subregion_raw_file,
+             here_rel("data", "raw_data", "Havelaar et al Table 2.xls"),
+             format = "file"),
   tar_target(iccpr_treaty_action_file,
              here_rel("data", "raw_data", "ICCPR Treaty Action Variables.xlsx"),
              format = "file"),
@@ -62,7 +67,7 @@ list(
              format = "file"),
   
   ## Process and clean data ----
-  tar_target(iccpr_who_clean, clean_iccpr_who(iccpr_who_raw_file)),
+  tar_target(iccpr_who_clean, clean_iccpr_who(iccpr_who_raw_file, who_subregion_raw_file)),
   tar_target(iccpr_action_clean, clean_iccpr_action(iccpr_treaty_action_file)),
   tar_target(oxford_clean, clean_oxford(oxford_raw_file)),
   tar_target(pandem_clean, clean_pandem(pandem_raw_file)),
@@ -77,8 +82,10 @@ list(
                              oxford_clean, pandem_clean, vdem_clean)),
   
   tar_target(weekly_panel, make_weekly_data(daily_panel)),
+  tar_target(quarterly_panel, make_quarterly_data(daily_panel)),
   
   tar_target(year_week_lookup, make_year_week_lookup(weekly_panel)),
+  tar_target(year_quarter_lookup, make_year_quarter_lookup(quarterly_panel)),
   
   tar_target(world_map, load_world_map(naturalearth_raw_file)),
   tar_target(derogation_count, make_derogation_count(iccpr_who_clean)),
@@ -128,7 +135,7 @@ list(
   
   ## Models ----
   tar_target(m_policies, f_policies(weekly_panel)),
-  tar_target(m_human_rights, f_human_rights(weekly_panel)),
+  tar_target(m_human_rights, f_human_rights(quarterly_panel)),
 
   ## Model tables ----
   # Build tables here because they take a while
@@ -143,7 +150,7 @@ list(
   ## Plots and tables ----
   tar_target(policies_plot_data, build_policies_plot_data(m_policies, year_week_lookup)),
   tar_target(policies_table_data, build_policies_table_data(policies_plot_data)),
-  tar_target(human_rights_plot_data, build_human_rights_plot_data(m_human_rights, year_week_lookup)),
+  tar_target(human_rights_plot_data, build_human_rights_plot_data(m_human_rights, year_quarter_lookup)),
   tar_target(hr_table_data, build_hr_table_data(human_rights_plot_data)),
 
   ## Manuscript and analysis notebook ----
