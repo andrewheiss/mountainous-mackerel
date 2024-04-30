@@ -52,14 +52,31 @@ options(digits = 3, width = 120,
 # See https://www.andrewheiss.com/blog/2021/08/27/tikz-knitr-html-svg-fun/
 Sys.setenv(LIBGS = "/usr/local/share/ghostscript/9.53.3/lib/libgs.dylib.9.53")
 
-font_opts <- list(
-  extra.preamble = c(
-    "\\usepackage{libertine}",
-    "\\usepackage{libertinust1math}"
-  ),
-  # dvisvgm.opts = "--font-format=woff"
-  dvisvgm.opts = "--no-fonts"
-)
+# Conditional tikz output types; use PDF if this is LaTeX, otherwise use SVG with outlined fonts
+if (fmt_out == "latex") {
+  knitr::opts_template$set(
+    tikz_settings = list(
+      fig.ext = "pdf", 
+      fig.align = "center", 
+      extra.preamble = c(
+        "\\usepackage{libertine}",
+        "\\usepackage{libertinust1math}"
+      )
+    )
+  )
+} else {
+  knitr::opts_template$set(
+    tikz_settings = list(
+      fig.ext = "svg", 
+      fig.align = "center", 
+      extra.preamble = c(
+        "\\usepackage{libertine}",
+        "\\usepackage{libertinust1math}"
+      ),
+      engine.opts = list(dvisvgm.opts = "--no-fonts")
+    )
+  )
+}
 ```
 
 ```{r libraries-data}
@@ -179,7 +196,7 @@ p2 <- ggplot() +
 
 plot_priors <- p1 | p2
 plot_priors
-# ggsave("submissions/plot_priors.svg", plot_priors, width = 6.5, height = 2.5)
+# ggsave("submissions/figs/plot_priors.svg", plot_priors, width = 6.5, height = 2.5)
 ```
 
 
