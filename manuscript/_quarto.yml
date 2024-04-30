@@ -3,8 +3,8 @@ project:
   output-dir: output
 
   render:
-    - "*.qmd"
-    - "!submissions/*.qmd"
+    - "manuscript.qmd"
+    - "appendix.qmd"
 
 # This is necessary to keep intermediate files/folders hanging around when 
 # rendering to the same output format (like two different PDFs)
