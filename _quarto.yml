@@ -55,9 +55,9 @@ website:
       - text: "Presentations"
         file: presentations/index.qmd
       - text: "Paper"
-        file: analysis/paper.qmd
-      - text: "Appendix"
-        file: analysis/appendix.qmd
+        menu:
+          - file: analysis/paper.qmd
+          - file: analysis/appendix.qmd
     right:
       - icon: github
         aria-label: github
