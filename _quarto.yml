@@ -12,6 +12,7 @@ project:
     # Render all .qmd files
     - "**/*.qmd"
     - "!admin/sandbox.qmd"
+    - "!JHR*/*.qmd"
 
     # Don't render anything in the manuscript folder because otherwise all the 
     # output gets placed in _site/ only, which is annoying. Instead this folder 
