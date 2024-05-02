@@ -285,9 +285,11 @@ tribble(
 
 ## Outcome variables
 
-We examine the relationship between derogations and policy and human rights outcomes in two stages (see @tbl-vars). First, to test whether derogations were associated with emergency state responses, we look at the connection between ICCPR derogations and five different emergency public health measures recorded by the Oxford COVID-19 Government Response Tracker [@HaleAngristGoldszmidt:2021]: (1) cancelling public events, (2) imposing restrictions on gathering, (3) closing public transit, (4) restricting internal movement, and (5) limiting international travel. Each of these outcomes is recorded as an ordered categorical variable, with levels ranging from "no measures" to increasing counts and severity of emergency measures.[^severity] We collapse these variables into binary outcomes that indicate whether a country had no emergency measures or some emergency measures in each week.
+We examine the relationship between derogations and policy and human rights outcomes in two stages (see @tbl-vars). First, to test whether derogations were associated with emergency state responses, we look at the connection between ICCPR derogations and five different emergency public health measures recorded by the Oxford COVID-19 Government Response Tracker [@HaleAngristGoldszmidt:2021]: (1) cancelling public events, (2) imposing restrictions on gathering, (3) closing public transit, (4) restricting internal movement, and (5) limiting international travel. Each of these outcomes is recorded as an ordered categorical variable, with levels ranging from "no measures" to increasing stringency of emergency measures.[^severity] To allow for comparisons across outcomes, we collapse these variables into binary outcomes that indicate whether a country had no emergency measures or some emergency measures in each week.[^collapse]
 
 [^severity]: Importantly, the Oxford Government Response Tracker measures the *stringency* or strictness of policy enforcement, not the *quality* of policies, so the values do not necessarily reflect how well countries implemented these emergency measures.
+
+[^collapse]: Since values are not comparable across outcomes (e.g. some outcomes have five levels, some have three, and categories do not represent similar concepts across the outcomes), dichotomizing the outcome allows us to better compare changes in the probability of emergency measures across all outcomes.
 
 ```{r tbl-vars}
 #| tbl-cap: Overview of outcomes and explanatory variables included in models

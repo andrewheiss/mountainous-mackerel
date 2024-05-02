@@ -126,31 +126,10 @@ add_breaks <- function(x, fmt) {
 }
 ```
 
-# WHO regions
-
-```{r tbl-who-regions}
-#| tbl-cap: WHO regions
-#| include: true
-#| echo: false
-who_regions <- who_regions_raw %>%
-  mutate(
-    region_title = glue::glue("{who_region}: {who_region_long}")
-  ) %>% 
-  group_by(region_title) %>% 
-  summarize(
-    countries = str_flatten(country_name, collapse = ", ", last = ", and ")
-  ) %>% 
-  pivot_longer(cols = everything()) %>% 
-  select(-name) %>% 
-  as.data.frame() %>%  # tibbles don't like NULL column names
-  set_names(NULL)
-
-who_regions %>% 
-  tt() %>% 
-  style_tt(i = seq(1, nrow(who_regions), by = 2), bold = TRUE, background = "#e6e6e6") %>% 
-  style_tt(i = seq(2, nrow(who_regions), by = 2), indent = 2)
+```{=latex}
+\listoftables
+\listoffigures
 ```
-
 
 # Modeling approach
 
@@ -230,7 +209,8 @@ The actual R code for these models is included in the replication code at <https
 # H1: Logistic regression for binary outcomes
 brm(
   bf(outcome ~ derogation_ineffect + 
-      new_cases_z + cumulative_cases_z + new_deaths_z + cumulative_deaths_z +
+      new_cases_z + cumulative_cases_z + 
+      new_deaths_z + cumulative_deaths_z +
       prior_iccpr_derogations + prior_iccpr_other_action + 
       v2x_rule + v2x_civlib + v2xcs_ccsi + 
       year_week_num + (1 | country_name)),
@@ -272,7 +252,8 @@ The actual R code for these models is included in the replication code at <https
 # H2: Ordinal logistic regression for ordered outcomes
 brm(
   bf(outcome ~ derogation_ineffect + 
-      new_cases_z + cumulative_cases_z + new_deaths_z + cumulative_deaths_z +
+      new_cases_z + cumulative_cases_z + 
+      new_deaths_z + cumulative_deaths_z +
       prior_iccpr_derogations + prior_iccpr_other_action + 
       v2x_rule + v2x_civlib + v2xcs_ccsi + 
       year_quarter_num + (1 | who_region)),
@@ -526,6 +507,36 @@ modelsummary(models_tbl_human_rights,
     bootstrap_class = "table table-sm coef-table-2",
     bootstrap_css_rule = css,
     tabularray_inner = inner
+  )
+```
+
+\clearpage
+
+```{r tbl-who-regions}
+#| tbl-cap: WHO regions
+#| include: true
+#| echo: false
+who_regions <- who_regions_raw %>%
+  mutate(
+    region_title = glue::glue("{who_region}: {who_region_long}")
+  ) %>% 
+  group_by(region_title) %>% 
+  summarize(
+    countries = str_flatten(country_name, collapse = ", ", last = ", and ")
+  ) %>% 
+  pivot_longer(cols = everything()) %>% 
+  select(-name) %>% 
+  as.data.frame() %>%  # tibbles don't like NULL column names
+  set_names(NULL)
+
+who_regions %>% 
+  tt(width = 1) %>% 
+  format_tt(escape = TRUE) %>% 
+  style_tt(i = seq(1, nrow(who_regions), by = 2), bold = TRUE, background = "#e6e6e6") %>% 
+  style_tt(i = seq(2, nrow(who_regions), by = 2), indent = 2, align = "l") %>% 
+  style_tt(
+    bootstrap_class = "table table-sm",
+    tabularray_inner = "rowsep=1pt, cells={font=\\footnotesize}"
   )
 ```
 
