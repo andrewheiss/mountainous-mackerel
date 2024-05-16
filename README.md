@@ -44,13 +44,13 @@ file](./archive/main.zip) or use GitHub to clone or fork the compendium
 repository (see the green “Clone or download” button at the top of the
 GitHub page).
 
-We use the [**renv**
+We use the [{renv}
 package](https://rstudio.github.io/renv/articles/renv.html) to create a
-stable version-specific library of packages, and we use the [**targets**
+stable version-specific library of packages, and we use the [{targets}
 package](https://docs.ropensci.org/targets/) to manage all file
 dependencies and run the analysis. ([See this for a short helpful
 walkthrough of
-**targets**.](https://books.ropensci.org/targets/walkthrough.html)).
+{targets}.](https://books.ropensci.org/targets/walkthrough.html)).
 
 To reproduce the findings and re-run the analysis, do the following:
 
@@ -74,10 +74,10 @@ To reproduce the findings and re-run the analysis, do the following:
     Project](https://r4ds.had.co.nz/workflow-projects.html).
 4.  In the terminal, run `quarto install tinytex` to ensure that you
     have a working LaTeX installation.
-5.  If it’s not installed already, R *should* try to install the
-    **renv** package when you open the RStudio Project for the first
-    time. If you don’t see a message about package installation, install
-    it yourself by running `install.packages("renv")` in the R console.
+5.  If it’s not installed already, R *should* try to install the {renv}
+    package when you open the RStudio Project for the first time. If you
+    don’t see a message about package installation, install it yourself
+    by running `install.packages("renv")` in the R console.
 6.  Run `renv::restore()` in the R console to install all the required
     packages for this project.
 7.  Run `targets::tar_make()` in the R console to automatically download
@@ -94,9 +94,8 @@ Running `targets::tar_make()` will create several helpful outputs:
 ## 🏔️🐟: Note on “mountainous mackerel” project name
 
 Because project titles change all the time with revisions, rewriting,
-and peer review, we used [**codename**](http://svmiller.com/codename/)
-to generate an
-[Ubuntu-style](https://wiki.ubuntu.com/DevelopmentCodeNames)
+and peer review, we used [{codename}](http://svmiller.com/codename/) to
+generate an [Ubuntu-style](https://wiki.ubuntu.com/DevelopmentCodeNames)
 internal-to-us project name that won’t change.
 
 ``` r
