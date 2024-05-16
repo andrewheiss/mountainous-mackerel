@@ -18,7 +18,7 @@ author:
   orcid: 0000-0002-3948-3914
   url: https://www.andrewheiss.com
   email: aheiss@gsu.edu
-date: April 30, 2024
+date: May 16, 2024
 code-repo: "Access the code, data, and analysis at <https://github.com/andrewheiss/mountainous-mackerel>"
 bibliography: references.json
 csl: csl/chicago-author-date.csl
@@ -43,8 +43,7 @@ knitr::opts_chunk$set(fig.align = "center", fig.retina = 3,
                       out.width = "80%", collapse = TRUE)
 
 options(digits = 3, width = 120,
-        dplyr.summarise.inform = FALSE,
-        knitr.kable.NA = "")
+        dplyr.summarise.inform = FALSE)
 ```
 
 ```{r tikz-stuff, include=FALSE}
@@ -84,8 +83,6 @@ library(tidyverse)
 library(patchwork)
 library(modelsummary)
 library(scales)
-library(kableExtra)
-library(gt)
 library(tinytable)
 library(targets)
 
@@ -537,6 +534,86 @@ who_regions %>%
   style_tt(
     bootstrap_class = "table table-sm",
     tabularray_inner = "rowsep=1pt, cells={font=\\footnotesize}"
+  )
+```
+
+\clearpage
+
+```{r tbl-achr-echr-iccpr}
+#| tbl-cap: States that derogated from regional human rights conventions
+#| include: true
+#| echo: false
+
+achr_echr_iccpr <- tribble(
+                 ~ACHR, ~Also,             ~ECHR, ~Also1,
+           "Argentina", "Yes",         "Albania",   "No",
+             "Bolivia",  "No",         "Armenia",  "Yes",
+               "Chile", "Yes",      "Azerbaijan",  "Yes",
+            "Colombia", "Yes",         "Estonia",  "Yes",
+  "Dominican Republic", "Yes",         "Georgia",  "Yes",
+             "Ecuador", "Yes",          "Latvia",  "Yes",
+         "El Salvador", "Yes",         "Moldova",  "Yes",
+           "Guatemala", "Yes", "North Macedonia",   "No",
+            "Honduras",  "No",         "Romania",  "Yes",
+             "Jamaica",  "No",      "San Marino",  "Yes",
+              "Panama",  "No",          "Serbia",   "No",
+            "Paraguay", "Yes",                NA,     NA,
+                "Peru", "Yes",                NA,     NA,
+            "Suriname",  "No",                NA,     NA,
+           "Venezuela",  "No",                NA,     NA
+  )
+
+achr_echr_iccpr %>% 
+  as.data.frame() %>% 
+  set_names(
+    c(
+      "States that derogated from the ACHR",
+      "Also submitted ICCPR derogation",
+      "States that derogated from the ECHR",
+      "Also submitted ICCPR derogation"
+    )
+  ) %>% 
+  tt(
+    width = c(0.3, 0.2, 0.3, 0.2),
+    notes = "ACHR = American Convention on Human Rights; ECHR = European Convention on Human Rights"
+  ) %>% 
+  format_tt(replace = list(" " = NA)) %>% 
+  style_tt(j = 1:4, align = "lclc") %>% 
+  style_tt(
+    bootstrap_class = "table table-sm",
+    tabularray_inner = "cells={font=\\scriptsize}, row{1}={valign=b}"
+  )
+```
+
+\clearpage
+
+```{r tbl-results-determinants}
+#| tbl-cap: Results from Authors (2024) showing the determinants of derogation
+#| include: true
+#| echo: false
+
+det_models <- readRDS(here::here("data", "raw_data",  "determinants_models.rds"))
+
+modelsummary(
+  det_models$models, 
+  exponentiate = TRUE,
+  estimate = "{estimate} ({std.error}){stars}",
+  statistic = NULL,
+  coef_map = det_models$coef_map,
+  gof_map = det_models$gof_map,
+  output = "tinytable",
+  fmt = fmt_significant(2),
+  stars = c("*" = 0.1, "**" = 0.05, "***" = 0.01),
+  notes = list(
+    "Dependent variable = derogation submission",
+    "Logistic regression models; odds ratios (standard error)",
+    "* p < 0.1, ** p < 0.05, *** p < 0.01"
+  ),
+  width = c(0.5, 0.25, 0.25)
+) %>% 
+  style_tt(
+    bootstrap_class = "table table-sm",
+    tabularray_inner = "cells={font=\\scriptsize}"
   )
 ```
 
