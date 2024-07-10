@@ -111,10 +111,10 @@ format:
         dev: "cairo_pdf"
 
   # Manuscript-y Word output
-  # hikmah-manuscript-odt:
-  #   prefer-html: true
-  # 
-  #   knitr:
-  #     opts_chunk:
-  #       dev: "ragg_png"
-  #       dpi: 300
+  hikmah-manuscript-odt:
+    prefer-html: true
+  
+    knitr:
+      opts_chunk:
+        dev: "ragg_png"
+        dpi: 300
