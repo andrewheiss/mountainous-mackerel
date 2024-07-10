@@ -18,7 +18,7 @@ author:
   orcid: 0000-0002-3948-3914
   url: https://www.andrewheiss.com
   email: aheiss@gsu.edu
-date: May 16, 2024
+date: July 10, 2024
 code-repo: "Access the code, data, and analysis at <https://github.com/andrewheiss/mountainous-mackerel>"
 bibliography: references.json
 csl: csl/chicago-author-date.csl
