@@ -528,7 +528,7 @@ who_regions <- who_regions_raw %>%
 
 who_regions %>% 
   tt(width = 1) %>% 
-  format_tt(escape = TRUE) %>% 
+  format_tt(j = 1, escape = TRUE) %>% 
   style_tt(i = seq(1, nrow(who_regions), by = 2), bold = TRUE, background = "#e6e6e6") %>% 
   style_tt(i = seq(2, nrow(who_regions), by = 2), indent = 2, align = "l") %>% 
   style_tt(
