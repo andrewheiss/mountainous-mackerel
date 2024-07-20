@@ -24,6 +24,17 @@ format:
           </style>
     language: 
       title-block-published: "Latest version"
+    format-links:
+      - html
+      - format: hikmah-pdf
+        text: PDF
+        icon: file-pdf
+      - format: hikmah-manuscript-pdf+ms
+        text: Manuscripty PDF
+        icon: file-pdf
+      - format: hikmah-manuscript-odt
+        text: OpenOffice
+        icon: file-pdf
     shift-heading-level-by: 1
     theme: 
       - zephyr
