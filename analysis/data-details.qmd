@@ -220,8 +220,8 @@ To measure the severity of government responses to COVID-19, we use data from th
 
 - **Stringency index** (`stringency_index`): Composite measure of multiple indicators (C1–C8 and H1), ranging from 0 to 100. [See the complete methodology](https://github.com/OxCGRT/covid-policy-tracker/blob/master/documentation/index_methodology.md) for more details.
 
-- **Cancel public events** (`c3_cancel_events`): Indicator of whether the country cancelled public events.
-  - **0**: no measures; **1**: recommend cancelling; **2**: require cancelling; **Blank**: no data
+- **Cancel public events** (`c3_cancel_events`): Indicator of whether the country canceled public events.
+  - **0**: no measures; **1**: recommend canceling; **2**: require canceling; **Blank**: no data
 
 - **Limits on gatherings** (`c4_gatherings`): Indicator of whether the country limited public gatherings.
   - **0**: no restrictions; **1**: restrictions on very large gatherings (the limit is above 1000 people); **2**: restrictions on gatherings between 101-1000 people; **3**: restrictions on gatherings between 11-100 people; **4**: restrictions on gatherings of 10 people or less; **Blank**: no data
