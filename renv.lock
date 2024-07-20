@@ -2852,14 +2852,14 @@
     },
     "tinytable": {
       "Package": "tinytable",
-      "Version": "0.3.0.26",
+      "Version": "0.3.0.32",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "https://vincentarelbundock.r-universe.dev",
       "Requirements": [
         "R",
         "methods"
       ],
-      "Hash": "33d503a99c1448956c61fe44079b61e9"
+      "Hash": "fb694dff1168716cf411159dd74a4f50"
     },
     "tinytex": {
       "Package": "tinytex",
