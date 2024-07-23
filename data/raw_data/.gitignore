@@ -1,0 +1,11 @@
+# Only commit the core data files for these bigger projects
+
+# V-Dem
+Country_Year_V-Dem_Full+others_R_v12/*
+!Country_Year_V-Dem_Full+others_R_v12/V-Dem-CY-Full+Others-v12.rds
+
+# PanDem
+pandem/*
+!pandem/datasets/
+pandem/datasets/*
+!pandem/datasets/pandem_TS_v6.xlsx

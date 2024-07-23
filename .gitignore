@@ -8,7 +8,7 @@
 
 # Data stuff
 # (ignore for now)
-data/raw_data/
+# data/raw_data/
 data/derived_data/
 analysis/data/
 

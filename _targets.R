@@ -40,27 +40,40 @@ lapply(list.files("R", full.names = TRUE, recursive = TRUE), source)
 # Pipeline ----------------------------------------------------------------
 list(
   ## Raw data files ----
+  # Hand-coded by us
   tar_target(iccpr_who_raw_file,
              here_rel("data", "raw_data", "ICCPR Derogation and WHO case data 1 3 2020 to 6 30 2021.xlsx"),
              format = "file"),
+  tar_target(iccpr_treaty_action_file,
+            here_rel("data", "raw_data", "ICCPR Treaty Action Variables.xlsx"),
+            format = "file"),
+
   # https://doi.org/10.1371/journal.pmed.1001923
   # https://plos.figshare.com/articles/dataset/World_Health_Organization_WHO_Member_States_by_subregion_/2579569
   tar_target(who_subregion_raw_file,
              here_rel("data", "raw_data", "Havelaar et al Table 2.xls"),
              format = "file"),
-  tar_target(iccpr_treaty_action_file,
-             here_rel("data", "raw_data", "ICCPR Treaty Action Variables.xlsx"),
-             format = "file"),
+
+  # https://www.bsg.ox.ac.uk/research/covid-19-government-response-tracker
   tar_target(oxford_raw_file,
              here_rel("data", "raw_data", "Oxford Covid Response Data 1 3 2020 to 6 20 2021.xlsx"),
              format = "file"),
+  
+  # PanDem v6.0
+  # https://github.com/vdeminstitute/pandem/tree/master/older%20versions/PanDem%20v6
   tar_target(pandem_raw_file,
              here_rel("data", "raw_data", "pandem", "datasets", "pandem_TS_v6.xlsx"),
              format = "file"),
+
+  # V-Dem v12
+  # https://www.v-dem.net/data/dataset-archive/
   tar_target(vdem_raw_file,
              here_rel("data", "raw_data", "Country_Year_V-Dem_Full+others_R_v12",
                       "V-Dem-CY-Full+Others-v12.rds"),
              format = "file"),
+
+  # Natural Earth
+  # https://www.naturalearthdata.com/downloads/110m-cultural-vectors/
   tar_target(naturalearth_raw_file,
              here_rel("data", "raw_data", "ne_110m_admin_0_countries",
                       "ne_110m_admin_0_countries.shp"),
