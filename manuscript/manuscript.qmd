@@ -570,3 +570,6 @@ We suggest that future research examines different incentives facing state offic
 Overall, we find that states used derogations as they were intended during the pandemic and no large-scale misuse of the legal action took place to repress human rights. It can be an important signal for states to submit derogations, both to international and domestic communities, about intentions to mitigate the spread of disease through the temporary suspension of human rights.
 
 # References
+
+::: {#refs}
+:::
