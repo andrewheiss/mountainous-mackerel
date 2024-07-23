@@ -6,9 +6,6 @@
 # Presentation stuff
 *.ai
 
-# Data stuff
-analysis/data/
-
 # Targets stuff
 _targets
 _targets.yaml
