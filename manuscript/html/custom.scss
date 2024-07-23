@@ -1,5 +1,15 @@
 /*-- scss:rules --*/
 
+#title-block-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 2em;
+    padding-bottom: 2em;
+}
+
+.MathJax, .MathJax_Display {
+  font-size: 100% !important;
+}
+
 .thanks-section {
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   margin-bottom: 2em;

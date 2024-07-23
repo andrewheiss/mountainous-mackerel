@@ -54,6 +54,7 @@ format:
   # Nice PDF output
   hikmah-pdf:
     cite-method: citeproc
+    list-of-figures-normal: true
 
     # Custom fonts
     mainfont: "Linux Libertine O"
@@ -90,6 +91,7 @@ format:
     cite-method: citeproc
     left-aligned: true
     endnotes: false
+    list-of-figures-single: true
 
     # Custom fonts
     mainfont: "Linux Libertine O"
@@ -105,8 +107,14 @@ format:
         \everydisplay\expandafter{\the\everydisplay\small }
 
         \SetTblrStyle{foot}{font=\footnotesize}
-        
+
         \AtBeginEnvironment{longtblr}{\setlength{\RaggedRightParindent}{0pt}\singlespacing}
+        \AtBeginEnvironment{Shaded}{\singlespacing}
+
+        % Make these headings smaller
+        \renewcommand{\cfttoctitlefont}{\normalsize\bfseries}  % TOC
+        \renewcommand{\cftloftitlefont}{\normalsize\bfseries}  % List of figures
+        \renewcommand{\cftlottitlefont}{\normalsize\bfseries}  % List of tables
 
         \NewTblrTheme{long}{
           \SetTblrStyle{caption}{hang=0pt}
