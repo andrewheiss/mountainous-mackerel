@@ -32,9 +32,9 @@ format:
       - format: hikmah-manuscript-pdf+ms
         text: Manuscripty PDF
         icon: file-pdf
-      - format: hikmah-manuscript-odt
-        text: OpenOffice
-        icon: file-pdf
+      - format: hikmah-manuscript-docx
+        text: Manuscripty Word
+        icon: file-word
     shift-heading-level-by: 1
     theme: 
       - zephyr
@@ -53,7 +53,6 @@ format:
 
   # Nice PDF output
   hikmah-pdf:
-    cite-method: citeproc
     list-of-figures-normal: true
 
     # Custom fonts
@@ -88,7 +87,6 @@ format:
   
   # Manuscript-y PDF output
   hikmah-manuscript-pdf+ms:
-    cite-method: citeproc
     left-aligned: true
     endnotes: false
     list-of-figures-single: true
@@ -130,10 +128,4 @@ format:
         dev: "cairo_pdf"
 
   # Manuscript-y Word output
-  hikmah-manuscript-odt:
-    prefer-html: true
-  
-    knitr:
-      opts_chunk:
-        dev: "ragg_png"
-        dpi: 300
+  hikmah-manuscript-docx: default
