@@ -47,9 +47,11 @@ options(digits = 3, width = 120,
 ```
 
 ```{r tikz-stuff, include=FALSE}
-# Necessary for using dvisvgm on macOS
-# See https://www.andrewheiss.com/blog/2021/08/27/tikz-knitr-html-svg-fun/
-Sys.setenv(LIBGS = "/usr/local/share/ghostscript/9.53.3/lib/libgs.dylib.9.53")
+if (Sys.info()["sysname"] == "Darwin") {
+  # Necessary for using dvisvgm on macOS
+  # See https://www.andrewheiss.com/blog/2021/08/27/tikz-knitr-html-svg-fun/
+  Sys.setenv(LIBGS = "/usr/local/share/ghostscript/9.53.3/lib/libgs.dylib.9.53")
+}
 
 # Conditional tikz output types; use PDF if this is LaTeX, otherwise use SVG with outlined fonts
 if (fmt_out == "latex") {
