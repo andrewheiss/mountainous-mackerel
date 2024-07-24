@@ -37,6 +37,11 @@ here_rel <- function(...) {fs::path_rel(here::here(...))}
 # Load R scripts with functions to use in the pipeline
 lapply(list.files("R", full.names = TRUE, recursive = TRUE), source)
 
+# Set some conditional flags
+should_deploy <- identical(Sys.getenv("UPLOAD_WEBSITES1"), "TRUE")
+is_docker <- identical(Sys.getenv("IS_DOCKER"), "TRUE")
+
+
 # Pipeline ----------------------------------------------------------------
 list(
   ## Raw data files ----
@@ -167,17 +172,18 @@ list(
   tar_target(hr_table_data, build_hr_table_data(human_rights_plot_data)),
 
   ## Manuscript and analysis notebook ----
-  tar_quarto(manuscript, path = "manuscript", quiet = FALSE),
+  tar_quarto(manuscript, path = "manuscript", working_directory = "manuscript", quiet = FALSE),
 
   tar_quarto(website, path = ".", quiet = FALSE),
-  tar_target(deploy_script, here_rel("deploy.sh"), format = "file"),
+
+  tar_target(deploy_script, here_rel("deploy.sh"), format = "file", cue = tar_cue_skip(!should_deploy)),
   tar_target(deploy, {
     # Force a dependency
     website
     # Run the deploy script
-    if (Sys.getenv("UPLOAD_WEBSITES") == "TRUE") processx::run(paste0("./", deploy_script))
-  }),
-  
+    if (should_deploy) processx::run(paste0("./", deploy_script))
+  }, cue = tar_cue_skip(!should_deploy)),
+
   ## Render the README ----
   tar_quarto(readme, here_rel("README.qmd"))
 )
