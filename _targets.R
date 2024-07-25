@@ -38,7 +38,7 @@ here_rel <- function(...) {fs::path_rel(here::here(...))}
 lapply(list.files("R", full.names = TRUE, recursive = TRUE), source)
 
 # Set some conditional flags
-should_deploy <- identical(Sys.getenv("UPLOAD_WEBSITES1"), "TRUE")
+should_deploy <- identical(Sys.getenv("UPLOAD_WEBSITES"), "TRUE")
 is_docker <- identical(Sys.getenv("IS_DOCKER"), "TRUE")
 
 
@@ -111,26 +111,6 @@ list(
 
   
   ## Save data ----
-  ### Daily ----
-  tar_target(data_daily_stata, 
-             save_dta(daily_panel, here_rel("data", "derived_data", "daily_panel.dta")),
-             format = "file"),
-  tar_target(data_daily_stata_website, 
-             save_dta(daily_panel, here_rel("analysis", "data", "daily_panel.dta")),
-             format = "file"),
-  tar_target(data_daily_csv, 
-             save_csv(daily_panel, here_rel("data", "derived_data", "daily_panel.csv")),
-             format = "file"),
-  tar_target(data_daily_csv_website, 
-             save_csv(daily_panel, here_rel("analysis", "data", "daily_panel.csv")),
-             format = "file"),
-  tar_target(data_daily_rds, 
-             save_r(daily_panel, here_rel("data", "derived_data", "daily_panel.rds")),
-             format = "file"),
-  tar_target(data_daily_rds_website, 
-             save_r(daily_panel, here_rel("analysis", "data", "daily_panel.rds")),
-             format = "file"),
-  
   ### Weekly ----
   tar_target(data_weekly_stata, 
              save_dta(weekly_panel, here_rel("data", "derived_data", "weekly_panel.dta")),
@@ -149,6 +129,26 @@ list(
              format = "file"),
   tar_target(data_weekly_rds_website, 
              save_r(weekly_panel, here_rel("analysis", "data", "weekly_panel.rds")),
+             format = "file"),
+  
+  ### Quarterly ----
+  tar_target(data_quarterly_stata, 
+             save_dta(quarterly_panel, here_rel("data", "derived_data", "quarterly_panel.dta")),
+             format = "file"),
+  tar_target(data_quarterly_stata_website, 
+             save_dta(quarterly_panel, here_rel("analysis", "data", "quarterly_panel.dta")),
+             format = "file"),
+  tar_target(data_quarterly_csv, 
+             save_csv(quarterly_panel, here_rel("data", "derived_data", "quarterly_panel.csv")),
+             format = "file"),
+  tar_target(data_quarterly_csv_website, 
+             save_csv(quarterly_panel, here_rel("analysis", "data", "quarterly_panel.csv")),
+             format = "file"),
+  tar_target(data_quarterly_rds, 
+             save_r(quarterly_panel, here_rel("data", "derived_data", "quarterly_panel.rds")),
+             format = "file"),
+  tar_target(data_quarterly_rds_website, 
+             save_r(quarterly_panel, here_rel("analysis", "data", "quarterly_panel.rds")),
              format = "file"),
   
   ## Models ----
