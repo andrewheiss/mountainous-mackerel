@@ -8,7 +8,8 @@
 
 [![OSF
 DOI](https://img.shields.io/badge/OSF-10.17605%2FOSF.IO%2FAQVNK-blue)](https://doi.org/10.17605/OSF.IO/AQVNK)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.12817616.svg)](https://doi.org/10.5281/zenodo.12817616)
+[![Code
+DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.12817616.svg)](https://doi.org/10.5281/zenodo.12817616)
 <!-- badges: end -->
 
 [Suparna Chaudhry](https://www.suparnachaudhry.com/) • Lewis and Clark
