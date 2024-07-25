@@ -18,7 +18,7 @@ author:
   orcid: 0000-0002-3948-3914
   url: https://www.andrewheiss.com
   email: aheiss@gsu.edu
-date: July 22, 2024
+date: July 25, 2024
 code-repo: "Access the code, data, and analysis at <https://github.com/andrewheiss/mountainous-mackerel>"
 bibliography: references.json
 csl: csl/chicago-author-date.csl
@@ -149,7 +149,7 @@ add_breaks <- function(x, fmt) {
 
 We use Stan `r cmdstanr::cmdstan_version()` [@stan] through R `r paste0(version$major, ".", version$minor)` [@rproject-4-3-3] and {brms} `r packageVersion("brms")` [@Burkner:2017] to estimate our models. We generate 4 MCMC chains for each model with 2,000 iterations in each chain, 1,000 of which are used for warmup. All chains converge; we assess convergence with visual inspection.
 
-Complete results from all the models, along with posterior predictive checks, goodness-of-fit measures, and prediction diagnostics are all available at a companion statistical analysis compendium at <https://doi.org/10.17605/OSF.IO/ANONYMIZED-FOR-NOW>.
+Complete results from all the models, along with posterior predictive checks, goodness-of-fit measures, and prediction diagnostics are all available at a companion statistical analysis compendium at <https://doi.org/10.17605/OSF.IO/7GVDA>.
 
 ## Priors
 
@@ -604,11 +604,11 @@ achr_echr_iccpr %>%
 \clearpage
 
 ```{r tbl-results-determinants}
-#| tbl-cap: Results from Authors (2024) showing the determinants of derogation
+#| tbl-cap: Results from @ChaudhryComstockHeiss:2024 showing the determinants of derogation
 #| include: true
 #| echo: false
 
-det_models <- readRDS(here::here("data", "raw_data",  "determinants_models.rds"))
+det_models <- readRDS(here::here("data", "raw_data", "determinants_models.rds"))
 
 modelsummary(
   det_models$models, 
