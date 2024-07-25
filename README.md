@@ -6,6 +6,7 @@
 
 <!-- badges: start -->
 
+[![Preprint](https://img.shields.io/badge/Preprint-10.31235%2Fosf.io%2Fy8ked-blue)](https://doi.org/10.31235/osf.io/y8ked)
 [![OSF
 DOI](https://img.shields.io/badge/OSF-10.17605%2FOSF.IO%2FAQVNK-blue)](https://doi.org/10.17605/OSF.IO/AQVNK)
 [![Code
