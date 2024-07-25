@@ -3,37 +3,28 @@ title: "Download final data"
 format:
   html:
     code-tools: false
+    toc: false
 ---
 
 ```{r include=FALSE}
 # Add these final data files as targets dependencies
 library(targets)
-tar_load(c(data_daily_stata, data_daily_csv, data_daily_rds,
-           data_weekly_stata, data_weekly_csv, data_weekly_rds))
-tar_load(c(data_daily_stata_website, data_daily_csv_website, data_daily_rds_website,
-           data_weekly_stata_website, data_weekly_csv_website, data_weekly_rds_website))
+tar_load(c(data_weekly_stata, data_weekly_csv, data_weekly_rds,
+           data_quarterly_stata, data_quarterly_csv, data_quarterly_rds))
+tar_load(c(data_weekly_stata_website, data_weekly_csv_website, data_weekly_rds_website,
+           data_quarterly_stata_website, data_quarterly_csv_website, data_quarterly_rds_website))
 ```
 
+The cleaned data is available in three formats:
 
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">Program</th>
-      <th scope="col">File</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>CSV file for any program</td>
-      <td><a class="btn btn-primary" target="_blank" href="data/daily_panel.csv">{{< fa table >}} &ensp;<span class="font-monospace">daily_panel.csv</span></a></td>
-    </tr>
-    <tr>
-      <td><span class="font-monospace">.rds</span> file for R<br><span class="small">(load with `df <- readRDS("daily_panel.rds")`)</small></td>
-      <td><a class="btn btn-primary" target="_blank" href="data/daily_panel.rds">{{< fa brands r-project >}} &ensp;<span class="font-monospace">daily_panel.rds</span></a></td>
-    </tr>
-    <tr>
-      <td><span class="font-monospace">.dta</span> file for Stata<br><span class="small">(load with `use "daily_panel.dta"`)</small></td>
-      <td><a class="btn btn-primary" target="_blank" href="data/daily_panel.dta">{{< fa table-cells >}} &ensp;<span class="font-monospace">daily_panel.dta</span></a></td>
-    </tr>
-  </tbody>
-</table>
+- CSV file for any program
+- `.rds` file for R <span class="small">(load with `df <- readRDS("weekly_panel.rds")`)</span>
+- `.dta` file for Stata <span class="small">(load with `use "weekly_panel.dta"`)</span>
+
+## Weekly data
+
+<a class="btn btn-primary btn-sm" target="_blank" href="data/weekly_panel.csv">{{< fa table >}} &ensp;<span class="font-monospace">weekly_panel.csv</span></a> &emsp; <a class="btn btn-success btn-sm" target="_blank" href="data/weekly_panel.rds">{{< fa brands r-project >}} &ensp;<span class="font-monospace">weekly_panel.rds</span></a> &emsp; <a class="btn btn-warning btn-sm" target="_blank" href="data/weekly_panel.dta">{{< fa table-cells >}} &ensp;<span class="font-monospace">weekly_panel.dta</span></a>
+
+## Quarterly data
+
+<a class="btn btn-primary btn-sm" target="_blank" href="data/quarterly_panel.csv">{{< fa table >}} &ensp;<span class="font-monospace">quarterly_panel.csv</span></a> &emsp; <a class="btn btn-success btn-sm" target="_blank" href="data/quarterly_panel.rds">{{< fa brands r-project >}} &ensp;<span class="font-monospace">quarterly_panel.rds</span></a> &emsp; <a class="btn btn-warning btn-sm" target="_blank" href="data/quarterly_panel.dta">{{< fa table-cells >}} &ensp;<span class="font-monospace">quarterly_panel.dta</span></a>

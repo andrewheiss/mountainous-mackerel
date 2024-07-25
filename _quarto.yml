@@ -49,7 +49,7 @@ website:
     background: primary
     search: false
     left:
-      - text: "Data"
+      - text: "Data and replication"
         file: analysis/data-final.qmd
       - text: "Analysis"
         file: analysis/hypotheses.qmd
@@ -69,24 +69,28 @@ website:
       style: docked
       background: dark
       contents:
-        - analysis/data-final.qmd
-        - analysis/data-details.qmd
+        - section: "Data"
+          contents:
+            - analysis/data-final.qmd
+            - analysis/data-details.qmd
+        - section: "Replication"
+          contents:
+            - analysis/replication.qmd
+        - section: "Other details"
+          contents:
+            - analysis/targets.qmd
+            - analysis/environment.qmd
 
     - title: "Analysis"
       contents:
         - section: "Questions"
           contents:
             - analysis/hypotheses.qmd
-            - analysis/methods.qmd
         - section: "Models"
           contents:
             - analysis/model-details.qmd
             - analysis/analysis_policies.qmd
             - analysis/analysis_human-rights.qmd
-        - section: "Other details"
-          contents:
-            - analysis/targets.qmd
-            - analysis/environment.qmd
     
     - title: "Empty space lol"
 

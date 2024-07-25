@@ -18,7 +18,7 @@ options(digits = 3, width = 120,
 
 # targets pipeline
 
-We use [the magical **targets** package](https://docs.ropensci.org/targets/) to run our analysis and keep track of all dependencies automatically.
+We use [the magical {targets} package](https://docs.ropensci.org/targets/) to run our analysis and keep track of all dependencies automatically.
 
 To build our entire project, run `targets::tar_make()` at the R console.
 

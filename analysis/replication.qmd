@@ -1,0 +1,23 @@
+---
+title: "Replication Docker container"
+format:
+  html:
+    code-tools: false
+---
+
+To maximize replicability, we wrote this manuscript using [Quarto](https://quarto.org/), which allowed us to mix computational figures, text, and tables with the actual prose of the manuscript. This means that there's no need to rely on comments within the code to identify the location of each appropriate result in the manuscript—all results are programmatically included when rendering the document.
+
+We use the [{renv} package](https://rstudio.github.io/renv/articles/renv.html) to create a stable version-specific library of R packages, and we use the [{targets} package](https://docs.ropensci.org/targets/index.html) to manage all the file dependencies and run the analysis. {targets} is especially helpful with long-running objects like the main models, which take ≈40 minutes to run—as long as upstream dependencies don't change, the models only need to run once, and can be loaded from {targets}'s data store thereafter.
+
+Because it can sometimes be difficult to set up and configure version-specific libraries of R packages and install specific versions of Stan, we provide two methods for replicating our analysis: (1) a Docker container built and orchestrated with Docker Compose, or (2) restoring a {renv} environment on your local computer.
+
+We have [a separate GitHub repository with a Dockerfile and complete instructions for replicating the results](https://github.com/andrewheiss/mountainous-mackerel-docker) (and the manuscript and the companion results notebook—this very website, actually!)
+
+::: {.d-flex .justify-content-center .align-items-center}
+
+```{=html}
+<!-- svg generated at https://gh-card.dev/ -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="442" height="109" version="1.2" baseProfile="tiny" data-reactroot=""><defs></defs><g fill="none" stroke="black" stroke-width="1" fill-rule="evenodd" stroke-linecap="square" stroke-linejoin="bevel"><g fill="#ffffff" fill-opacity="1" stroke="none" transform="matrix(1,0,0,1,0,0)"><rect x="0" y="0" width="440" height="109"></rect></g><rect x="0" y="0" width="441" height="108" stroke="#eaecef" stroke-width="2"></rect><g fill="#586069" fill-opacity="1" stroke="none" transform="matrix(1.25,0,0,1.25,17,21)"><path vector-effect="none" fill-rule="evenodd" d="M4,9 L3,9 L3,8 L4,8 L4,9 M4,6 L3,6 L3,7 L4,7 L4,6 M4,4 L3,4 L3,5 L4,5 L4,4 M4,2 L3,2 L3,3 L4,3 L4,2 M12,1 L12,13 C12,13.55 11.55,14 11,14 L6,14 L6,16 L4.5,14.5 L3,16 L3,14 L1,14 C0.45,14 0,13.55 0,13 L0,1 C0,0.45 0.45,0 1,0 L11,0 C11.55,0 12,0.45 12,1 M11,11 L1,11 L1,13 L3,13 L3,12 L6,12 L6,13 L11,13 L11,11 M11,1 L2,1 L2,10 L11,10 L11,1"></path></g><g fill="#0366d6" fill-opacity="1" stroke="#0366d6" stroke-opacity="1" stroke-width="1" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)"><a target="" href="https://github.com/andrewheiss/mountainous-mackerel-docker"><text fill="#0366d6" fill-opacity="1" stroke="none" xml:space="preserve" x="41" y="33" font-family="sans-serif" font-size="16" font-weight="630" font-style="normal">mountainous-mackerel-docker</text></a></g><g fill="#586069" fill-opacity="1" stroke="#586069" stroke-opacity="1" stroke-width="1" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)"><text fill="#586069" fill-opacity="1" stroke="none" xml:space="preserve" x="17" y="65" font-family="sans-serif" font-size="14" font-weight="400" font-style="normal">Docker container for replicating &quot;Pandemic Pass&quot; </text></g><g fill="#24292e" fill-opacity="1" stroke="#24292e" stroke-opacity="1" stroke-width="1" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)"><text fill="#24292e" fill-opacity="1" stroke="none" xml:space="preserve" x="33" y="91" font-family="sans-serif" font-size="12" font-weight="400" font-style="normal">Dockerfile</text></g><g fill="#000000" fill-opacity="1" stroke="none" transform="matrix(1,0,0,1,110,78)"></g><g fill="#586069" fill-opacity="1" stroke="#586069" stroke-opacity="1" stroke-width="1" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)"></g><g fill="#000000" fill-opacity="1" stroke="none" transform="matrix(1,0,0,1,173,78)"></g><g fill="#586069" fill-opacity="1" stroke="#586069" stroke-opacity="1" stroke-width="1" stroke-linecap="square" stroke-linejoin="bevel" transform="matrix(1,0,0,1,0,0)"></g><circle cx="23" cy="86" r="7" stroke="none" fill="#384d54"></circle></g></svg>
+```
+
+:::
