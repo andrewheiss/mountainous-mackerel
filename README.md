@@ -52,7 +52,15 @@ dependencies and run the analysis. ([See this for a short helpful
 walkthrough of
 {targets}.](https://books.ropensci.org/targets/walkthrough.html)).
 
-To reproduce the findings and re-run the analysis, do the following:
+To replicate the findings and re-run the analysis, you can use a Docker
+container at
+[`mountainous-mackerel-docker`](https://github.com/andrewheiss/mountainous-mackerel-docker),
+which will create a complete computing envirionment for running
+everything. Full details and instructions [are available
+there](https://github.com/andrewheiss/mountainous-mackerel-docker).
+
+Alternatively, everything can be run on your local computer too. Do the
+following:
 
 1.  Download and install these fonts (if you’re using Windows, make sure
     you right click on the font files and choose “Install for all users”
