@@ -4,7 +4,7 @@
     "Repositories": [
       {
         "Name": "CRAN",
-        "URL": "https://cloud.r-project.org"
+        "URL": "https://packagemanager.posit.co/cran/latest"
       }
     ]
   },
@@ -284,7 +284,7 @@
     },
     "bayestestR": {
       "Package": "bayestestR",
-      "Version": "0.13.2",
+      "Version": "0.14.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -296,7 +296,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "4a6a2eebe2db1dfb1c792c4ed91e73dc"
+      "Hash": "71e7da5d38487173de67a1f0d763ceef"
     },
     "bigD": {
       "Package": "bigD",
@@ -334,10 +334,10 @@
     },
     "bitops": {
       "Package": "bitops",
-      "Version": "1.0-7",
+      "Version": "1.0-8",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "b7d8d8ee39869c18d8846a184dd8a1af"
+      "Hash": "da69e6b6f8feebec0827205aad3fdbd8"
     },
     "blob": {
       "Package": "blob",
@@ -445,7 +445,7 @@
     },
     "bslib": {
       "Package": "bslib",
-      "Version": "0.7.0",
+      "Version": "0.8.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -463,7 +463,7 @@
         "rlang",
         "sass"
       ],
-      "Hash": "8644cc53f43828f19133548195d7e59e"
+      "Hash": "b299c6741ca9746fb227debcb0f9fb6c"
     },
     "cachem": {
       "Package": "cachem",
@@ -503,15 +503,15 @@
     },
     "checkmate": {
       "Package": "checkmate",
-      "Version": "2.3.1",
+      "Version": "2.3.2",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "backports",
         "utils"
       ],
-      "Hash": "c01cab1cb0f9125211a6fc99d540e315"
+      "Hash": "0e14e01ce07e7c88fd25de6d4260d26b"
     },
     "class": {
       "Package": "class",
@@ -648,7 +648,7 @@
     },
     "colorspace": {
       "Package": "colorspace",
-      "Version": "2.1-0",
+      "Version": "2.1-1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -658,7 +658,7 @@
         "methods",
         "stats"
       ],
-      "Hash": "f20c47fd52fae58b4e377c37bb8c335b"
+      "Hash": "d954cb1c57e8d8b756165d7ba18aa55a"
     },
     "commonmark": {
       "Package": "commonmark",
@@ -988,7 +988,7 @@
     },
     "future": {
       "Package": "future",
-      "Version": "1.33.2",
+      "Version": "1.34.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -999,7 +999,7 @@
         "parallelly",
         "utils"
       ],
-      "Hash": "fd7b1d69d16d0d114e4fa82db68f184c"
+      "Hash": "475771e3edb711591476be387c9a8c2e"
     },
     "future.apply": {
       "Package": "future.apply",
@@ -1408,16 +1408,22 @@
     },
     "insight": {
       "Package": "insight",
-      "Version": "0.20.2.6",
-      "Source": "Repository",
-      "Repository": "https://easystats.r-universe.dev",
+      "Version": "0.20.2.11",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "insight",
+      "RemoteUsername": "easystats",
+      "RemotePkgRef": "easystats/insight@HEAD",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "4c5ff457040dfcd3371f456a9ee42180b8ecab9d",
       "Requirements": [
         "R",
         "methods",
         "stats",
         "utils"
       ],
-      "Hash": "d93ecea8e6167cbe6c3f132961e5242c"
+      "Hash": "7bacc59d538c75d0288960ac8d1ec963"
     },
     "isoband": {
       "Package": "isoband",
@@ -1722,8 +1728,15 @@
     "modelsummary": {
       "Package": "modelsummary",
       "Version": "2.1.1.5",
-      "Source": "Repository",
-      "Repository": "https://vincentarelbundock.r-universe.dev",
+      "Source": "GitHub",
+      "Remotes": "vincentarelbundock/tinytable, vincentarelbundock/tinysnapshot",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "modelsummary",
+      "RemoteUsername": "vincentarelbundock",
+      "RemotePkgRef": "vincentarelbundock/modelsummary@HEAD",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "5b3b42aafdf60253d669d12cb88941c374e1508e",
       "Requirements": [
         "R",
         "checkmate",
@@ -1737,7 +1750,7 @@
         "tables",
         "tinytable"
       ],
-      "Hash": "adbcec58585fb751181cfcab6be92201"
+      "Hash": "6418533467f877dfd41710195d234d35"
     },
     "munsell": {
       "Package": "munsell",
@@ -1819,7 +1832,7 @@
     },
     "parallelly": {
       "Package": "parallelly",
-      "Version": "1.37.1",
+      "Version": "1.38.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1827,13 +1840,13 @@
         "tools",
         "utils"
       ],
-      "Hash": "5410df8d22bd36e616f2a2343dbb328c"
+      "Hash": "6e8b139c1904f5e9e14c69db64453bbe"
     },
     "parameters": {
       "Package": "parameters",
-      "Version": "0.22.1.6",
+      "Version": "0.22.1",
       "Source": "Repository",
-      "Repository": "https://easystats.r-universe.dev",
+      "Repository": "CRAN",
       "Requirements": [
         "R",
         "bayestestR",
@@ -1844,7 +1857,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "3390351e609dc0d1885b9c947ae4ebcc"
+      "Hash": "d54adeaf90f744bd8a342a46153a3fe5"
     },
     "patchwork": {
       "Package": "patchwork",
@@ -1866,9 +1879,16 @@
     },
     "performance": {
       "Package": "performance",
-      "Version": "0.12.2",
-      "Source": "Repository",
-      "Repository": "https://easystats.r-universe.dev",
+      "Version": "0.12.2.8",
+      "Source": "GitHub",
+      "Remotes": "easystats/see",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "performance",
+      "RemoteUsername": "easystats",
+      "RemotePkgRef": "easystats/performance@HEAD",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "9bdccc7aa0290930e948ac2cb09c6b490aa951f0",
       "Requirements": [
         "R",
         "bayestestR",
@@ -1877,7 +1897,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "6d0d9762077b82869a0ea9b17787b01e"
+      "Hash": "da8c59677faa7761dde08f763600d291"
     },
     "pillar": {
       "Package": "pillar",
@@ -1948,7 +1968,7 @@
       "Package": "posterior",
       "Version": "1.6.0",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "https://stan-dev.r-universe.dev",
       "Requirements": [
         "R",
         "abind",
@@ -2461,7 +2481,7 @@
     },
     "shiny": {
       "Package": "shiny",
-      "Version": "1.8.1.1",
+      "Version": "1.9.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -2490,7 +2510,7 @@
         "withr",
         "xtable"
       ],
-      "Hash": "54b26646816af9960a4c64d8ceec75d6"
+      "Hash": "6a293995a66e12c48d13aa1f957d09c7"
     },
     "shinyWidgets": {
       "Package": "shinyWidgets",
@@ -2853,13 +2873,20 @@
     "tinytable": {
       "Package": "tinytable",
       "Version": "0.3.0.33",
-      "Source": "Repository",
-      "Repository": "https://vincentarelbundock.r-universe.dev",
+      "Source": "GitHub",
+      "Remotes": "vincentarelbundock/tinysnapshot",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "tinytable",
+      "RemoteUsername": "vincentarelbundock",
+      "RemotePkgRef": "vincentarelbundock/tinytable@HEAD",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "3bc16a4c668e7a5321994c512cbd636f04f4c7a8",
       "Requirements": [
         "R",
         "methods"
       ],
-      "Hash": "d65e3b0b02d1cfe4714cfe4b00063141"
+      "Hash": "a744553e0c30b2fdd2c5d19aad5a7a76"
     },
     "tinytex": {
       "Package": "tinytex",
@@ -2905,13 +2932,13 @@
     },
     "uuid": {
       "Package": "uuid",
-      "Version": "1.2-0",
+      "Version": "1.2-1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R"
       ],
-      "Hash": "303c19bfd970bece872f93a824e323d9"
+      "Hash": "34e965e62a41fcafb1ca60e9b142085b"
     },
     "vctrs": {
       "Package": "vctrs",
@@ -2995,15 +3022,15 @@
     },
     "withr": {
       "Package": "withr",
-      "Version": "3.0.0",
+      "Version": "3.0.1",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Requirements": [
         "R",
         "grDevices",
         "graphics"
       ],
-      "Hash": "d31b6c62c10dcf11ec530ca6b0dd5d35"
+      "Hash": "07909200e8bbe90426fbfeb73e1e27aa"
     },
     "wk": {
       "Package": "wk",
@@ -3054,10 +3081,10 @@
     },
     "yaml": {
       "Package": "yaml",
-      "Version": "2.3.9",
+      "Version": "2.3.10",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "9cb28d11799d93c953f852083d55ee9e"
+      "Hash": "51dab85c6c98e50a18d7551e9d49f76c"
     }
   }
 }
