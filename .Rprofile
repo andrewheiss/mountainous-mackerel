@@ -1,3 +1,11 @@
+options(
+  repos = c(
+    CRAN = "https://packagemanager.posit.co/cran/latest"
+  ),
+  renv.config.ppm.enabled = TRUE,
+  renv.config.pak.enabled = TRUE
+)
+
 source("renv/activate.R")
 
 # Run the global .Rprofile if it exists
