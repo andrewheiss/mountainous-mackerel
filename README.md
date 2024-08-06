@@ -71,30 +71,51 @@ following:
 1.  Download and install these fonts (if you’re using Windows, make sure
     you right click on the font files and choose “Install for all users”
     when installing these fonts):
+
     - [Noto Sans](https://fonts.google.com/specimen/Noto+Sans)
     - [Linux Libertine
       O](https://www.cufonfonts.com/font/linux-libertine-o) (also
       [here](https://sourceforge.net/projects/linuxlibertine/))
     - [Libertinus Math](https://github.com/alerque/libertinus)
+
 2.  [Install R](https://cloud.r-project.org/) (and preferably
     [RStudio](https://www.rstudio.com/products/rstudio/download/#download)).
+
     - If you’re using macOS, [install XQuartz
       too](https://www.xquartz.org/), so that you have access to the
       Cairo graphics library
     - If you’re using Windows, [install RTools
       too](https://cran.r-project.org/bin/windows/Rtools/) and add it to
       your PATH so that you can install packages from source if needed
+
 3.  Open `mountainous-mackerel.Rproj` to open an [RStudio
     Project](https://r4ds.had.co.nz/workflow-projects.html).
+
 4.  In the terminal, run `quarto install tinytex` to ensure that you
     have a working LaTeX installation.
+
 5.  If it’s not installed already, R *should* try to install the {renv}
     package when you open the RStudio Project for the first time. If you
     don’t see a message about package installation, install it yourself
     by running `install.packages("renv")` in the R console.
-6.  Run `renv::restore()` in the R console to install all the required
+
+6.  Run this to install {cmdstanr}. This is supposed to happen
+    automatically as part of `renv::restore()` below, since {cmdstanr}
+    is in the lockfile, but [due to an issue with
+    {renv}](https://github.com/rstudio/renv/issues/1961) (fixed in the
+    development version as of 2024-08-06), it doesn’t install correctly
+    because it is hosted at <https://stan-dev.r-universe.dev> instead of
+    CRAN. So for now, until the next stable release of {renv}, it’s
+    easiest to install {cmdstanr} in a separate step.
+
+    ``` r
+    install.packages("cmdstanr", repos = c("https://stan-dev.r-universe.dev", "https://packagemanager.posit.co/cran/latest"))
+    ```
+
+7.  Run `renv::restore()` in the R console to install all the required
     packages for this project.
-7.  Run `targets::tar_make()` in the R console to automatically download
+
+8.  Run `targets::tar_make()` in the R console to automatically download
     all data files, process the data, run the analysis, and compile the
     paper and appendix.
 
