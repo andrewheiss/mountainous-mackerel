@@ -3,7 +3,7 @@ options(
     CRAN = "https://packagemanager.posit.co/cran/latest"
   ),
   renv.config.ppm.enabled = TRUE,
-  renv.config.pak.enabled = TRUE
+  renv.config.pak.enabled = FALSE
 )
 
 source("renv/activate.R")
