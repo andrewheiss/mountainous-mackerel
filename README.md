@@ -83,7 +83,8 @@ following:
 
     - If you’re using macOS, [install XQuartz
       too](https://www.xquartz.org/), so that you have access to the
-      Cairo graphics library
+      Cairo graphics library. Also [install Homebrew](https://brew.sh/)
+      and run `brew install ghostscript`.
     - If you’re using Windows, [install RTools
       too](https://cran.r-project.org/bin/windows/Rtools/) and add it to
       your PATH so that you can install packages from source if needed

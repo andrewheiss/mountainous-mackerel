@@ -55,7 +55,7 @@ Alternatively, everything can be run on your local computer too. Do the followin
     - [Libertinus Math](https://github.com/alerque/libertinus)
 
 2. [Install R](https://cloud.r-project.org/) (and preferably [RStudio](https://www.rstudio.com/products/rstudio/download/#download)).
-    - If you're using macOS, [install XQuartz too](https://www.xquartz.org/), so that you have access to the Cairo graphics library
+    - If you're using macOS, [install XQuartz too](https://www.xquartz.org/), so that you have access to the Cairo graphics library. Also [install Homebrew](https://brew.sh/) and run `brew install ghostscript`.
     - If you’re using Windows, [install RTools too](https://cran.r-project.org/bin/windows/Rtools/) and add it to your PATH so that you can install packages from source if needed
 
 3. Open `mountainous-mackerel.Rproj` to open an [RStudio Project](https://r4ds.had.co.nz/workflow-projects.html).
