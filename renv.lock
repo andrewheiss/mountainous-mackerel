@@ -174,16 +174,8 @@
     },
     "V8": {
       "Package": "V8",
-      "Version": "5.0.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "Rcpp",
-        "curl",
-        "jsonlite",
-        "utils"
-      ],
-      "Hash": "9eb7b2df315593e726b029200fc0276c"
+      "Version": "5.0.1",
+      "Source": "Repository"
     },
     "abind": {
       "Package": "abind",
