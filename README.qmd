@@ -30,7 +30,8 @@ abstract <- yaml_metadata$abstract
 ---
 
 <!-- badges: start -->
-[![Global Policy DOI](https://img.shields.io/badge/International%20Interactions%20DOI-10.1080%2F03050629.2024.2413965-brightgreen)](https://doi.org/10.1080/03050629.2024.2413965) [![Preprint](https://img.shields.io/badge/Preprint-10.31235%2Fosf.io%2Fy8ked-blue)](https://doi.org/10.31235/osf.io/y8ked) [![OSF DOI](https://img.shields.io/badge/OSF-10.17605%2FOSF.IO%2FAQVNK-blue)](https://doi.org/10.17605/OSF.IO/AQVNK) [![Code DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.12817616.svg)](https://doi.org/10.5281/zenodo.12817616)
+[![International Interactions DOI](https://img.shields.io/badge/International%20Interactions-10.1080%2F03050629.2024.2413965-brightgreen)](https://doi.org/10.1080/03050629.2024.2413965)  
+[![Preprint](https://img.shields.io/badge/Preprint-10.31235%2Fosf.io%2Fy8ked-blue)](https://doi.org/10.31235/osf.io/y8ked) [![OSF DOI](https://img.shields.io/badge/OSF%20project-10.17605%2FOSF.IO%2FAQVNK-blue)](https://doi.org/10.17605/OSF.IO/AQVNK) [![Code DOI](https://img.shields.io/badge/Code-10.5281%2Fzenodo.12817616-blue)](https://doi.org/10.5281/zenodo.12817616)
 <!-- badges: end -->
 
 > Suparna Chaudhry, Audrey L. Comstock, and Andrew Heiss, “Pandemic Pass? Treaty Derogations and Human Rights Practices during COVID-19,” *International Interactions* 50, no. 6 (2024): 1064–86, <https://doi.org/10.1080/03050629.2024.2413965>.
