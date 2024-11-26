@@ -16,7 +16,7 @@ Policy Studies • Georgia State University
 <!-- badges: start -->
 
 [![International Interactions
-DOI](https://img.shields.io/badge/International%20Interactions-10.1080%2F03050629.2024.2413965-brightgreen)](https://doi.org/10.1080/03050629.2024.2413965)  
+DOI](https://img.shields.io/badge/International%20Interactions-10.1080%2F03050629.2024.2413965-3D9970)](https://doi.org/10.1080/03050629.2024.2413965)  
 [![Preprint](https://img.shields.io/badge/Preprint-10.31235%2Fosf.io%2Fy8ked-blue)](https://doi.org/10.31235/osf.io/y8ked)
 [![OSF
 DOI](https://img.shields.io/badge/OSF%20project-10.17605%2FOSF.IO%2FAQVNK-blue)](https://doi.org/10.17605/OSF.IO/AQVNK)
